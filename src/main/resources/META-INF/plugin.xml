@@ -6,10 +6,28 @@
 
   <idea-version since-build="202"/>
 
-  <description>
-    This Plugin allows you to create an as-is 2D diagram of your code base. You can show only a specific area or specific classes of your code base by customizing the filter logic. The resulting diagram file is in text form (PlantUML) and can be included in the documentation (e.g. AsciiDoc), reviewed in a version control diff or manually adjusted.
-  </description>
-
+  <description><![CDATA[
+    <p>
+    This Plugin allows you to create an as-is 2D diagram of your code base. You can show only a specific area or
+    specific classes of your code base by customizing the filter logic. The resulting diagram file is in text form
+    (PlantUML) and can be included in the documentation (e.g. AsciiDoc), reviewed in a version control diff or
+    manually adjusted.
+    </p>
+    <br/>
+    <p>Features</p>
+    <ul>
+      <li>Diagrams
+        <ul>
+          <li>Call Hierarchy</li>
+          <li>Class Structure</li>
+          <li>Control Flow</li>
+          <li>Data Flow</li>
+        </ul>
+      </li>
+      <li>A lot of filter options to only show the relevant information</li>
+      <li>Re-generate single diagrams or whole directories recursively</li>
+    </ul>
+    ]]></description>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
        on how to target different products -->
