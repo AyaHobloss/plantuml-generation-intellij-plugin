@@ -16,6 +16,7 @@ class ConfigurationDefaults {
         fun callDiagram(): CallConfigurationDefaults = serializer.fromJson(DiagramGenerationSettings.instance.callDiagramDefaults, CallConfigurationDefaults::class.java)
         fun structureDiagram(): StructureConfigurationDefaults = serializer.fromJson(DiagramGenerationSettings.instance.structureDiagramDefaults, StructureConfigurationDefaults::class.java)
         fun flowDiagram(): FlowConfigurationDefaults = serializer.fromJson(DiagramGenerationSettings.instance.flowDiagramDefaults, FlowConfigurationDefaults::class.java)
+        fun clusterDiagram(): ClusterConfigurationDefaults = serializer.fromJson(DiagramGenerationSettings.instance.clusterDiagramDefaults, ClusterConfigurationDefaults::class.java)
     }
 }
 
@@ -116,6 +117,38 @@ class FlowConfigurationDefaults(
             hideMappings = false
             hidePrivateMethods = false
             onlyShowApplicationEntryPoints = false
+        }
+        return this
+    }
+}
+
+class ClusterConfigurationDefaults(
+        var graphRestriction: GraphRestriction = GraphRestriction(),
+        var graphTraversal: GraphTraversal = GraphTraversal(),
+        var details: ClusterDiagramDetails = ClusterDiagramDetails()) {
+
+    fun defaulted(): ClusterConfigurationDefaults {
+        with(graphRestriction) {
+            cutConstructors = true
+            cutDataAccess = false
+            cutDataStructures = false
+            cutInterfaceStructures = false
+            cutGetterAndSetter = true
+            cutEnum = true
+            cutMappings = false
+        }
+        with(graphTraversal) {
+            backwardDepth = 1
+            forwardDepth = 1
+            hideDataStructures = false
+            hideInterfaceCalls = true
+            hideMappings = false
+            hidePrivateMethods = true
+            onlyShowApplicationEntryPoints = false
+        }
+        with(details) {
+            edgeMode = EdgeMode.TypesAndMethods
+            source = ClusterSource.Louvian
         }
         return this
     }

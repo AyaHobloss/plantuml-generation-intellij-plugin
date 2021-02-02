@@ -16,6 +16,12 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlin:kotlin-reflect:"
 
+    compile group: 'org.tinylog', name: 'tinylog-api-kotlin', version: '2.2.1'
+    compile group: 'com.github.s1ck', name: 'gdl', version: '0.3.6'
+    compile group: 'org.neo4j', name: 'neo4j-legacy', version: '3.5.26'
+    compile group: 'org.neo4j', name: 'neo4j-kernel', version: '3.5.26' // heavy
+    compile group: 'org.neo4j.gds', name: 'algo', version: '1.1.6'
+
     testImplementation 'junit:junit:4.12'
 }
 
@@ -34,9 +40,6 @@ intellij {
     plugins 'com.intellij.java'
 }
 
-prepareSandbox {
-
-}
 buildSearchableOptions.enabled = false
 
 runIde{
