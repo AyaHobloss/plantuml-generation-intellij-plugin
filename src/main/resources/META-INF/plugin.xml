@@ -4,7 +4,7 @@
   <version>2021.1.0</version>
   <vendor>Andreas Pfau</vendor>
 
-  <idea-version since-build="202"/>
+  <idea-version since-build="202" until-build="203.*"/>
 
   <description><![CDATA[
     <p>
@@ -26,6 +26,13 @@
       </li>
       <li>A lot of filter options to only show the relevant information</li>
       <li>Re-generate single diagrams or whole directories recursively</li>
+    </ul>
+    <p>Upcoming Features</p>
+    <ul>
+      <li>Better diagram layout</li>
+      <li>Caching</li>
+      <li>More options to fine tune the diagram layout</li>
+      <li>Mark Git changes in diagram</li>
     </ul>
     ]]></description>
 
