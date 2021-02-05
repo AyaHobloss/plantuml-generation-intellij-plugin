@@ -5,8 +5,8 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.21'
 }
 
-group 'com.kn.diagrams.generator.generator'
-version '2021.1.0'
+group 'com.kn.diagrams.generator'
+version '2021.1.1'
 
 repositories {
     mavenCentral()
