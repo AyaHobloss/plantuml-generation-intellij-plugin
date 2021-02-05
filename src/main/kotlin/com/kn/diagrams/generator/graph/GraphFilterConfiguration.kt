@@ -14,6 +14,7 @@ class GraphTraversal(
         var methodNameIncludeFilter: String = "",
         var hideMappings: Boolean = true,
         var hideDataStructures: Boolean = true,
+        var hideMethodsInDataStructures: Boolean = true,
         var hidePrivateMethods: Boolean = false,
         @CommentWithValue("indirection: implementation -> interface (is hidden) -> implementation")
         var hideInterfaceCalls: Boolean = true,

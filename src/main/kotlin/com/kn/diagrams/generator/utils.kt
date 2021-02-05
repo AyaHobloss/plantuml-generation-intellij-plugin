@@ -22,7 +22,9 @@ fun <T> inReadAction(action: () -> T): T { // read access needed for PSI classes
 
 fun <T : Any> T?.toSingleList() = listOfNotNull(this)
 
-fun notReachable(): Nothing = throw RuntimeException()
+fun notReachable(): Nothing {
+    throw RuntimeException()
+}
 
 fun asyncWriteAction(action: () -> Unit){
     ApplicationManager.getApplication().invokeLater {

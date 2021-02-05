@@ -199,6 +199,10 @@ class SquashedGraphEdge(edge: GraphDirectedEdge, filter: TraversalFilter, val di
         from = edge.next(direction.flip())
         to = edge.next(direction).takeIf { filter.accept(it) }
 
+        if (!filter.accept(from) || to?.let { !filter.accept(it) } == true) { // TODO remove
+            println("failed graph traversal, from: $from (${filter.accept(from)}), to: $to (${to?.let { filter.accept(it) }})")
+        }
+
         edges.add(edge)
     }
 

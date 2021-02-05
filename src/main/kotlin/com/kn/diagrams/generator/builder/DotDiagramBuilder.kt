@@ -26,7 +26,7 @@ class DotShapeConfig(var label: String? = null,
 
 class DotHTMLCell(val text: String, var port: String? = null) {
     fun create(): String {
-        return "<TD ALIGN=\"LEFT\" ${port?.let { "PORT=\"$it\"" } ?: ""}>${text.escapeHTML()}</TD>"
+        return "<TD ALIGN=\"LEFT\" ${port?.let { "PORT=\"$it\"" } ?: ""}>${text}</TD>"
     }
 }
 

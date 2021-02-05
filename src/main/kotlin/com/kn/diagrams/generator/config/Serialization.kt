@@ -60,7 +60,11 @@ fun DiagramConfiguration.Companion.loadFromMetadata(diagramText: String): Diagra
     return serializer.fromJson(configJson, configType) as DiagramConfiguration
 }
 
-fun typeOf(className: String) = sequenceOf(CallConfiguration::class.java, StructureConfiguration::class.java, FlowConfiguration::class.java)
+fun typeOf(className: String) = sequenceOf(
+            CallConfiguration::class.java,
+            StructureConfiguration::class.java,
+            FlowConfiguration::class.java,
+            ClusterConfiguration::class.java)
         .firstOrNull { it.simpleName == className }
 
 class PsiClassSerializer : JsonSerializer<PsiClass?> {

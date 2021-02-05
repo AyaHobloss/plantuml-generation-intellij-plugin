@@ -18,6 +18,7 @@ class DiagramGenerationSettings : PersistentStateComponent<DiagramGenerationSett
     var callDiagramDefaults = ""
     var structureDiagramDefaults = ""
     var flowDiagramDefaults = ""
+    var clusterDiagramDefaults = ""
 
     override fun getState(): DiagramGenerationSettings? {
         return this
@@ -52,6 +53,9 @@ class DiagramGenerationSettings : PersistentStateComponent<DiagramGenerationSett
                 }
                 if (StringUtils.isBlank(settings.flowDiagramDefaults)) {
                     settings.flowDiagramDefaults = toJsonWithComments(FlowConfigurationDefaults().defaulted())
+                }
+                if (StringUtils.isBlank(settings.clusterDiagramDefaults)) {
+                    settings.clusterDiagramDefaults = toJsonWithComments(FlowConfigurationDefaults().defaulted())
                 }
 
                 return settings

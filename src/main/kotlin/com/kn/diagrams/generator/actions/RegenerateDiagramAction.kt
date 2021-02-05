@@ -11,6 +11,7 @@ import com.intellij.util.castSafelyTo
 import com.kn.diagrams.generator.asyncWriteAction
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.generator.CallDiagramGenerator
+import com.kn.diagrams.generator.generator.ClusterDiagramGenerator
 import com.kn.diagrams.generator.generator.FlowDiagramGenerator
 import com.kn.diagrams.generator.generator.StructureDiagramGenerator
 import com.kn.diagrams.generator.isPlantUML
@@ -38,6 +39,9 @@ open class RegenerateDiagramAction : AnAction() {
                     }
                     is FlowConfiguration -> {
                         FlowDiagramGenerator().createUmlContent(loadedConfig).firstOrNull()?.second
+                    }
+                    is ClusterConfiguration -> {
+                        ClusterDiagramGenerator().createUmlContent(loadedConfig).firstOrNull()?.second
                     }
                     else -> null
                 }

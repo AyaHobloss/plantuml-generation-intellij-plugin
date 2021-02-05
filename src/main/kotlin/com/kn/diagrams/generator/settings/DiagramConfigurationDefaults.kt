@@ -1,8 +1,6 @@
 package com.kn.diagrams.generator.settings
 
-import com.kn.diagrams.generator.config.CallDiagramDetails
-import com.kn.diagrams.generator.config.StructureDiagramDetails
-import com.kn.diagrams.generator.config.serializer
+import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.generator.Aggregation
 import com.kn.diagrams.generator.graph.EdgeMode
 import com.kn.diagrams.generator.graph.GraphRestriction
@@ -148,7 +146,7 @@ class ClusterConfigurationDefaults(
         }
         with(details) {
             edgeMode = EdgeMode.TypesAndMethods
-            source = ClusterSource.Louvian
+            source = ClusterSource.Leiden
         }
         return this
     }

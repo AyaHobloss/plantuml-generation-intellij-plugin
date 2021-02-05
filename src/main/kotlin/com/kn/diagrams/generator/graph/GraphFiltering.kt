@@ -93,11 +93,12 @@ class GraphTraversalFilter(private val rootNode: GraphNode, private val global: 
     }
 
     private fun AnalyzeMethod.accept(): Boolean {
-        return with(traversal) {
+        return with(traversal) { with(global){
             isIncludedAndNotExcluded(methodNameExcludeFilter, methodNameIncludeFilter) { name }
                     && hidePrivateMethods inCase (visibility != MethodVisibility.PUBLIC)
                     && hideInterfaceCalls inCase insideInterface()
-        }
+                    && hideMethodsInDataStructures inCase (containingClass.isDataStructure() || containingClass.isInterfaceStructure())
+        }}
     }
 
     private fun ClassReference.accept(): Boolean {
