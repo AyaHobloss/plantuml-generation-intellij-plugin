@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.kn.diagrams.generator.generator</id>
   <name>PlantUML Diagram Generator</name>
-  <version>2021.1.0</version>
+  <version>2021.1.1</version>
   <vendor>Andreas Pfau</vendor>
 
   <idea-version since-build="202" until-build="203.*"/>
@@ -35,6 +35,13 @@
       <li>Mark Git changes in diagram</li>
     </ul>
     ]]></description>
+
+  <change-notes><![CDATA[
+      <p>2021.1.1<p>
+      <ul>
+        <li>Added 2020.3.* to compatibility</li>
+      </ul>
+  ]]></change-notes>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
        on how to target different products -->
