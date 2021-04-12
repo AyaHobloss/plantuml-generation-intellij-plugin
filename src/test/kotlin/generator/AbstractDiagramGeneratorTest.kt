@@ -1,9 +1,8 @@
 package generator
 
+import AbstractPsiContextTest
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
-import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
-import com.intellij.util.io.isFile
 import com.kn.diagrams.generator.generator.CallDiagramGenerator
 import com.kn.diagrams.generator.generator.StructureDiagramGenerator
 import com.kn.diagrams.generator.config.CallConfiguration
@@ -11,8 +10,6 @@ import com.kn.diagrams.generator.config.CallDiagramDetails
 import com.kn.diagrams.generator.config.StructureConfiguration
 import com.kn.diagrams.generator.config.StructureDiagramDetails
 import com.kn.diagrams.generator.graph.*
-import java.nio.file.Files
-import java.nio.file.Paths
 import kotlin.math.absoluteValue
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -91,13 +88,9 @@ fun defaultClassification(classification: ProjectClassification){
 
 }
 
-abstract class AbstractGeneratorTest : LightJavaCodeInsightFixtureTestCase() {
+abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
 
     protected var diagram: String? = null
-
-    override fun getTestDataPath(): String? {
-        return "src/test/java"
-    }
 
     fun assertCall(call: Pair<KFunction<*>, KFunction<*>>) {
         assertEdge(call.first.asPsiMethod().diagramId(), call.second.asPsiMethod().diagramId(), true)
@@ -236,22 +229,7 @@ abstract class AbstractGeneratorTest : LightJavaCodeInsightFixtureTestCase() {
         }
     }
 
-    override fun setUp() {
-        super.setUp()
 
-        Files.walk(Paths.get("./src/test/java/testdata"))
-                .filter{ it.isFile() }
-                .forEach { myFixture.configureByFile(it.toString().substringAfter("\\java\\")) }
-
-
-        Files.walk(Paths.get("./src/test/java/javax"))
-                .filter{ it.isFile() }
-                .forEach { myFixture.configureByFile(it.toString().substringAfter("\\java\\")) }
-
-        Files.walk(Paths.get("./src/test/java/org/springframework"))
-                .filter { it.isFile() }
-                .forEach { myFixture.configureByFile(it.toString().substringAfter("\\java\\")) }
-    }
 
     fun KFunction<*>.asPsiMethod(): PsiMethod {
         return psiClass().methods.first { it.name == name }

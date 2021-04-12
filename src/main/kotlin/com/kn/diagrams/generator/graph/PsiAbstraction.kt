@@ -15,7 +15,7 @@ import org.jetbrains.java.generate.psi.PsiAdapter
 import java.util.*
 
 
-class AnalyzeClass(clazz: PsiClass, filter: RestrictionFilter) : GraphNode {
+class AnalyzeClass(clazz: PsiClass, filter: GraphRestrictionFilter) : GraphNode {
     val reference: ClassReference = ClassReference(clazz)
     val classType: ClassType = clazz.type()
     val fields: List<AnalyzeField>
@@ -183,6 +183,16 @@ class ClassReference {
         name = clazz.qualifiedName?.substringAfterLast(".") ?: "no qualified name"
         displayName = clazz.name + (clazz.typeParameterList?.text ?: "")
         path = clazz.qualifiedName?.substringBeforeLast(".") ?: "no qualified name"
+    }
+
+    constructor(qualifiedName: String){
+        classType = if(qualifiedName.endsWith("Service") || qualifiedName.endsWith("Facade")) ClassType.Interface else ClassType.Class
+
+        path = qualifiedName.substringBeforeLast(".")
+        name = qualifiedName.substringAfterLast(".")
+        displayName = name
+        absolutePath = ""
+
     }
 
 

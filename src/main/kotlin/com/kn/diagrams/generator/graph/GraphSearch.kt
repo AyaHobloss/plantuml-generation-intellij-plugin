@@ -6,7 +6,7 @@ import java.util.*
 
 enum class EdgeMode { TypesOnly, MethodsOnly, TypesAndMethods, MethodsAndDirectTypeUsage }
 
-class FindContext(private val cache: GraphCache,
+class FindContext(private val graph: GraphDefinition,
                   private val direction: Direction,
                   private val filter: TraversalFilter,
                   private val depth: Int,
@@ -81,35 +81,35 @@ class FindContext(private val cache: GraphCache,
 
     private fun ClassReference?.resolve(): AnalyzeClass? {
         if (this == null) return null
-        return cache.classes[id()]
+        return graph.classes[id()]
     }
 
     private fun MethodReference?.resolve(): AnalyzeMethod? {
         if (this == null) return null
-        return cache.classes[classReference.id()]?.methods?.get(method)
+        return graph.classes[classReference.id()]?.methods?.get(method)
     }
 
     private fun AnalyzeMethod.calls(): Sequence<GraphDirectedEdge> {
         if (edgeMode == EdgeMode.TypesOnly) return emptySequence()
 
         return if (direction == Direction.Forward) {
-            cache.forwardCalls[id()]?.asReversed()?.asSequence()
+            graph.forwardCalls[id()]?.asReversed()?.asSequence()
                     ?.map { GraphDirectedEdge(it.source.resolve()!!, it.target.resolve()!!, it.toSingleList()) }
         } else {
-            cache.backwardCalls[id()]?.asReversed()?.asSequence()
+            graph.backwardCalls[id()]?.asReversed()?.asSequence()
                     ?.map { GraphDirectedEdge(it.source.resolve()!!, it.target.resolve()!!, it.toSingleList()) }
         } ?: emptySequence()
     }
 
     private fun AnalyzeMethod.classUsages(): Sequence<GraphDirectedEdge> {
-        if (edgeMode == EdgeMode.MethodsOnly) return emptySequence()
+        if (edgeMode != EdgeMode.MethodsAndDirectTypeUsage) return emptySequence()
 
         return if (direction == Direction.Forward) {
-            cache.forwardMethodClassUsage[id()]
+            graph.forwardMethodClassUsage[id()]
                     ?.groupBy { it.clazz }?.asSequence()
                     ?.map { (clazz, references) -> GraphDirectedEdge(this, clazz, references) }
         } else {
-            cache.forwardMethodClassUsage[id()]
+            graph.forwardMethodClassUsage[id()]
                     ?.groupBy { it.clazz }?.asSequence()
                     ?.map { (clazz, references) -> GraphDirectedEdge(clazz, this, references) } // inversed for bi-directional
         } ?: emptySequence()
@@ -133,12 +133,12 @@ class FindContext(private val cache: GraphCache,
         if (edgeMode == EdgeMode.MethodsOnly) return emptySequence()
 
         return if (direction == Direction.Forward) {
-            cache.forwardFieldClassUsage[reference]
+            graph.forwardFieldClassUsage[reference]
                     ?.groupBy { it.target }?.asSequence()
                     ?.map { (target, fields) -> GraphDirectedEdge(this, target, fields) }
                     ?: emptySequence()
         } else {
-            cache.backwardFieldClassUsage[reference]
+            graph.backwardFieldClassUsage[reference]
                     ?.groupBy { it.field.containingClass.resolve()!! }?.asSequence()
                     ?.map { (source, fields) -> GraphDirectedEdge(source, this, fields) }
                     ?: emptySequence()
@@ -149,11 +149,11 @@ class FindContext(private val cache: GraphCache,
         if (edgeMode == EdgeMode.MethodsOnly) return emptySequence()
 
         return if (direction == Direction.Forward) {
-            cache.impenitenceInverted[id()]?.asSequence()
+            graph.impenitenceInverted[id()]?.asSequence()
                     ?.mapNotNull { it.resolve() }
                     ?.map { GraphDirectedEdge(this, it, InheritanceType.SubClass.toSingleList()) }
         } else {
-            cache.impenitenceInverted[id()]?.asSequence()
+            graph.impenitenceInverted[id()]?.asSequence()
                     ?.mapNotNull { it.resolve() }
                     ?.map { GraphDirectedEdge(it, this, InheritanceType.SubClass.toSingleList()) }
 
@@ -198,10 +198,6 @@ class SquashedGraphEdge(edge: GraphDirectedEdge, filter: TraversalFilter, val di
     init {
         from = edge.next(direction.flip())
         to = edge.next(direction).takeIf { filter.accept(it) }
-
-        if (!filter.accept(from) || to?.let { !filter.accept(it) } == true) { // TODO remove
-            println("failed graph traversal, from: $from (${filter.accept(from)}), to: $to (${to?.let { filter.accept(it) }})")
-        }
 
         edges.add(edge)
     }

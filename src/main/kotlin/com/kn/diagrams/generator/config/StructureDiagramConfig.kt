@@ -10,7 +10,7 @@ class StructureConfiguration(rootClass: PsiClass,
                              var graphTraversal: GraphTraversal,
                              var details: StructureDiagramDetails) : DiagramConfiguration(rootClass) {
 
-        override fun restrictionFilter() = GraphRestrictionFilter(rootClass.reference(), null, projectClassification, graphRestriction)
+        override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
 
         override fun traversalFilter(rootNode: GraphNode) = GraphTraversalFilter(rootNode, projectClassification, graphTraversal)
 }

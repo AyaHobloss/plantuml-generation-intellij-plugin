@@ -16,11 +16,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlin:kotlin-reflect:"
 
-    compile group: 'org.tinylog', name: 'tinylog-api-kotlin', version: '2.2.1'
     compile group: 'com.github.s1ck', name: 'gdl', version: '0.3.6'
-    compile group: 'org.neo4j', name: 'neo4j-legacy', version: '3.5.26'
-    compile group: 'org.neo4j', name: 'neo4j-kernel', version: '3.5.26' // heavy
-    compile group: 'org.neo4j.gds', name: 'algo', version: '1.1.6'
 
     compile group: 'nl.cwts', name: 'networkanalysis', version: '1.1.0'
 
@@ -39,13 +35,13 @@ compileTestKotlin {
 
 intellij {
     version '2020.3.1'
-    plugins 'com.intellij.java'
+    plugins = ['com.intellij.java', 'Git4Idea']
 }
 
 buildSearchableOptions.enabled = false
 
 runIde{
-    maxHeapSize = "8G"
+    maxHeapSize = "12G"
 }
 
 

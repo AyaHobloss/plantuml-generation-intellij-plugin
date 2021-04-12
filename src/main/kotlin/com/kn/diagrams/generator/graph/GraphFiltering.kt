@@ -3,7 +3,6 @@ package com.kn.diagrams.generator.graph
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiModifier
 import com.kn.diagrams.generator.inCase
-import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.notReachable
 
 
@@ -11,21 +10,10 @@ interface TraversalFilter {
     fun accept(node: GraphNode): Boolean
 }
 
-interface RestrictionFilter {
-    fun acceptClass(clazz: ClassReference): Boolean
-    fun removeClass(clazz: ClassReference, cache: GraphCache): Boolean // postprocessing based on other classes
-    fun acceptMethod(method: AnalyzeMethod): Boolean
-}
 val ClassReference.isEnum get() = classType == ClassType.Enum
 
-class GraphRestrictionFilter(private val rootClass: ClassReference,
-                             private val rootMethodId: String?,
-                             private val global: ProjectClassification,
-                             private val restriction: GraphRestriction
-) : RestrictionFilter {
-    override fun acceptClass(clazz: ClassReference): Boolean {
-        if (clazz == rootClass) return true
-
+class GraphRestrictionFilter(val global: ProjectClassification, private val restriction: GraphRestriction)  {
+    fun acceptClass(clazz: ClassReference): Boolean {
         return clazz.accept()
     }
 
@@ -45,9 +33,7 @@ class GraphRestrictionFilter(private val rootClass: ClassReference,
             }
         }
 
-    override fun acceptMethod(method: AnalyzeMethod): Boolean {
-        if (rootMethodId == method.id) return true
-
+    fun acceptMethod(method: AnalyzeMethod): Boolean {
         return with(method) {
             with(restriction) {
                 isIncludedAndNotExcluded(methodNameExcludeFilter, methodNameIncludeFilter) { name }
@@ -58,11 +44,9 @@ class GraphRestrictionFilter(private val rootClass: ClassReference,
         }
     }
 
-    override fun removeClass(clazz: ClassReference, cache: GraphCache): Boolean {
-        if (rootClass == clazz) return false
-
-        val inheritedClasses = cache.allInheritedClasses(clazz)
-        val inheritedIncludingSelf = (cache.classes[clazz.id()]?.annotations
+    fun removeClass(clazz: ClassReference, graph: GraphDefinition): Boolean {
+        val inheritedClasses = graph.allInheritedClasses(clazz)
+        val inheritedIncludingSelf = (graph.classes[clazz.id()]?.annotations
                 ?: emptyList()) union inheritedClasses.flatMap { it.annotations }
 
         val byAnnotation = notEmptyAnd(restriction.removeByAnnotation) { reqExs ->
@@ -84,7 +68,7 @@ class GraphRestrictionFilter(private val rootClass: ClassReference,
 
 }
 
-class GraphTraversalFilter(private val rootNode: GraphNode, private val global: ProjectClassification, private val traversal: GraphTraversal) : TraversalFilter {
+class GraphTraversalFilter(private val rootNode: GraphNode, val global: ProjectClassification, private val traversal: GraphTraversal) : TraversalFilter {
     override fun accept(node: GraphNode) = when (node) {
         rootNode -> true
         is AnalyzeClass -> node.reference.accept()
@@ -116,8 +100,8 @@ class GraphTraversalFilter(private val rootNode: GraphNode, private val global: 
 
 }
 
-
-private fun isIncludedAndNotExcluded(excludes: String, includes: String, extractor: () -> String) =
+// TODO does it work for combined / additive excluded/include filter?!
+fun isIncludedAndNotExcluded(excludes: String, includes: String, extractor: () -> String) =
         emptyOr(includes) { regEx -> regEx.any { it.matches(extractor()) } }
                 && emptyOr(excludes) { regEx -> regEx.none { it.matches(extractor()) } }
 

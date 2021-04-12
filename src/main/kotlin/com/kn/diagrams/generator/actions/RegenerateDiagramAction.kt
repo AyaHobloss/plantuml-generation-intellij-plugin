@@ -4,16 +4,14 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl
 import com.intellij.util.castSafelyTo
 import com.kn.diagrams.generator.asyncWriteAction
 import com.kn.diagrams.generator.config.*
-import com.kn.diagrams.generator.generator.CallDiagramGenerator
-import com.kn.diagrams.generator.generator.ClusterDiagramGenerator
-import com.kn.diagrams.generator.generator.FlowDiagramGenerator
-import com.kn.diagrams.generator.generator.StructureDiagramGenerator
+import com.kn.diagrams.generator.generator.*
 import com.kn.diagrams.generator.isPlantUML
 import com.kn.diagrams.generator.notifications.notifyErrorOccurred
 
@@ -43,12 +41,16 @@ open class RegenerateDiagramAction : AnAction() {
                     is ClusterConfiguration -> {
                         ClusterDiagramGenerator().createUmlContent(loadedConfig).firstOrNull()?.second
                     }
+                    is GitConfiguration -> {
+                        GitDiagramGenerator().createUmlContent(loadedConfig).firstOrNull()?.second
+                    }
                     else -> null
                 }
 
                 if (newDiagramText != null) {
                     asyncWriteAction {
-                        event.document()?.setText(newDiagramText)
+                        val document = PsiDocumentManager.getInstance(event.project!!).getDocument(file.containingFile)
+                        document?.setText(newDiagramText)
                     }
                 } else {
                     notifyErrorOccurred(event.project)

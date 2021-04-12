@@ -13,7 +13,7 @@ class CallConfiguration(rootClass: PsiClass,
                         var graphTraversal: GraphTraversal,
                         var details: CallDiagramDetails) : DiagramConfiguration(rootClass) {
 
-        override fun restrictionFilter() = GraphRestrictionFilter(rootClass.reference(), rootMethod?.id(), projectClassification, graphRestriction)
+        override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
 
         override fun traversalFilter(rootNode: GraphNode) = GraphTraversalFilter(rootNode, projectClassification, graphTraversal)
 }

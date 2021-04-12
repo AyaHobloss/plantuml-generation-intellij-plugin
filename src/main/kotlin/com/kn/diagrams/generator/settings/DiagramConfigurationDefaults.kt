@@ -146,7 +146,7 @@ class ClusterConfigurationDefaults(
         }
         with(details) {
             edgeMode = EdgeMode.TypesAndMethods
-            source = ClusterSource.Leiden
+            clusteringAlgorithm = ClusterSource.Leiden
         }
         return this
     }

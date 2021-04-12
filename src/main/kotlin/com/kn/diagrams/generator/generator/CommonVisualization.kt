@@ -10,10 +10,8 @@ import kotlin.math.absoluteValue
 
 
 data class DiagramVisualizationConfiguration(
-    val rootNode: GraphNode,
+    val rootNode: GraphNode?,
     val projectClassification: ProjectClassification,
-    val pathStartKeywords: String,
-    val pathEndKeywords: String,
     val showPackageLevels: Int,
     val showClassGenericTypes: Boolean,
     val showClassMethods: Boolean,
@@ -188,6 +186,12 @@ fun AnalyzeClass.createBoxShape() = DotShape(symbol() + reference.name, diagramI
     shape = Rectangle
     style = "filled"
     fillColor = color()
+}
+
+fun ClassReference.createBoxShape() = DotShape(name, diagramId()).with {
+    shape = Rectangle
+    style = "filled"
+    fillColor = "#FFFFFF"
 }
 
 fun AnalyzeClass.createHTMLShape(config: DiagramVisualizationConfiguration) = DotHTMLShape(reference.name, diagramId()).with {

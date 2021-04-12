@@ -51,14 +51,27 @@ fun DotDiagramBuilder.groupByClass(edges: List<SquashedGraphEdge>, config: Diagr
 
 fun ClassReference.diagramPath(config: DiagramVisualizationConfiguration): String {
     var diagramPath = path
-    config.pathStartKeywords.bySemicolon().forEach {
+
+    config.projectClassification.subComponentRoot.bySemicolon().forEach {
+        var rootOnly = it
+        config.projectClassification.includedProjects.bySemicolon().forEach { included ->
+            rootOnly = rootOnly.substringAfter("$included.")
+        }
+
+        if(diagramPath.contains(it)){
+            diagramPath = rootOnly + ";" + diagramPath.substringAfter("$it.")
+        }
+    }
+
+    config.projectClassification.includedProjects.bySemicolon().forEach {
         diagramPath = diagramPath.substringAfter("$it.")
     }
-    config.pathEndKeywords.takeUnless { it == "" }?.bySemicolon()?.forEach {
+    config.projectClassification.pathEndKeywords.takeUnless { it == "" }?.bySemicolon()?.forEach {
         diagramPath = diagramPath.substringBefore(".$it")
     }
 
-    return diagramPath
+    val basePath = diagramPath.takeIf { it.contains(";") }?.substringBefore(";")?.let { "$it." } ?: ""
+    return basePath + diagramPath.substringAfter(";")
         .split(".")
         .let { it.subList(0, Integer.max(0, Integer.min(it.size, config.showPackageLevels))) }
         .joinToString(".")

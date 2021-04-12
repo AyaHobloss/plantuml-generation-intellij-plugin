@@ -2,6 +2,7 @@ package com.kn.diagrams.generator
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -9,7 +10,18 @@ import com.intellij.psi.PsiRecursiveElementVisitor
 import com.intellij.util.concurrency.NonUrgentExecutor
 import com.kn.diagrams.generator.config.DiagramConfiguration
 import com.kn.diagrams.generator.config.loadFromMetadata
+import java.io.File
 import java.util.concurrent.TimeUnit
+import kotlin.math.max
+import kotlin.math.min
+
+fun File.createIfNotExists(): File {
+    if(!exists()){
+        createNewFile()
+    }
+
+    return this
+}
 
 infix fun <T> Sequence<T>.union(elements: Sequence<T>): Sequence<T> {
     return sequenceOf(this, elements).flatten()
@@ -87,3 +99,20 @@ fun String.escapeHTML() = this
         .replace("<", "&lt;")
         .replace(">", "&gt;")
         .replace("\"", "&quot;")
+
+fun throwExceptionIfCanceled() {
+    if (ProgressManager.getGlobalProgressIndicator()?.isCanceled == true) throw RuntimeException()
+}
+
+class ProgressBar{
+    companion object {
+        var text: String?
+            get() = ProgressManager.getGlobalProgressIndicator()?.text
+            set(value) {
+                throwExceptionIfCanceled()
+                ProgressManager.getGlobalProgressIndicator()?.text = value
+            }
+    }
+}
+
+fun Int.clamp(min: Int, max: Int) = min(max, max(this, min))

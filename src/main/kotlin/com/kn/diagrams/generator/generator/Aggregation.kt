@@ -50,7 +50,7 @@ fun DotDiagramBuilder.aggregateByClass(edges: List<SquashedGraphEdge>, config: D
             }
         }
 
-        addShapeClass(config.rootNode.containingClass())
+        config.rootNode?.let { addShapeClass(it.containingClass()) }
 
         edges
             .filter { it.from()!!.containingClass() != it.to()!!.containingClass() }

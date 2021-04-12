@@ -4,7 +4,6 @@ import com.google.common.base.Stopwatch
 import com.google.common.collect.Streams
 import com.intellij.codeInsight.completion.AllClassesGetter
 import com.intellij.codeInsight.completion.PlainPrefixMatcher
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
@@ -13,18 +12,16 @@ import com.intellij.psi.PsiMethod
 import com.intellij.psi.search.GlobalSearchScope
 import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.nonBlockingRead
-import java.lang.RuntimeException
 import java.util.*
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.stream.Collectors
 import kotlin.collections.LinkedHashSet
 
 
-class GraphCache(project: Project, val filter: RestrictionFilter, searchMode: SearchMode) {
+class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, searchMode: SearchMode) {
 
-    private val LOG = Logger.getInstance("#org.plantuml.idea.com.kn.diagramgeneration.graph.GraphCache")
+    private val LOG = Logger.getInstance("#com.kn.diagrams.generator.graph.GraphCache")
 
     val classes: MutableMap<String, AnalyzeClass> = mutableMapOf()
     val impenitenceInverted: MutableMap<String, List<ClassReference>> = mutableMapOf()
@@ -156,7 +153,9 @@ class GraphCache(project: Project, val filter: RestrictionFilter, searchMode: Se
                             method.parameter.flatMap { param -> param.types.filter { it.exists() && filter.acceptClass(it) }.map { MethodClassUsage(it.resolve()!!, method, param.name) } })
                 }
                 .forEach { (method, usages) ->
-                    val nonSelfUsages = usages.filter { it.clazz.reference != method.containingClass }.toSet()
+                    val nonSelfUsages = usages
+                        .filter { with(filter.global) { it.clazz.reference.isDataStructure() || it.clazz.reference.isInterfaceStructure() } }
+                        .filter { it.clazz.reference != method.containingClass }.toSet()
 
                     if (nonSelfUsages.isNotEmpty()) {
                         forwardMethodClassUsage[method.id] = nonSelfUsages

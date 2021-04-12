@@ -14,7 +14,7 @@ class FlowDiagramGenerator {
     fun createUmlContent(config: FlowConfiguration): List<Pair<String, String>> {
         val project = inReadAction { config.rootClass.project }
         val restrictionFilter = inReadAction { config.restrictionFilter() }
-        val cache = GraphCache(project, restrictionFilter, config.projectClassification.searchMode)
+        val cache = analysisCache.getOrCompute(project, restrictionFilter, config.projectClassification.searchMode)
         val diagram = DotDiagramBuilder()
 
         return config.perTerminalTaggedMethod { root ->

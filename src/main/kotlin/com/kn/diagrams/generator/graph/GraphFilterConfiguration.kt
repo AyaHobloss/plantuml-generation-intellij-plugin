@@ -53,7 +53,11 @@ enum class SearchMode {
 class ProjectClassification(
         @CommentWithEnumValues
         var searchMode: SearchMode = SearchMode.OpenProject,
+        @CommentWithValue("can be used when code base is not changed")
+        val useCaching: Boolean = false,
         var includedProjects: String = "",
+        @CommentWithValue("sub-components will be shown separately but keep their identifier from the root (e.g. 'interfaces.adapter')")
+        var subComponentRoot: String = "",
         var pathEndKeywords: String = "*.impl",
         var isClientPath: String = "",
         var isClientName: String = "",
@@ -103,7 +107,7 @@ fun emptyOr(plainFilter: String, filter: (List<Regex>) -> Boolean): Boolean {
     return plainFilter == "" || filter(plainFilter.regexBySemicolon())
 }
 
-fun String.bySemicolon(): List<String> = split(";")
+fun String.bySemicolon(): List<String> = if(this == "") emptyList() else split(";")
 
 fun String.regexBySemicolon(): List<Regex> = takeIf { it != "" }
         ?.split(";")

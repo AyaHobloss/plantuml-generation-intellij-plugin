@@ -1,7 +1,11 @@
 package com.kn.diagrams.generator.builder
 
 import com.kn.diagrams.generator.cast
+import com.kn.diagrams.generator.config.ClusterConfiguration
+import com.kn.diagrams.generator.config.GitConfiguration
 import com.kn.diagrams.generator.escapeHTML
+import com.kn.diagrams.generator.generator.DiagramVisualizationConfiguration
+import com.kn.diagrams.generator.graph.SquashedGraphEdge
 import kotlin.math.abs
 import kotlin.reflect.KMutableProperty0
 
@@ -24,9 +28,9 @@ class DotShapeConfig(var label: String? = null,
     }
 }
 
-class DotHTMLCell(val text: String, var port: String? = null) {
+class DotHTMLCell(val text: String, var port: String? = null, var colspan: Int? = null) {
     fun create(): String {
-        return "<TD ALIGN=\"LEFT\" ${port?.let { "PORT=\"$it\"" } ?: ""}>${text}</TD>"
+        return "<TD ALIGN=\"LEFT\" ${port?.let { "PORT=\"$it\"" } ?: ""} ${colspan?.let { "COLSPAN=\"$it\"" } ?: ""}>${text}</TD>"
     }
 }
 
@@ -37,8 +41,8 @@ class DotHTMLHorizontalSeparatorRow : DotHTMLTableRowElement {
 class DotHTMLRow : DotHTMLTableRowElement {
     val cells = mutableListOf<DotHTMLCell>()
 
-    fun cell(text: String, actions: (DotHTMLCell.() -> Unit)? = null) {
-        val cell = DotHTMLCell(text)
+    fun cell(text: String, colspan: Int? = null,  actions: (DotHTMLCell.() -> Unit)? = null) {
+        val cell = DotHTMLCell(text, null, colspan)
         actions?.let { it(cell) }
         cells.add(cell)
     }
@@ -52,7 +56,7 @@ interface DotHTMLTableRowElement {
     fun create(): String
 }
 
-class DotHTMLTable(var border: Int = 1, var cellBorder: Int = 1, var cellSpacing: Int = 0, var cellPadding: Int = 2) {
+class DotHTMLTable(var border: Int = 1, var cellBorder: Int = 1, var cellSpacing: Int = 0, var cellPadding: Int = 4) {
     private val rows = mutableListOf<DotHTMLTableRowElement>()
 
     fun with(actions: DotHTMLTable.() -> Unit): DotHTMLTable {
@@ -174,7 +178,7 @@ class DotShape(name: String, val id: String = name) : DotNode() {
 }
 
 private fun containsInvalidCharacters(str: String) = !str.startsWith("<<")
-        && !"[0-9a-zA-Z_]+".toRegex().matches(str)
+        && !"[0-9a-zA-Z]+".toRegex().matches(str)
 
 
 class DotClusterConfig(var label: String? = null, var labelJust: String = "l", var fillColor: String? = null, var style: String? = null) {
@@ -288,9 +292,9 @@ class DotLink(val fromId: String, val toId: String) : DotEdge() {
 
 }
 
-data class DotLinkConfig(var label: String? = null, var tooltip: String? = null, var style: String? = null, var arrowHead: String? = null, var arrowTail: String? = null, var weight: Int? = null, var dir: String? = null, var headPort: String? = null, var tailPort: String? = null) {
+data class DotLinkConfig(var label: String? = null, var tooltip: String? = null, var style: String? = null, var arrowHead: String? = null, var arrowTail: String? = null, var weight: Int? = null, var dir: String? = null, var headPort: String? = null, var tailPort: String? = null, var color: String? = null, var penwidth: Int? = null) {
     fun create(): String {
-        return formattedConfigString(ConfigLineFormat.SingleLine, ::label, ::tooltip, ::style, ::arrowHead, ::arrowTail, ::weight, ::dir, ::headPort, ::tailPort)
+        return formattedConfigString(ConfigLineFormat.SingleLine, ::label, ::tooltip, ::style, ::arrowHead, ::arrowTail, ::weight, ::dir, ::headPort, ::tailPort, ::color, ::penwidth)
     }
 }
 
@@ -334,15 +338,20 @@ class DotDiagramBuilder {
     var layout: String? = null
     var nodes: MutableSet<DotNode> = mutableSetOf()
     var edges: MutableSet<DotEdge> = mutableSetOf()
+    var notes: String = ""
 
     fun create(): String {
+        // TODO configure styling?!
+//        |    splines=polyline
         return """
             |@startuml
             |
+            |$notes
+            |
             |digraph g {
             |    rankdir="${direction.rankDir}"
-            |    splines=polyline
             |    ${layout?.let { "layout=$it\n|\toverlap=false" } ?: ""}
+            |    node[fontname="comic sants"]
             |
             |'nodes 
             |${nodes.asSequence().map { it.create() }.sorted().joinToString("\n\n")}
@@ -360,7 +369,7 @@ enum class DiagramDirection(val rankDir: String) {
     LeftToRight("LR"), TopToBottom("TB")
 }
 
-private fun String.formatId() = this.replace(" ", "")
+private fun String.formatId() = if(containsInvalidCharacters(this)) "\"$this\"" else this
 
 
 typealias DotShapeConstant = String

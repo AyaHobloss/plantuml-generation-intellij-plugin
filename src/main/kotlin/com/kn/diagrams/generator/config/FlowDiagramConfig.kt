@@ -9,7 +9,7 @@ class FlowConfiguration(rootClass: PsiClass,
                         var projectClassification: ProjectClassification,
                         var graphRestriction: GraphRestriction,
                         var graphTraversal: GraphTraversal) : DiagramConfiguration(rootClass) {
-    override fun restrictionFilter() = GraphRestrictionFilter(rootClass.reference(), rootMethod?.id(), projectClassification, graphRestriction)
+    override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
 
     override fun traversalFilter(rootNode: GraphNode) = GraphTraversalFilter(rootNode, projectClassification, graphTraversal)
 

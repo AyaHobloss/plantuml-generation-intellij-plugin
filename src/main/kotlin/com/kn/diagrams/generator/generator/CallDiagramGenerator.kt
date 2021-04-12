@@ -5,7 +5,8 @@ import com.kn.diagrams.generator.builder.DiagramDirection
 import com.kn.diagrams.generator.builder.DotDiagramBuilder
 import com.kn.diagrams.generator.config.CallConfiguration
 import com.kn.diagrams.generator.config.attacheMetaData
-import com.kn.diagrams.generator.graph.GraphCache
+import com.kn.diagrams.generator.graph.GraphDefinition
+import com.kn.diagrams.generator.graph.analysisCache
 import com.kn.diagrams.generator.graph.isPrivate
 import com.kn.diagrams.generator.graph.reference
 import com.kn.diagrams.generator.inReadAction
@@ -16,11 +17,11 @@ import com.kn.diagrams.generator.toSingleList
 class CallDiagramGenerator {
 
     fun createUmlContent(config: CallConfiguration): List<Pair<String, String>> {
-        return config.perPublicMethod { rootMethod ->
-            val project = inReadAction { config.rootClass.project }
-            val restrictionFilter = inReadAction { config.restrictionFilter() }
+        val project = inReadAction { config.rootClass.project }
+        val restrictionFilter = inReadAction { config.restrictionFilter() }
+        val cache = analysisCache.getOrCompute(project, restrictionFilter, config.projectClassification.searchMode)
 
-            val cache = GraphCache(project, restrictionFilter, config.projectClassification.searchMode)
+        return config.perPublicMethod { rootMethod ->
             val root = inReadAction { cache.methodFor(rootMethod)!! }
 
             val edges = cache.search(config.traversalFilter(root)) {
@@ -71,11 +72,9 @@ private fun CallConfiguration.perPublicMethod(creator: (PsiMethod) -> String): L
 }
 
 
-fun CallConfiguration.visualizationConfig(cache: GraphCache) = DiagramVisualizationConfiguration(
+fun CallConfiguration.visualizationConfig(cache: GraphDefinition) = DiagramVisualizationConfiguration(
     rootMethod?.let { cache.methodFor(it) } ?: cache.classes[rootClass.reference().id()]!!,
     projectClassification,
-    projectClassification.includedProjects,
-    projectClassification.pathEndKeywords,
     details.showPackageLevels,
     false,
     false,
