@@ -65,7 +65,7 @@ fun typeOf(className: String) = sequenceOf(
             StructureConfiguration::class.java,
             FlowConfiguration::class.java,
             ClusterConfiguration::class.java,
-            GitConfiguration::class.java)
+            VcsConfiguration::class.java)
         .firstOrNull { it.simpleName == className }
 
 class PsiClassSerializer : JsonSerializer<PsiClass?> {

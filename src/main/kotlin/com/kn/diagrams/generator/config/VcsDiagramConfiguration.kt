@@ -2,14 +2,13 @@ package com.kn.diagrams.generator.config
 
 import com.intellij.psi.PsiClass
 import com.kn.diagrams.generator.graph.*
-import java.util.*
 
 
-class GitConfiguration(rootClass: PsiClass,
+class VcsConfiguration(rootClass: PsiClass,
                        var projectClassification: ProjectClassification,
                        var graphRestriction: GraphRestriction,
                        var graphTraversal: GraphTraversal,
-                       var details: GitDiagramDetails) : DiagramConfiguration(rootClass) {
+                       var details: VcsDiagramDetails) : DiagramConfiguration(rootClass) {
 
     override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
 
@@ -18,24 +17,22 @@ class GitConfiguration(rootClass: PsiClass,
 
 enum class CommitFilter{ All, Matching, NotMatching }
 
-class GitDiagramDetails(
+class VcsDiagramDetails(
         @CommentWithValue("a cross-product is calculated and consumes your resources")
         var ignoreCommitsAboveFileCount: Int = 600,
         var squashCommitsContainingOneTicketReference: Boolean = true,
         // TODO branch
         // TODO place it under the diagram file? just use git repo name + branch
-        var workspaceIdentifier: String = "",
-
-        var commitPattern: String = "[QC-",
+        var repositoryBranch: String = "master",
+        var commitContainsPattern: String = "[QC-",
         @CommentWithEnumValues
         var commitFilter: CommitFilter = CommitFilter.All,
         var includedComponents: String = "",
-        var minimumWeight: Int = 30,
-        @CommentWithValue("use the display name of the node to overwrite the global minimum weight")
-        var nodeBasedMinimumWeight: Map<String, Int> = mapOf(),
+        var showMaximumNumberOfEdges: Int = 30,
         var startDay: String? = "",
         var endDay: String? = "",
 
+        @CommentWithValue("only applicable with no aggregation")
         var colorizeFilesWithSameComponent: Boolean = true,
         var coloredNodeFactor: Double = 1.0,
         var coloredEdgeFactor: Double = 15.0,
@@ -43,13 +40,16 @@ class GitDiagramDetails(
 
 
         @CommentWithEnumValues
-        var nodeAggregation: GitNodeAggregation = GitNodeAggregation.None,
+        var nodeAggregation: VcsNodeAggregation = VcsNodeAggregation.None,
         @CommentWithEnumValues
-        var componentEdgeAggregationMethod: EdgeAggregation = EdgeAggregation.ClassRatioOfCommit
+        var componentEdgeAggregationMethod: EdgeAggregation = EdgeAggregation.ClassRatioWithCommitSize,
+        @CommentWithValue("weight * (1 / size ratio)^sizeNormalization, one commit should have a higher impact for smaller aggregates but a smaller impact on bigger aggregates")
+        var sizeNormalization: Double = 0.0
+
 )
 
-enum class EdgeAggregation{ GraphConnections, CommitCount, TotalTouchedClasses, TouchedClassesOfCommit, ClassRatioOfCommit, ClassRatioWithCommitSize }
+enum class EdgeAggregation{ GraphConnections, CommitCount, TotalTouchedClasses, TouchedClassesOfCommit, ClassRatioWithCommitSize }
 
-enum class GitNodeAggregation{
-    None, Component
+enum class VcsNodeAggregation{
+    None, Component, Layer, ComponentAndLayer
 }

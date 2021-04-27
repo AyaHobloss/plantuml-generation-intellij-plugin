@@ -3,12 +3,11 @@ package generator
 import AbstractPsiContextTest
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
+import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.generator.CallDiagramGenerator
 import com.kn.diagrams.generator.generator.StructureDiagramGenerator
-import com.kn.diagrams.generator.config.CallConfiguration
-import com.kn.diagrams.generator.config.CallDiagramDetails
-import com.kn.diagrams.generator.config.StructureConfiguration
-import com.kn.diagrams.generator.config.StructureDiagramDetails
+import com.kn.diagrams.generator.generator.VcsCommit
+import com.kn.diagrams.generator.generator.createVcsContent
 import com.kn.diagrams.generator.graph.*
 import kotlin.math.absoluteValue
 import kotlin.reflect.KClass
@@ -16,6 +15,48 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 import kotlin.reflect.jvm.javaField
 import kotlin.reflect.jvm.javaMethod
+
+abstract class AbstractVcsDiagramGeneratorTest : AbstractGeneratorTest() {
+
+    fun vcsDiagram(commits: VcsCommits, config: (VcsConfiguration.() -> Unit)? = null): String {
+        val rootClass = commits.commits.first().files.first().asPsiClass()
+
+        val configuration = VcsConfiguration(rootClass, ProjectClassification(),  GraphRestriction(), GraphTraversal(), VcsDiagramDetails())
+
+        defaultClassification(configuration.projectClassification)
+
+        with(configuration.graphRestriction){
+            cutTests = false
+            cutDataStructures = false
+            cutClient = false
+            cutMappings = false
+            cutInterfaceStructures = false
+        }
+
+        config?.invoke(configuration)
+
+        return createVcsContent(configuration) { rawCommits += commits.commits }.first().second
+    }
+
+    fun commits() = VcsCommits()
+
+    class VcsCommits{
+        val commits: MutableList<VcsCommit> = mutableListOf()
+        private var messageCounter = 0L
+
+        fun commit(vararg classes: KClass<*>, commitTime: Long = messageCounter, message: String = "commit $messageCounter"): VcsCommits {
+
+            commits += VcsCommit(commitTime, message, classes.map { ClassReference(it.qualifiedName ?: "") })
+
+            messageCounter++
+
+            return this
+        }
+
+    }
+
+
+}
 
 abstract class AbstractCallDiagramGeneratorTest : AbstractGeneratorTest() {
 
@@ -197,10 +238,10 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
         assertEdge(field.psiClass().diagramId(), targetClass.asPsiClass().diagramId(), false, field.name)
     }
 
-    private fun assertEdge(fromId: String, toId: String, needsMatch: Boolean, keyword: String? = null) {
+    fun assertEdge(fromId: String, toId: String, needsMatch: Boolean, keyword: String? = null) {
         val edgeSection = edgesSection()
 
-        val matchPattern = "$fromId -> $toId[\\s\\S]*${ keyword?.let { "$it[\\s\\S]*" } ?: "" };"
+        val matchPattern = "[\"]?$fromId[\"]? -> [\"]?$toId[\"]?[\\s\\S]*${ keyword?.let { "$it[\\s\\S]*" } ?: "" };"
         val match = matchPattern.toRegex().findAll(edgeSection).count() == 1
 
         if(match != needsMatch){
@@ -229,7 +270,12 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
         }
     }
 
-
+    fun assertClassEdge(sourceClass: KClass<*>, targetClass: KClass<*>, keyword: String? = null){
+        assertEdge(sourceClass.asPsiClass().diagramId(), targetClass.asPsiClass().diagramId(), true, keyword)
+    }
+    fun assertNoClassEdge(sourceClass: KClass<*>, targetClass: KClass<*>, keyword: String? = null){
+        assertEdge(sourceClass.asPsiClass().diagramId(), targetClass.asPsiClass().diagramId(), false, keyword)
+    }
 
     fun KFunction<*>.asPsiMethod(): PsiMethod {
         return psiClass().methods.first { it.name == name }
@@ -237,6 +283,10 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
 
     fun KClass<*>.asPsiClass(): PsiClass {
         return myFixture.findClass(this.qualifiedName!!)
+    }
+
+    fun ClassReference.asPsiClass(): PsiClass {
+        return myFixture.findClass(qualifiedName())
     }
 
 }

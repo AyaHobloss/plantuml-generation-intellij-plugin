@@ -16,7 +16,7 @@
   <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.java</depends>
   <depends>com.intellij.java</depends>
-  <depends>Git4Idea</depends>
+<!--  <depends>Git4Idea</depends>-->
 
   <actions>
     <group>
@@ -25,7 +25,7 @@
       <action id="GenerateCallDiagramAction" class="com.kn.diagrams.generator.actions.GenerateCallDiagramsAction" text="Generate Call Diagrams"/>
       <action id="GenerateStructureDiagramAction" class="com.kn.diagrams.generator.actions.GenerateStructureDiagramAction" text="Generate Structure Diagram"/>
       <action id="GenerateClusterDiagramAction" class="com.kn.diagrams.generator.actions.GenerateClusterDiagramAction" text="Generate Cluster Diagram"/>
-      <action id="GenerateGitChangeHeatMapDiagramsAction" class="com.kn.diagrams.generator.actions.GenerateGitChangeHeatMapDiagramsAction" text="Generate Git Change Heat Map Diagram"/>
+      <action id="GenerateVcsDiagramsAction" class="com.kn.diagrams.generator.actions.GenerateVcsDiagramsAction" text="Generate Version Control Diagram"/>
       <action id="RegenerateDiagramAction" class="com.kn.diagrams.generator.actions.RegenerateDiagramAction" text="Regenerate Diagrams"/>
       <action id="RegenerateDiagramRecursiveAction" class="com.kn.diagrams.generator.actions.RegenerateDiagramRecursiveAction" text="Regenerate Diagrams Recursive"/>
       <separator/>

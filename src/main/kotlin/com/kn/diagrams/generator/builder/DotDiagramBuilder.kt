@@ -1,11 +1,6 @@
 package com.kn.diagrams.generator.builder
 
 import com.kn.diagrams.generator.cast
-import com.kn.diagrams.generator.config.ClusterConfiguration
-import com.kn.diagrams.generator.config.GitConfiguration
-import com.kn.diagrams.generator.escapeHTML
-import com.kn.diagrams.generator.generator.DiagramVisualizationConfiguration
-import com.kn.diagrams.generator.graph.SquashedGraphEdge
 import kotlin.math.abs
 import kotlin.reflect.KMutableProperty0
 
@@ -18,7 +13,7 @@ class DotShapeConfig(var label: String? = null,
                      var fillColor: String? = null,
                      var shape: DotShapeConstant? = null,
                      var style: String? = null,
-                     var margin: Int? = null,
+                     var margin: Double? = null,
                      var tooltip: String? = null,
                      var penWidth: Int? = null,
                      var fontColor: String? = null) {

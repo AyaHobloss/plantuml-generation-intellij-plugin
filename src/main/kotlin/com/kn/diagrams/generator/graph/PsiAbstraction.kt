@@ -5,15 +5,14 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.javadoc.PsiDocComment
 import com.intellij.psi.util.PsiTypesUtil
-import com.intellij.psi.util.elementType
 import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.config.simpleSignature
 import com.kn.diagrams.generator.escape
-import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.union
 import org.jetbrains.java.generate.psi.PsiAdapter
 import java.util.*
 
+// TODO migrate to UAST? - get decoupled from Java and allow other languages - https://plugins.jetbrains.com/docs/intellij/uast.html
 
 class AnalyzeClass(clazz: PsiClass, filter: GraphRestrictionFilter) : GraphNode {
     val reference: ClassReference = ClassReference(clazz)

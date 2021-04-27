@@ -135,6 +135,7 @@ fun AnalyzeMethod.signature(config: DiagramVisualizationConfiguration? = null): 
     return "${visibility.symbol() + name}($parameters)$returnType"
 }
 
+// TODO unify with diagramId()
 fun ClassReference.diagramNameWithId() = name + hashCode().absoluteValue.toString()
 
 val mandatoryAnnotations = sequenceOf("NotNull", "NotBlank", "NotEmpty")
@@ -197,7 +198,7 @@ fun ClassReference.createBoxShape() = DotShape(name, diagramId()).with {
 fun AnalyzeClass.createHTMLShape(config: DiagramVisualizationConfiguration) = DotHTMLShape(reference.name, diagramId()).with {
     this.config.style = "filled"
     this.config.fillColor = color()
-    this.config.margin = 0
+    this.config.margin = 0.0
 
     withTable {
         cellBorder = 0

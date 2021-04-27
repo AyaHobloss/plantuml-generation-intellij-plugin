@@ -41,8 +41,8 @@ open class RegenerateDiagramAction : AnAction() {
                     is ClusterConfiguration -> {
                         ClusterDiagramGenerator().createUmlContent(loadedConfig).firstOrNull()?.second
                     }
-                    is GitConfiguration -> {
-                        GitDiagramGenerator().createUmlContent(loadedConfig).firstOrNull()?.second
+                    is VcsConfiguration -> {
+                        createVcsContent(loadedConfig).firstOrNull()?.second
                     }
                     else -> null
                 }

@@ -50,6 +50,8 @@ enum class SearchMode {
     OpenProject, AllProjects
 }
 
+class Layer(var name: String, var path: String)
+
 class ProjectClassification(
         @CommentWithEnumValues
         var searchMode: SearchMode = SearchMode.OpenProject,
@@ -72,7 +74,9 @@ class ProjectClassification(
         var isInterfaceStructuresPath: String = "",
         var isInterfaceStructuresName: String = "",
         var isEntryPointPath: String = "",
-        var isEntryPointName: String = ""
+        var isEntryPointName: String = "",
+        @CommentWithValue("first matching pattern is applied; e.g.: {\"controller\": { \"name\": \"*.controller\", \"path\": \"controller\" }}")
+        var customLayers: Map<String, Layer> = mapOf() // TODO restriction / visibility filter options
 
 ) {
 
