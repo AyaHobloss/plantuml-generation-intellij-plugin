@@ -229,7 +229,7 @@ fun AnalyzeClass.createHTMLShape(config: DiagramVisualizationConfiguration) = Do
 }
 
 
-fun Color.toHex() = String.format("%02x%02x%02x", red, green, blue)
+fun Color.toHex(prefix: String = "") = prefix + String.format("%02x%02x%02x", red, green, blue)
 
 val groupColorLevel = listOf(
     Color(236, 236, 236),

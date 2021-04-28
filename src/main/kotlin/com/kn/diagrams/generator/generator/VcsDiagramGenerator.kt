@@ -22,12 +22,7 @@ fun createVcsContent(config: VcsConfiguration, commits: VcsAnalysis.() -> Unit =
 
     totalFiles += rawCommits.extractUniqueFiles()
     graphEdges += filteredCommits.createFullyConnectedEdges()
-}.buildDiagram {
-    when (detailsConfig.nodeAggregation) {
-        VcsNodeAggregation.None -> showChangesWithoutAggregation()
-        else -> showChangesAggregated()
-    }
-}
+}.buildDiagram()
 
 
 

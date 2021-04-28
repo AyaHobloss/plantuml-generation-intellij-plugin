@@ -32,12 +32,15 @@ class VcsDiagramDetails(
         var startDay: String? = "",
         var endDay: String? = "",
 
-        @CommentWithValue("only applicable with no aggregation")
-        var colorizeFilesWithSameComponent: Boolean = true,
+        @CommentWithEnumValues
+        var nodeColorCoding: NodeColorCoding = NodeColorCoding.Component,
+        @CommentWithValue("depends on visible edges / nodes") // TODO automatic scaling towards # shown edges / nodes
         var coloredNodeFactor: Double = 1.0,
+        @CommentWithEnumValues
+        var edgeColorCoding: EdgeColorCoding = EdgeColorCoding.None,
         var coloredEdgeFactor: Double = 15.0,
-        var coloredEdgeWidthFactor: Double = 1.0,
 
+        var coloredEdgeWidthFactor: Double = 1.0,
 
         @CommentWithEnumValues
         var nodeAggregation: VcsNodeAggregation = VcsNodeAggregation.None,
@@ -47,6 +50,9 @@ class VcsDiagramDetails(
         var sizeNormalization: Double = 0.0
 
 )
+
+enum class NodeColorCoding { None, Layer, Component, WeightDistribution }
+enum class EdgeColorCoding { None, WeightDistribution }
 
 enum class EdgeAggregation{ GraphConnections, CommitCount, TotalTouchedClasses, TouchedClassesOfCommit, ClassRatioWithCommitSize }
 
