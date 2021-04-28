@@ -2,8 +2,6 @@ package com.kn.diagrams.generator.generator
 
 import com.kn.diagrams.generator.ProgressBar
 import com.kn.diagrams.generator.builder.DotDiagramBuilder
-import com.kn.diagrams.generator.builder.DotShape
-import com.kn.diagrams.generator.builder.addLink
 import com.kn.diagrams.generator.clamp
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.graph.ClassReference
@@ -12,11 +10,11 @@ import com.kn.diagrams.generator.throwExceptionIfCanceled
 import java.awt.Color
 import kotlin.math.*
 
-fun VcsAnalysis.buildDiagram(): List<Pair<String, String>> {
+fun VcsAnalysis.buildDiagram(actions: VcsVisualization.() -> Unit): List<Pair<String, String>> {
     ProgressBar.text = "Diagram is generated"
 
     return VcsVisualization(this)
-            .apply { showChangesAggregated() }
+            .apply(actions)
             .buildDiagram()
 }
 
@@ -25,56 +23,31 @@ class VcsVisualization(val context: VcsAnalysis){
        get() = context.config.details
     val aggregation: ClassReference.() -> Aggregate = aggregation()
 
-    private val dot = DotDiagramBuilder()
+    val dot = DotDiagramBuilder()
     val visualizationConfiguration: DiagramVisualizationConfiguration = context.config.visualizationConfig()
     val stats = AggregateDetails(this)
-    val visibleGraph = VcsGraph(this)
+    val aggregatedGraph = AggregatedVcsGraph(this)
+    val visibleGraph = VisibleVcsGraph(this)
 
-    fun showChangesAggregated() {
-        dot.notes = "'${visibleGraph.edges.size} edges shown out of ${visibleGraph.totalEdgesCount}"
+    fun Aggregate.commitCount() = UndirectedEdge(this, this).commitCount()
 
-        visibleGraph.nodes.forEach { (aggregate, weight) ->
-            dot.nodes.add(DotShape(aggregate.display, aggregate.key).with {
-                tooltip = "inner changes = $weight / ${aggregate.relativeWeight().percent()}% " +
-                        "/ ${aggregate.relativeTotalWeight().percent()}T " +
-                        "/ total files: " + aggregate.fileCount() + " " +
-                        "/ commits: "+aggregate.commitCount()
-                fillColor = aggregate.weightOrStructureBasedColor()
-                margin = aggregate.nodeSize()
-                style = "filled"
-            })
-        }
+    fun UndirectedEdge<Aggregate>.commitCount() = aggregatedGraph.commitsPerEdges.getOrDefault(this, 0)
 
-        visibleGraph.edges.forEach { (edge, weight) ->
-            dot.addLink(edge.from.key, edge.to.key) {
-                label = "$weight / ${edge.relativeWeight().percent()}% / ${edge.relativeTotalWeight().percent()}T%"
-                tooltip = label + " / commits: " + edge.commitCount()
-                color = edge.weightBasedColor()
-                penwidth = edge.weightBasedPenWidth()
-                arrowHead = "none"
-            }
-        }
-    }
-
-    private fun Aggregate.commitCount() = UndirectedEdge(this, this).commitCount()
-
-    private fun UndirectedEdge<Aggregate>.commitCount() = visibleGraph.commitsPerComponent.getOrDefault(this, 0)
-
-    private fun Aggregate.nodeSize(): Double {
+    fun Aggregate.nodeSize(): Double {
         if (stats.filesByAggregate.isEmpty()) return 0.0
 
         val componentCount = stats.filesByAggregate.keys.size.toDouble()
         return stats.sizeRatio(this) * sqrt(componentCount)
     }
 
-    private fun UndirectedEdge<Aggregate>.weightBasedPenWidth(): Int? {
+    fun UndirectedEdge<Aggregate>.weightBasedPenWidth(): Int? {
         if(detailsConfig.coloredEdgeWidthFactor <= 0 || detailsConfig.nodeAggregation == VcsNodeAggregation.None) return null
 
         val redPercent = 1.0 * visibleGraph.edges[this]!! / visibleGraph.sumWeight
         return sqrt(ceil(redPercent * 100 * detailsConfig.coloredEdgeWidthFactor)).toInt().clamp(1, 50)
     }
 
-    private fun UndirectedEdge<Aggregate>.weightBasedColor(): String? {
+    fun UndirectedEdge<Aggregate>.weightBasedColor(): String? {
         if(detailsConfig.coloredEdgeFactor <= 0
                 || detailsConfig.nodeAggregation == VcsNodeAggregation.None
                 || detailsConfig.edgeColorCoding == EdgeColorCoding.None) return null
@@ -84,18 +57,18 @@ class VcsVisualization(val context: VcsAnalysis){
         return Color((redPercent * detailsConfig.coloredEdgeFactor * 255).toInt().clamp(0, 255), 0, 0).toHex("#") // TODO missing in stats
     }
 
-    private fun Aggregate.fileCount() = stats.filesByAggregate.getOrDefault(this, 0)
+    fun Aggregate.fileCount() = stats.filesByAggregate.getOrDefault(this, 0)
 
     private fun Aggregate.weight() = UndirectedEdge(this, this).weight()
     private fun UndirectedEdge<Aggregate>.weight() = visibleGraph.edges.getOrDefault(this, 0)
 
-    private fun Aggregate.relativeWeight() = UndirectedEdge(this, this).relativeWeight()
-    private fun UndirectedEdge<Aggregate>.relativeWeight() = 1.0 * visibleGraph.edges.getOrDefault(this, 0) / visibleGraph.sumWeight
+    fun Aggregate.relativeWeight() = UndirectedEdge(this, this).relativeWeight()
+    fun UndirectedEdge<Aggregate>.relativeWeight() = 1.0 * visibleGraph.edges.getOrDefault(this, 0) / visibleGraph.sumWeight
 
-    private fun Aggregate.relativeTotalWeight() = UndirectedEdge(this, this).relativeTotalWeight()
-    private fun UndirectedEdge<Aggregate>.relativeTotalWeight() = 1.0 * visibleGraph.edges.getOrDefault(this, 0) / visibleGraph.sumTotalWeight
+    fun Aggregate.relativeTotalWeight() = UndirectedEdge(this, this).relativeTotalWeight()
+    fun UndirectedEdge<Aggregate>.relativeTotalWeight() = 1.0 * visibleGraph.edges.getOrDefault(this, 0) / aggregatedGraph.totalWeight
 
-    private fun Aggregate.weightOrStructureBasedColor(): String? {
+    fun Aggregate.weightOrStructureBasedColor(): String? {
         return when(detailsConfig.nodeColorCoding){
             NodeColorCoding.Layer -> stats.layer(this)?.staticColor()?.toHex("#")
             NodeColorCoding.Component -> stats.component(this)?.staticColor()?.toHex("#")
@@ -141,47 +114,29 @@ data class Aggregate(val key: String, val display: String = key)
 private fun Map<UndirectedEdge<Aggregate>, Int>.anyEdgeFor(aggregate: Aggregate, minimumWeight: Int) = this
         .any { (edge, weight) -> edge.contains(aggregate) && weight >= minimumWeight }
 
-private fun Map<UndirectedEdge<Aggregate>, Int>.noInnerComponentChanges() = filterNot { it.key.isLoop() }
+private fun Map<UndirectedEdge<Aggregate>, Int>.noInnerAggregateChanges() = filterNot { it.key.isLoop() }
 
-class VcsGraph(val context: VcsVisualization){
-    val commitsPerComponent: Map<UndirectedEdge<Aggregate>, Int>
-    val maxValidWeight: Int
-    val sumWeight: Int
-    val sumTotalWeight: Int
+class AggregatedVcsGraph(val context: VcsVisualization){
+    val weightsPerEdges: Map<UndirectedEdge<Aggregate>, Int>
+    val commitsPerEdges: Map<UndirectedEdge<Aggregate>, Int>
+    val totalWeight: Int
     var totalEdgesCount: Int
-
-    val edges: Map<UndirectedEdge<Aggregate>, Int>
-    val nodes: Map<Aggregate, Int>
 
     init {
         with(context){
             val groupByAggregation = this.context.graphEdges.groupByAggregation()
-            commitsPerComponent = groupByAggregation.commitCount()
+            commitsPerEdges = groupByAggregation.commitCount()
 
             // TODO percent of changes over all classes - time range could be earlier - but size is related to later added files
-            val weightsPerComponent = groupByAggregation.calculateWeights()
-            totalEdgesCount = weightsPerComponent.noInnerComponentChanges().keys.size
+            weightsPerEdges = groupByAggregation.calculateWeights()
+            totalEdgesCount = weightsPerEdges.noInnerAggregateChanges().keys.size
 
-            // TODO chose weight to display nodes/edges or just take the first x edges - but how to chose nodes?
-            maxValidWeight = pickWeightByNumberOfEdgesToShow(weightsPerComponent.noInnerComponentChanges())
-
-            val relevantWeightsPerComponent = weightsPerComponent.visibleInnerComponentChangesOrOverMinimumWeight()
-            sumTotalWeight = weightsPerComponent.values.sum()
-            sumWeight = relevantWeightsPerComponent.values.sum()
-
-            edges = relevantWeightsPerComponent.noInnerComponentChanges()
-            nodes = relevantWeightsPerComponent.keys.flatMap { sequenceOf(it.from, it.to) }.distinct()
-                    .map { it to edges.getOrDefault(UndirectedEdge(it, it), 0) }
-                    .toMap()
+            totalWeight = weightsPerEdges.values.sum()
         }
     }
 
-    private fun Map<UndirectedEdge<Aggregate>, List<Map.Entry<UndirectedEdge<ClassReference>, List<VcsCommit>>>>.commitCount(): Map<UndirectedEdge<Aggregate>, Int> {
-        return mapValues { entry ->
-            entry.value
-                    .flatMap { it.value.map { change -> change.message + change.time } }
-                    .distinct().count()
-        }
+    private fun Map<UndirectedEdge<ClassReference>, List<VcsCommit>>.groupByAggregation(): Map<UndirectedEdge<Aggregate>, List<Map.Entry<UndirectedEdge<ClassReference>, List<VcsCommit>>>> {
+        return entries.groupBy { it.key.transform { context.aggregation(this) } }
     }
 
     private fun Map<UndirectedEdge<Aggregate>, List<Map.Entry<UndirectedEdge<ClassReference>, List<VcsCommit>>>>.calculateWeights(): Map<UndirectedEdge<Aggregate>, Int> {
@@ -223,12 +178,44 @@ class VcsGraph(val context: VcsVisualization){
             EdgeAggregation.CommitCount -> commitCount()
             EdgeAggregation.GraphConnections -> mapValues { entry -> entry.value.size }
         }
-
     }
 
-    private fun Map<UndirectedEdge<ClassReference>, List<VcsCommit>>.groupByAggregation(): Map<UndirectedEdge<Aggregate>, List<Map.Entry<UndirectedEdge<ClassReference>, List<VcsCommit>>>> {
-        return entries.groupBy { it.key.transform { context.aggregation(this) } }
+    private fun Map<UndirectedEdge<Aggregate>, List<Map.Entry<UndirectedEdge<ClassReference>, List<VcsCommit>>>>.commitCount(): Map<UndirectedEdge<Aggregate>, Int> {
+        return mapValues { entry ->
+            entry.value
+                    .flatMap { it.value.map { change -> change.message + change.time } }
+                    .distinct().count()
+        }
     }
+}
+
+
+class VisibleVcsGraph(val context: VcsVisualization){
+    private val maxValidWeight: Int
+    val sumWeight: Int
+
+    val edges: Map<UndirectedEdge<Aggregate>, Int>
+    val nodes: Map<Aggregate, Int>
+
+    init {
+        with(context){
+            // TODO chose weight to display nodes/edges or just take the first x edges - but how to chose nodes?
+            maxValidWeight = pickWeightByNumberOfEdgesToShow(aggregatedGraph.weightsPerEdges.noInnerAggregateChanges())
+
+            val relevantWeightsPerComponent = aggregatedGraph.weightsPerEdges.visibleInnerComponentChangesOrOverMinimumWeight()
+            sumWeight = relevantWeightsPerComponent.values.sum()
+
+            edges = relevantWeightsPerComponent.noInnerAggregateChanges()
+            nodes = relevantWeightsPerComponent.keys.flatMap { sequenceOf(it.from, it.to) }.distinct()
+                    .map { it to edges.getOrDefault(UndirectedEdge(it, it), 0) }
+                    .toMap()
+        }
+    }
+
+    private fun Map<UndirectedEdge<Aggregate>, Int>.visibleInnerComponentChangesOrOverMinimumWeight() = this.filter { (edge, weight) ->
+        weight >= maxValidWeight || (edge.isLoop() && anyEdgeFor(edge.from, maxValidWeight))
+    }
+
 
     private fun pickWeightByNumberOfEdgesToShow(symmetricWeightedEdges: Map<UndirectedEdge<Aggregate>, Int>): Int {
         return symmetricWeightedEdges.values.asSequence().sortedDescending()
@@ -240,9 +227,6 @@ class VcsGraph(val context: VcsVisualization){
                 .minOrNull() ?: 0
     }
 
-    private fun Map<UndirectedEdge<Aggregate>, Int>.visibleInnerComponentChangesOrOverMinimumWeight() = this.filter { (edge, weight) ->
-        weight >= maxValidWeight || (edge.isLoop() && anyEdgeFor(edge.from, maxValidWeight))
-    }
 }
 
 class AggregateDetails(visualizationContext: VcsVisualization) {
@@ -294,16 +278,16 @@ class AggregateDetails(visualizationContext: VcsVisualization) {
 
 
 fun VcsConfiguration.visualizationConfig() = DiagramVisualizationConfiguration(
-        null,
+        rootNode = null,
         projectClassification,
-        1,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
+        showPackageLevels = 1,
+        showClassGenericTypes = false,
+        showClassMethods = false,
+        showMethodParametersTypes = false,
+        showMethodParametersNames = false,
+        showMethodReturnType = false,
+        showCallOrder = false,
+        showDetailedClass = false
 )
 
 fun ClassReference.layer(config: DiagramVisualizationConfiguration): String {

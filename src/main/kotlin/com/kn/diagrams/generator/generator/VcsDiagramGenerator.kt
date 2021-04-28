@@ -6,6 +6,8 @@ import com.intellij.openapi.vcs.changes.Change
 import com.intellij.vcs.log.impl.VcsProjectLog
 import com.intellij.vcs.log.visible.filters.VcsLogFilterObject
 import com.kn.diagrams.generator.ProgressBar
+import com.kn.diagrams.generator.builder.DotShape
+import com.kn.diagrams.generator.builder.addLink
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.graph.ClassReference
 import com.kn.diagrams.generator.throwExceptionIfCanceled
@@ -22,7 +24,31 @@ fun createVcsContent(config: VcsConfiguration, commits: VcsAnalysis.() -> Unit =
 
     totalFiles += rawCommits.extractUniqueFiles()
     graphEdges += filteredCommits.createFullyConnectedEdges()
-}.buildDiagram()
+}.buildDiagram {
+    dot.notes = "'${visibleGraph.edges.size} edges shown out of ${aggregatedGraph.totalEdgesCount}"
+
+    visibleGraph.nodes.forEach { (aggregate, weight) ->
+        dot.nodes.add(DotShape(aggregate.display, aggregate.key).with {
+            tooltip = "inner changes = $weight / ${aggregate.relativeWeight().percent()}% " +
+                    "/ ${aggregate.relativeTotalWeight().percent()}T " +
+                    "/ total files: " + aggregate.fileCount() + " " +
+                    "/ commits: "+aggregate.commitCount()
+            fillColor = aggregate.weightOrStructureBasedColor()
+            margin = aggregate.nodeSize()
+            style = "filled"
+        })
+    }
+
+    visibleGraph.edges.forEach { (edge, weight) ->
+        dot.addLink(edge.from.key, edge.to.key) {
+            label = "$weight / ${edge.relativeWeight().percent()}% / ${edge.relativeTotalWeight().percent()}T%"
+            tooltip = label + " / commits: " + edge.commitCount()
+            color = edge.weightBasedColor()
+            penwidth = edge.weightBasedPenWidth()
+            arrowHead = "none"
+        }
+    }
+}
 
 
 

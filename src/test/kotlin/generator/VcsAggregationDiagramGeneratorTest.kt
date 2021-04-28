@@ -37,12 +37,12 @@ class VcsAggregationDiagramGeneratorTest : AbstractVcsDiagramGeneratorTest() {
             details.commitFilter = CommitFilter.NotMatching
 
             details.nodeAggregation = VcsNodeAggregation.Layer
-            details.componentEdgeAggregationMethod = EdgeAggregation.ClassRatioOfCommit
-            details.sizeNormalization = true
+            details.componentEdgeAggregationMethod = EdgeAggregation.ClassRatioWithCommitSize
+            details.sizeNormalization = 0.5
         }
 
         // Data Structure has one inner change so other three edges have 25%
-        assertEdge("Data Structure", "Interface Structure", true, "50 / 100.0% / 100.0T%")
+        assertEdge("Data Structure", "Interface Structure", true, "141 / 100.0% / 100.0T%")
     }
     @Test
     fun testClassRatioWithNormalizationInnerChange() {
@@ -54,8 +54,8 @@ class VcsAggregationDiagramGeneratorTest : AbstractVcsDiagramGeneratorTest() {
             details.commitFilter = CommitFilter.NotMatching
 
             details.nodeAggregation = VcsNodeAggregation.Layer
-            details.componentEdgeAggregationMethod = EdgeAggregation.ClassRatioOfCommit
-            details.sizeNormalization = true
+            details.componentEdgeAggregationMethod = EdgeAggregation.ClassRatioWithCommitSize
+            details.sizeNormalization = 0.5
         }
 
         // Data Structure has one inner change so other three edges have 25%
