@@ -21,8 +21,7 @@ class GraphRestrictionFilter(val global: ProjectClassification, private val rest
         with(global) {
             with(restriction) {
                 global.includedProjects.bySemicolon().any { path.startsWith(it) }
-                        && isIncludedAndNotExcluded(classNameExcludeFilter, classNameIncludeFilter) { name }
-                        && isIncludedAndNotExcluded(classPackageExcludeFilter, classPackageIncludeFilter) { path }
+                        && includedAndNotExcluded(classNameIncludeFilter, classNameExcludeFilter, classPackageIncludeFilter, classPackageExcludeFilter)
                         && cutTests inCase isTest()
                         && cutClient inCase isClient()
                         && cutMappings inCase isMapping()
@@ -36,7 +35,7 @@ class GraphRestrictionFilter(val global: ProjectClassification, private val rest
     fun acceptMethod(method: AnalyzeMethod): Boolean {
         return with(method) {
             with(restriction) {
-                isIncludedAndNotExcluded(methodNameExcludeFilter, methodNameIncludeFilter) { name }
+                includedAndNotExcluded(methodNameIncludeFilter, methodNameExcludeFilter)
                         && !isJavaObjectMethod()
                         && (containingClass.classType == ClassType.Interface || cutGetterAndSetter inCase isGetterOrSetter())
                         && cutConstructors inCase isConstructor
@@ -58,10 +57,7 @@ class GraphRestrictionFilter(val global: ProjectClassification, private val rest
             reqExs.any { reqEx -> inheritedClasses.any { inherited -> reqEx.matches(inherited.reference.name) } }
         }
 
-        val classExcluded = with(restriction) {
-            !isIncludedAndNotExcluded(removeByClassPackage, "") { clazz.path }
-                    || !isIncludedAndNotExcluded(removeByClassName, "") { clazz.name }
-        }
+        val classExcluded = clazz.excluded(restriction.classNameExcludeFilter, restriction.classPackageExcludeFilter)
 
         return byAnnotation || byInheritance || classExcluded
     }
@@ -78,7 +74,7 @@ class GraphTraversalFilter(private val rootNode: GraphNode, val global: ProjectC
 
     private fun AnalyzeMethod.accept(): Boolean {
         return with(traversal) { with(global){
-            isIncludedAndNotExcluded(methodNameExcludeFilter, methodNameIncludeFilter) { name }
+            includedAndNotExcluded(methodNameIncludeFilter, methodNameExcludeFilter)
                     && hidePrivateMethods inCase (visibility != MethodVisibility.PUBLIC)
                     && hideInterfaceCalls inCase insideInterface()
                     && hideMethodsInDataStructures inCase (containingClass.isDataStructure() || containingClass.isInterfaceStructure())
@@ -88,8 +84,7 @@ class GraphTraversalFilter(private val rootNode: GraphNode, val global: ProjectC
     private fun ClassReference.accept(): Boolean {
         return with(global) {
             with(traversal) {
-                isIncludedAndNotExcluded(classNameExcludeFilter, classNameIncludeFilter) { name }
-                        && isIncludedAndNotExcluded(classPackageExcludeFilter, classPackageIncludeFilter) { path }
+                includedAndNotExcluded(classNameIncludeFilter, classNameExcludeFilter, classPackageIncludeFilter, classPackageExcludeFilter)
                         && hideDataStructures inCase isDataStructure()
                         && hideMappings inCase isMapping()
                         && hideInterfaceCalls inCase (classType == ClassType.Interface)
@@ -100,11 +95,40 @@ class GraphTraversalFilter(private val rootNode: GraphNode, val global: ProjectC
 
 }
 
-// TODO does it work for combined / additive excluded/include filter?!
-fun isIncludedAndNotExcluded(excludes: String, includes: String, extractor: () -> String) =
-        emptyOr(includes) { regEx -> regEx.any { it.matches(extractor()) } }
-                && emptyOr(excludes) { regEx -> regEx.none { it.matches(extractor()) } }
+interface Filterable{
+    val name: String
+    val path: String
+}
 
+fun AnalyzeMethod.includedAndNotExcluded(
+        nameIncludedPattern: String,
+        nameExcludedPattern: String): Boolean {
+    return name.included(nameIncludedPattern) && !name.excluded(nameExcludedPattern)
+}
+
+fun Filterable.includedAndNotExcluded(
+        nameIncludedPattern: String,
+        nameExcludedPattern: String,
+        pathIncludedPattern: String,
+        pathExcludedPattern: String): Boolean {
+    return included(nameIncludedPattern, pathIncludedPattern) && !excluded(nameExcludedPattern, pathExcludedPattern)
+}
+
+fun String.included(semicolonSeparatedPatterns: String): Boolean {
+    return emptyOr(semicolonSeparatedPatterns) { regEx -> regEx.any { it.matches(this) } }
+}
+
+fun String.excluded(semicolonSeparatedPatterns: String): Boolean {
+    return notEmptyAnd(semicolonSeparatedPatterns) { regEx -> regEx.any { it.matches(this) } }
+}
+
+fun Filterable.included(namePattern: String, pathPattern: String): Boolean {
+    return name.included(namePattern) && path.included(pathPattern)
+}
+
+fun Filterable.excluded(namePattern: String, pathPattern: String): Boolean {
+    return name.excluded(namePattern) || path.excluded(pathPattern)
+}
 
 fun AnalyzeMethod.insideInterface() = containingClass.classType == ClassType.Interface
 

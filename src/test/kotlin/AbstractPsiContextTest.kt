@@ -1,7 +1,15 @@
+import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiMethod
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import com.intellij.util.io.isFile
+import com.kn.diagrams.generator.graph.ClassReference
 import java.nio.file.Files
 import java.nio.file.Paths
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.KProperty
+import kotlin.reflect.jvm.javaField
+import kotlin.reflect.jvm.javaMethod
 
 abstract class AbstractPsiContextTest : LightJavaCodeInsightFixtureTestCase(){
 
@@ -23,5 +31,22 @@ abstract class AbstractPsiContextTest : LightJavaCodeInsightFixtureTestCase(){
                 .filter{ it.isFile() }
                 .forEach { myFixture.configureByFile(it.toString().substringAfter("\\java\\")) }
         }
+    }
+
+    fun KProperty<*>.psiClass() = javaField!!.declaringClass.psiClass()
+    fun KFunction<*>.psiClass() = javaMethod!!.declaringClass.psiClass()
+
+    private fun Class<*>.psiClass() = myFixture.findClass(this.name)
+
+    fun KFunction<*>.psiMethod(): PsiMethod {
+        return psiClass().methods.first { it.name == name }
+    }
+
+    fun KClass<*>.asPsiClass(): PsiClass {
+        return myFixture.findClass(this.qualifiedName!!)
+    }
+
+    fun ClassReference.asPsiClass(): PsiClass {
+        return myFixture.findClass(qualifiedName())
     }
 }

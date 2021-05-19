@@ -58,6 +58,7 @@ class VcsGraphDiagramGeneratorTest : AbstractVcsDiagramGeneratorTest() {
                 .commit(TestDataDs::class, TestDataDto::class)
         ){
             details.componentEdgeAggregationMethod = EdgeAggregation.GraphConnections
+            details.sizeNormalization = 0.0
             details.showMaximumNumberOfEdges = 3
         }
 

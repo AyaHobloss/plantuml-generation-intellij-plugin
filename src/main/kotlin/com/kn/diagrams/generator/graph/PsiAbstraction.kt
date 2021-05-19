@@ -161,10 +161,10 @@ open class AnalyzeAttribute(val name: String, val annotations: List<AnalyzeAnnot
 fun List<AnalyzeAnnotation>.withName(name: String) = firstOrNull { it.type.name == name }
 
 
-class ClassReference {
-    val name: String
+class ClassReference: Filterable {
     val displayName: String
-    val path: String
+    override val name: String
+    override val path: String
     val classType: ClassType
     val absolutePath: String?
 

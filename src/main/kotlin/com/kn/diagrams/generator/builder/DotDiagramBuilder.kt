@@ -16,10 +16,11 @@ class DotShapeConfig(var label: String? = null,
                      var margin: Double? = null,
                      var tooltip: String? = null,
                      var penWidth: Int? = null,
+                     var fontSize: Double? = null,
                      var fontColor: String? = null) {
     fun create(): String {
         return formattedConfigString(ConfigLineFormat.MultiLine,
-                ::label, ::style, ::margin, ::shape, ::fillColor, ::tooltip, ::penWidth, ::fontColor)
+                ::label, ::style, ::margin, ::shape, ::fillColor, ::tooltip, ::penWidth, ::fontSize, ::fontColor)
     }
 }
 
@@ -346,7 +347,7 @@ class DotDiagramBuilder {
             |digraph g {
             |    rankdir="${direction.rankDir}"
             |    ${layout?.let { "layout=$it\n|\toverlap=false" } ?: ""}
-            |    node[fontname="comic sants"]
+            |    node[fontname="calibri"]
             |
             |'nodes 
             |${nodes.asSequence().map { it.create() }.sorted().joinToString("\n\n")}

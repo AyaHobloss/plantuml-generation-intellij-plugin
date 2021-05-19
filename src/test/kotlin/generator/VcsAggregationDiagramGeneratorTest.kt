@@ -2,13 +2,18 @@ package generator
 
 import com.kn.diagrams.generator.config.CommitFilter
 import com.kn.diagrams.generator.config.EdgeAggregation
+import com.kn.diagrams.generator.config.NodeColorCoding
 import com.kn.diagrams.generator.config.VcsNodeAggregation
+import com.kn.diagrams.generator.createIfNotExists
 import org.junit.Test
+import testdata.oneComponent.dataaccess.TestDataDao
 import testdata.oneComponent.dto.TestDataDto
 import testdata.oneComponent.entity.SubTestData
 import testdata.oneComponent.entity.TestData
 import testdata.oneComponent.entity.ds.TestDataDs
 import testdata.oneComponent.richclient.TestFacade
+import testdata.oneComponent.service.TestDataService
+import java.io.File
 
 class VcsAggregationDiagramGeneratorTest : AbstractVcsDiagramGeneratorTest() {
 
@@ -101,5 +106,48 @@ class VcsAggregationDiagramGeneratorTest : AbstractVcsDiagramGeneratorTest() {
         assertEdge("Interface Structure", "Data Structure", true)
     }
 
+    @Test
+    fun testBase() {
+        diagram = vcsDiagram(commits()
+                .commit(TestData::class)
+                .commit(TestDataDao::class, TestData::class)
+                .commit(TestDataDs::class, TestFacade::class)
+        ){
+            details.showMaximumNumberOfEdges = 99
+            details.nodeAggregation = VcsNodeAggregation.None
+            details.nodeColorCoding = NodeColorCoding.Layer
+            details.componentEdgeAggregationMethod = EdgeAggregation.GraphConnections
+            graphRestriction.cutDataAccess = false
+        }
+
+        println(diagram)
+        val file = File("./base.puml")
+        println("saved to: "+file.absolutePath)
+
+        file.createIfNotExists()
+        file.writeText(diagram ?: "")
+    }
+    @Test
+    fun testBaseAggregated() {
+        diagram = vcsDiagram(commits()
+                .commit(TestData::class)
+                .commit(TestDataDao::class, TestData::class)
+                .commit(TestDataDs::class, TestFacade::class)
+        ){
+            // TODO service has no layer name yet
+            details.showMaximumNumberOfEdges = 99
+            details.nodeAggregation = VcsNodeAggregation.Layer
+            details.nodeColorCoding = NodeColorCoding.Layer
+            details.componentEdgeAggregationMethod = EdgeAggregation.GraphConnections
+            graphRestriction.cutDataAccess = false
+        }
+
+        println(diagram)
+        val file = File("./baseAggregated.puml")
+        println("saved to: "+file.absolutePath)
+
+        file.createIfNotExists()
+        file.writeText(diagram ?: "")
+    }
 }
 

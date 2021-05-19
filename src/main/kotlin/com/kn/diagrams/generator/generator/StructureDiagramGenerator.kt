@@ -4,10 +4,7 @@ import com.kn.diagrams.generator.builder.DiagramDirection
 import com.kn.diagrams.generator.builder.DotDiagramBuilder
 import com.kn.diagrams.generator.config.StructureConfiguration
 import com.kn.diagrams.generator.config.attacheMetaData
-import com.kn.diagrams.generator.graph.EdgeMode
-import com.kn.diagrams.generator.graph.GraphDefinition
-import com.kn.diagrams.generator.graph.analysisCache
-import com.kn.diagrams.generator.graph.reference
+import com.kn.diagrams.generator.graph.*
 import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.toSingleList
 
@@ -28,7 +25,7 @@ class StructureDiagramGenerator {
             edgeMode = EdgeMode.TypesOnly
         }.flatten()
 
-        val visualizationConfiguration = config.visualizationConfig()
+        val visualizationConfiguration = config.visualizationConfig(root)
         val dot = DotDiagramBuilder()
         dot.direction = DiagramDirection.TopToBottom
 
@@ -42,8 +39,8 @@ class StructureDiagramGenerator {
     }
 }
 
-fun StructureConfiguration.visualizationConfig() = DiagramVisualizationConfiguration(
-        null,
+fun StructureConfiguration.visualizationConfig(root: GraphNode) = DiagramVisualizationConfiguration(
+        root,
         projectClassification,
         details.showPackageLevels,
         details.showClassGenericTypes,

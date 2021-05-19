@@ -50,7 +50,7 @@ enum class SearchMode {
     OpenProject, AllProjects
 }
 
-class Layer(var name: String, var path: String)
+class Layer(override var name: String, override var path: String): Filterable
 
 class ProjectClassification(
         @CommentWithEnumValues
@@ -107,7 +107,7 @@ fun notEmptyAnd(plainFilter: String, filter: (List<Regex>) -> Boolean): Boolean 
     return plainFilter != "" && filter(plainFilter.regexBySemicolon())
 }
 
-fun emptyOr(plainFilter: String, filter: (List<Regex>) -> Boolean): Boolean {
+inline fun emptyOr(plainFilter: String, filter: (List<Regex>) -> Boolean): Boolean {
     return plainFilter == "" || filter(plainFilter.regexBySemicolon())
 }
 

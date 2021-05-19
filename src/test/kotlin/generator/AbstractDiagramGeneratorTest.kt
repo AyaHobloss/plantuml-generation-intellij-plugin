@@ -13,8 +13,6 @@ import kotlin.math.absoluteValue
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
-import kotlin.reflect.jvm.javaField
-import kotlin.reflect.jvm.javaMethod
 
 abstract class AbstractVcsDiagramGeneratorTest : AbstractGeneratorTest() {
 
@@ -61,7 +59,7 @@ abstract class AbstractVcsDiagramGeneratorTest : AbstractGeneratorTest() {
 abstract class AbstractCallDiagramGeneratorTest : AbstractGeneratorTest() {
 
     fun callDiagram(method: KFunction<*>, config: (CallConfiguration.() -> Unit)? = null): String {
-        val rootMethod = method.asPsiMethod()
+        val rootMethod = method.psiMethod()
 
         val configuration = CallConfiguration(rootMethod.containingClass!!, rootMethod, ProjectClassification(),  GraphRestriction(), GraphTraversal(), CallDiagramDetails())
 
@@ -134,11 +132,11 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
     protected var diagram: String? = null
 
     fun assertCall(call: Pair<KFunction<*>, KFunction<*>>) {
-        assertEdge(call.first.asPsiMethod().diagramId(), call.second.asPsiMethod().diagramId(), true)
+        assertEdge(call.first.psiMethod().diagramId(), call.second.psiMethod().diagramId(), true)
     }
 
     fun assertNoCall(call: Pair<KFunction<*>, KFunction<*>>) {
-        assertEdge(call.first.asPsiMethod().diagramId(), call.second.asPsiMethod().diagramId(), false)
+        assertEdge(call.first.psiMethod().diagramId(), call.second.psiMethod().diagramId(), false)
     }
 
     private fun nodesSection() = diagram!!.substringBefore("'edges").substringAfter("diagram meta data end '/")
@@ -200,11 +198,11 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
     }
 
     fun assertMethodNode(method: KFunction<*>, vararg keywords: String){
-        assertNode(method.asPsiMethod().diagramId(), true, *keywords)
+        assertNode(method.psiMethod().diagramId(), true, *keywords)
     }
 
     fun assertNoMethodNode(method: KFunction<*>){
-        assertNode(method.asPsiMethod().diagramId(), true)
+        assertNode(method.psiMethod().diagramId(), true)
     }
 
     fun assertNode(nodeId: String, needsMatch: Boolean, vararg keywords: String): String {
@@ -223,11 +221,11 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
     }
 
     fun assertCallEdge(fromMethod: KFunction<*>, toMethod: KFunction<*>, keyword: String? = null){
-        assertEdge(fromMethod.asPsiMethod().diagramId(), toMethod.asPsiMethod().diagramId(), true, keyword)
+        assertEdge(fromMethod.psiMethod().diagramId(), toMethod.psiMethod().diagramId(), true, keyword)
     }
 
     fun assertNoCallEdge(fromMethod: KFunction<*>, toMethod: KFunction<*>){
-        assertEdge(fromMethod.asPsiMethod().diagramId(), toMethod.asPsiMethod().diagramId(), false)
+        assertEdge(fromMethod.psiMethod().diagramId(), toMethod.psiMethod().diagramId(), false)
     }
 
     fun assertFieldEdge(field: KProperty<*>, targetClass: KClass<*>){
@@ -251,10 +249,6 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
 
     }
 
-    private fun KProperty<*>.psiClass() = javaField!!.declaringClass.asPsiClass()
-    private fun KFunction<*>.psiClass() = javaMethod!!.declaringClass.asPsiClass()
-    private fun Class<*>.asPsiClass() = myFixture.findClass(this.name)
-
     private fun PsiMethod.diagramId() = containingClass?.diagramId()+"XXX"+name+parameterList.parameters.joinToString { it.type.presentableText }.hashCode().absoluteValue
 
     private fun PsiClass.diagramId() = name + qualifiedName?.substringBeforeLast(".").hashCode().absoluteValue
@@ -262,7 +256,7 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
     private fun Class<*>.diagramId() = simpleName + name.substringBeforeLast(".").hashCode().absoluteValue
 
     private fun assertCall(call: Pair<KFunction<*>, KFunction<*>>, needsMatch: Boolean){
-        val matchPattern = call.first.asPsiMethod().diagramId() + ".*" + call.second.asPsiMethod().diagramId()
+        val matchPattern = call.first.psiMethod().diagramId() + ".*" + call.second.psiMethod().diagramId()
         val match = matchPattern.toRegex().findAll(diagram!!).count() == 1
         if(match != needsMatch){
             val expectation = (if(needsMatch) "call " else "no call ") + matchPattern.replace(".*", " -> ") + " expected"
@@ -275,18 +269,6 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
     }
     fun assertNoClassEdge(sourceClass: KClass<*>, targetClass: KClass<*>, keyword: String? = null){
         assertEdge(sourceClass.asPsiClass().diagramId(), targetClass.asPsiClass().diagramId(), false, keyword)
-    }
-
-    fun KFunction<*>.asPsiMethod(): PsiMethod {
-        return psiClass().methods.first { it.name == name }
-    }
-
-    fun KClass<*>.asPsiClass(): PsiClass {
-        return myFixture.findClass(this.qualifiedName!!)
-    }
-
-    fun ClassReference.asPsiClass(): PsiClass {
-        return myFixture.findClass(qualifiedName())
     }
 
 }

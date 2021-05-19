@@ -60,17 +60,16 @@ fun GraphDefinition.nodesForClustering(filter: GraphTraversalFilter, details: Cl
     }else{
         with(filter.global){
             val validClasses = classes.values
-                .filter { isIncludedAndNotExcluded("", details.nodeSelection.className) { it.reference.name } }
-                .filter { isIncludedAndNotExcluded("", details.nodeSelection.classPackage) { it.reference.path }}
-                .filter { filter.accept(it) }
+                    .filter { it.reference.included(details.nodeSelection.className, details.nodeSelection.classPackage) }
+                    .filter { filter.accept(it) }
 
             val classNodes = validClasses
                 .filter { (it.reference.isDataStructure() || it.reference.isInterfaceStructure()) }
 
             val methodNodes = validClasses.flatMap { cls ->
                 cls.methods.values
-                    .filter { isIncludedAndNotExcluded("", details.nodeSelection.methodName) { it.name } }
-                    .filter { !it.containingClass.isDataStructure() && !it.containingClass.isInterfaceStructure() && filter.accept(it)}
+                        .filter { it.name.included(details.nodeSelection.methodName) }
+                        .filter { !it.containingClass.isDataStructure() && !it.containingClass.isInterfaceStructure() && filter.accept(it) }
             }
 
             return methodNodes + classNodes

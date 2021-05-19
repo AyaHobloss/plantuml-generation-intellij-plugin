@@ -116,3 +116,5 @@ class ProgressBar{
 }
 
 fun Int.clamp(min: Int, max: Int) = min(max, max(this, min))
+
+fun Double?.default(default: Double) = if(this == null) default else this
