@@ -1,53 +1,38 @@
 package com.kn.diagrams.generator.generator
 
-import com.intellij.util.castSafelyTo
 import com.kn.diagrams.generator.builder.DotCluster
-import com.kn.diagrams.generator.builder.DotClusterConfig
-import com.kn.diagrams.generator.builder.DotDiagramBuilder
 import com.kn.diagrams.generator.builder.DotNode
-import com.kn.diagrams.generator.graph.*
+import com.kn.diagrams.generator.config.NodeGrouping
+import com.kn.diagrams.generator.generator.vcs.layer
+import com.kn.diagrams.generator.graph.ClassReference
+import com.kn.diagrams.generator.graph.bySemicolon
+import java.awt.Color
 
+data class Grouping(val name: String, val path: String = ""){
+    val depth get() = path.takeIf { it != "" }?.split(".")?.size ?: 0
 
-fun DotDiagramBuilder.groupByClass(edges: List<SquashedGraphEdge>, config: DiagramVisualizationConfiguration) {
-    val classClusterCache = mutableMapOf<ClassReference, DotCluster>()
+    fun nextSubGroup(): Grouping? {
+        if(path == "") return null
 
-    val pathCluster = DotPathGroup("path cluster manager") { i, packageCluster ->
-        packageCluster.config.style = "filled"
-        packageCluster.config.fillColor = "#" + groupColorLevel[i].toHex()
+        val parts = path.split(".")
 
-    }
-    nodes.add(pathCluster)
-
-    fun addShapeForMethod(method: AnalyzeMethod) = classClusterCache.computeIfAbsent(method.containingClass()) {
-        pathCluster.addGroup(it.name, it.qualifiedName(), it.diagramPath(config))
-    }.with {
-        this.config.style = "filled"
-        this.config.fillColor = "white"
-    }.addShape(method.signature(config), method.diagramId()) {
-        penWidth = if (method == config.rootNode) 4 else null
-        tooltip = method.containingClass.name + "\n\n" + method.javaDoc
-        fontColor = method.visibility.color()
-        style = "filled"
-        fillColor = "white"
-    }
-
-    when (config.rootNode) {
-        is AnalyzeMethod -> addShapeForMethod(config.rootNode)
-        is AnalyzeClass -> pathCluster.addNode(config.rootNode.createBoxOrTableShape(config), config.rootNode.reference.diagramPath(config))
-    }
-
-    edges.forEach { edge ->
-        edge.nodes().forEach { node ->
-            when (node) {
-                is AnalyzeMethod -> addShapeForMethod(node)
-                is AnalyzeClass -> pathCluster.addNode(node.createBoxOrTableShape(config), node.reference.diagramPath(config))
-            }
-        }
-
-        addDirectLink(edge, config)
+        return Grouping(parts.last(), parts.dropLast(1).joinToString("."))
     }
 }
 
+fun ClassReference.group(level: NodeGrouping, config: DiagramVisualizationConfiguration): Grouping {
+    return when(level){
+        NodeGrouping.Layer -> Grouping(layer(config))
+        NodeGrouping.Component -> {
+            val fullPath = diagramPath(config)
+            val lastComponentPart = fullPath.split(".").last()
+            val componentPath = fullPath.split(".").dropLast(1).joinToString(".")
+
+            Grouping(lastComponentPart, componentPath)
+        }
+        NodeGrouping.None -> Grouping("no group", "")
+    }
+}
 
 fun ClassReference.diagramPath(config: DiagramVisualizationConfiguration): String {
     var diagramPath = path
@@ -77,40 +62,51 @@ fun ClassReference.diagramPath(config: DiagramVisualizationConfiguration): Strin
         .joinToString(".")
 }
 
-class DotPathGroup(name: String, id: String = name, val applyLayout: (Int, DotCluster) -> Unit) : DotCluster(name, id) {
+class DotHierarchicalGroupCluster(val groupClusterLayout: (Int, DotCluster, Color, Boolean) -> Unit) : DotCluster("not visible", "not visible") {
+
+    private val groupClusterCache = mutableMapOf<Grouping, DotCluster>()
 
     override fun create(): String {
+        groupClusterCache.forEach { (group, cluster) ->
+            if(group.path == ""){
+                childs.add(cluster)
+            }else{
+                groupClusterCache[group.nextSubGroup()]?.childs?.add(cluster)
+            }
+        }
+
         // this is only a fake cluster to avoid searching in the main graph and clusters
         return childs.map { it.create() }.sorted().joinToString("\n\n")
     }
 
-    fun addGroup(name: String, id: String = name, path: String? = null, configure: (DotClusterConfig.() -> Unit)? = null): DotCluster {
-        val cluster = DotCluster(name, id)
-        configure?.let { it(cluster.config) }
-        addNode(cluster, path)
-
-        return cluster
+    // TODO semi overloading base addNode() - make this fail safe!
+    fun addNode(node: DotNode, grouping: Grouping? = null) {
+        groupCluster(grouping).addNode(node)
     }
 
-    fun addNode(node: DotNode, path: String? = null) {
-        if (path == "" || path == null) {
-            childs.add(node)
-            return
+    fun groupCluster(grouping: Grouping? = null): DotCluster {
+        if (grouping == null) {
+            return this
         }
 
-        var currentGroup: DotCluster = this
-        val parts = path.split(".")
-        parts.forEachIndexed { i, part ->
-            val groupPath = parts.subList(0, i + 1).joinToString(".")
-            val existingGroup = currentGroup.childs.firstOrNull { it.castSafelyTo<DotCluster>()?.id == groupPath }
+        var currentGroup = grouping
+        var i = grouping.depth
+        while (currentGroup != null){
+            var existingCluster = groupClusterCache[currentGroup]
 
-            currentGroup = existingGroup as? DotCluster ?: currentGroup.addCluster(part, groupPath).with {
-                applyLayout(i, this)
+            if(existingCluster == null){
+                existingCluster = DotCluster(currentGroup.name)
+                groupClusterCache[currentGroup] = existingCluster
+                groupClusterLayout(i, existingCluster, groupColorLevel[i], currentGroup == grouping)
+            }else{
+                break
             }
 
+            i--
+            currentGroup = currentGroup.nextSubGroup()
         }
 
-        currentGroup.childs.add(node)
+        return groupClusterCache[grouping]!!
     }
 }
 

@@ -5,14 +5,21 @@ import com.kn.diagrams.generator.graph.GraphNode
 import com.kn.diagrams.generator.graph.GraphRestrictionFilter
 import com.kn.diagrams.generator.graph.TraversalFilter
 
-abstract class DiagramConfiguration(val rootClass: PsiClass) {
+interface BaseDiagramConfiguration {
 
-    abstract fun restrictionFilter(): GraphRestrictionFilter
+    fun diagramFileName(): String
 
-    abstract fun traversalFilter(rootNode: GraphNode): TraversalFilter
+    fun restrictionFilter(): GraphRestrictionFilter
+}
+
+abstract class DiagramConfiguration(val rootClass: PsiClass): BaseDiagramConfiguration {
+
+    abstract fun traversalFilter(): TraversalFilter
+
+    override fun diagramFileName() = rootClass.name ?: "missing root class"
 
     companion object // use for serialization
 }
 
-fun String.attacheMetaData(config: DiagramConfiguration) = replace("@startuml", "@startuml\n\n" + config.metaDataSection() + "\n\n")
+fun String.attacheMetaData(config: Any) = replace("@startuml", "@startuml\n\n" + config.metaDataSection() + "\n\n")
 

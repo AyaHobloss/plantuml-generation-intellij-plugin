@@ -208,6 +208,10 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
         return classes[classReference.id()]?.methods?.get(method)
     }
 
+    fun classFor(reference: ClassReference): AnalyzeClass? {
+        return classes[reference.id()]
+    }
+
     private fun ClassReference?.resolve(): AnalyzeClass? {
         if (this == null) return null
         return classes[id()]

@@ -1,13 +1,15 @@
 package com.kn.diagrams.generator.actions
 
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiClass
 import com.kn.diagrams.generator.config.FlowConfiguration
 import com.kn.diagrams.generator.generator.FlowDiagramGenerator
 import com.kn.diagrams.generator.settings.ConfigurationDefaults
+import org.jetbrains.annotations.Nullable
 
 class GenerateFlowDiagramsAction : AbstractDiagramAction<FlowConfiguration>() {
 
-    override fun createDiagramContent(configuration: FlowConfiguration): List<Pair<String, String>> {
+    override fun createDiagramContent(configuration: FlowConfiguration, project: Project): List<Pair<String, String>> {
         return FlowDiagramGenerator().createUmlContent(configuration)
     }
 

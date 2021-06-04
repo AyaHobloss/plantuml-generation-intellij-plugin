@@ -2,6 +2,7 @@ package com.kn.diagrams.generator.graph
 
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiModifier
+import com.kn.diagrams.generator.generator.vcs.layer
 import com.kn.diagrams.generator.inCase
 import com.kn.diagrams.generator.notReachable
 
@@ -20,8 +21,9 @@ class GraphRestrictionFilter(val global: ProjectClassification, private val rest
     private fun ClassReference.accept() =
         with(global) {
             with(restriction) {
-                global.includedProjects.bySemicolon().any { path.startsWith(it) }
+                (global.includedProjects == "" || global.includedProjects.bySemicolon().any { path.startsWith(it) })
                         && includedAndNotExcluded(classNameIncludeFilter, classNameExcludeFilter, classPackageIncludeFilter, classPackageExcludeFilter)
+                        && layerIncludedAndNotExcluded(global, includeLayers, excludeLayers)
                         && cutTests inCase isTest()
                         && cutClient inCase isClient()
                         && cutMappings inCase isMapping()
@@ -57,16 +59,15 @@ class GraphRestrictionFilter(val global: ProjectClassification, private val rest
             reqExs.any { reqEx -> inheritedClasses.any { inherited -> reqEx.matches(inherited.reference.name) } }
         }
 
-        val classExcluded = clazz.excluded(restriction.classNameExcludeFilter, restriction.classPackageExcludeFilter)
+        val classExcluded = clazz.excluded(restriction.removeByClassName, restriction.removeByClassPackage)
 
         return byAnnotation || byInheritance || classExcluded
     }
 
 }
 
-class GraphTraversalFilter(private val rootNode: GraphNode, val global: ProjectClassification, private val traversal: GraphTraversal) : TraversalFilter {
+class GraphTraversalFilter(val global: ProjectClassification, private val traversal: GraphTraversal) : TraversalFilter {
     override fun accept(node: GraphNode) = when (node) {
-        rootNode -> true
         is AnalyzeClass -> node.reference.accept()
         is AnalyzeMethod -> node.accept() && node.containingClass.accept()
         else -> notReachable()
@@ -85,6 +86,7 @@ class GraphTraversalFilter(private val rootNode: GraphNode, val global: ProjectC
         return with(global) {
             with(traversal) {
                 includedAndNotExcluded(classNameIncludeFilter, classNameExcludeFilter, classPackageIncludeFilter, classPackageExcludeFilter)
+                        && layerIncludedAndNotExcluded(global, includeLayers, excludeLayers)
                         && hideDataStructures inCase isDataStructure()
                         && hideMappings inCase isMapping()
                         && hideInterfaceCalls inCase (classType == ClassType.Interface)
@@ -93,6 +95,16 @@ class GraphTraversalFilter(private val rootNode: GraphNode, val global: ProjectC
         }
     }
 
+
+}
+
+fun ClassReference.layerIncludedAndNotExcluded(classification: ProjectClassification, includes: List<String>, excludes: List<String>): Boolean{
+    val layer = layer(classification)
+
+    val included = includes.isEmpty() || layer in includes
+    val excluded = includes.isNotEmpty() && layer in excludes
+
+    return included && !excluded
 }
 
 interface Filterable{

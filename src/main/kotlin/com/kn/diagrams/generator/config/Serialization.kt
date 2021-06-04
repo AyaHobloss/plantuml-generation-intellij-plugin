@@ -9,6 +9,7 @@ import com.intellij.psi.PsiMethod
 import com.intellij.psi.search.GlobalSearchScope
 import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.inReadAction
+import com.kn.diagrams.generator.notifications.notifyErrorClassNotFound
 import java.lang.reflect.Type
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
@@ -23,7 +24,7 @@ val serializer: Gson = GsonBuilder().setVersion(1.2)
 
 fun toJsonWithComments(config: Any) = addComments(serializer.toJson(config), config)
 
-fun DiagramConfiguration.metaDataSection() = """
+fun Any.metaDataSection() = """
         |/' diagram meta data start
         |config=${this.javaClass.simpleName};
         |${toJsonWithComments(this)}
@@ -48,7 +49,7 @@ fun addComments(metadata: String, config: Any): String {
     return newMetadata
 }
 
-fun DiagramConfiguration.Companion.loadFromMetadata(diagramText: String): DiagramConfiguration? {
+fun DiagramConfiguration.Companion.loadFromMetadata(diagramText: String): BaseDiagramConfiguration? {
     val metadata = diagramText
             .substringBefore("diagram meta data end '/")
             .substringAfter("/' diagram meta data start")
@@ -57,7 +58,7 @@ fun DiagramConfiguration.Companion.loadFromMetadata(diagramText: String): Diagra
     val configClassName = metadata.substringBefore(";").substringAfter("config=")
 
     val configType = typeOf(configClassName) ?: return null
-    return serializer.fromJson(configJson, configType) as DiagramConfiguration
+    return serializer.fromJson(configJson, configType) as BaseDiagramConfiguration
 }
 
 fun typeOf(className: String) = sequenceOf(
@@ -79,8 +80,15 @@ class PsiClassDeserializer : JsonDeserializer<PsiClass?> {
         val activeProject = activeProject() ?: return null
 
         return inReadAction {
-            JavaPsiFacade.getInstance(activeProject)
-                    .findClass(json.asJsonPrimitive.asString, GlobalSearchScope.allScope(activeProject))
+            val qualifiedName = json.asJsonPrimitive.asString
+            val foundClass = JavaPsiFacade.getInstance(activeProject)
+                    .findClass(qualifiedName, GlobalSearchScope.allScope(activeProject))
+
+            if(foundClass == null){
+                notifyErrorClassNotFound(activeProject, qualifiedName)
+            }
+
+            foundClass
         }
     }
 }

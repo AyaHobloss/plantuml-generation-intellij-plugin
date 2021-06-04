@@ -12,7 +12,7 @@ import com.kn.diagrams.generator.notReachable
 
 
 enum class Aggregation {
-    ByClass, GroupByClass, None
+    ByClass, GroupByClass, GroupByLayer, GroupByComponent, None
 }
 
 fun DotDiagramBuilder.noAggregation(edges: List<SquashedGraphEdge>, config: DiagramVisualizationConfiguration) {
@@ -44,7 +44,7 @@ fun DotDiagramBuilder.noAggregation(edges: List<SquashedGraphEdge>, config: Diag
 
 fun DotDiagramBuilder.aggregateByClass(edges: List<SquashedGraphEdge>, config: DiagramVisualizationConfiguration) {
     with(config.projectClassification) {
-        fun addShapeClass(clazz: ClassReference) = addShape(clazz.name, clazz.diagramNameWithId()) {
+        fun addShapeClass(clazz: ClassReference) = addShape(clazz.name, clazz.diagramId()) {
             if (clazz.isDataStructure() || clazz.isInterfaceStructure()) {
                 shape = Rectangle
             }
@@ -62,7 +62,7 @@ fun DotDiagramBuilder.aggregateByClass(edges: List<SquashedGraphEdge>, config: D
 
                 sequenceOf(from, to).forEach { addShapeClass(it) }
 
-                addLink(from.diagramNameWithId(), to.diagramNameWithId()) {
+                addLink(from.diagramId(), to.diagramId()) {
                     weight = groupEdges.distinct().size
                     label = "calls = " + groupEdges.distinct().size
                     if (from.isDataStructure() xor to.isDataStructure()) {

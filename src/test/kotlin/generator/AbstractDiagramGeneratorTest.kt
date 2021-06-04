@@ -4,11 +4,11 @@ import AbstractPsiContextTest
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
 import com.kn.diagrams.generator.config.*
-import com.kn.diagrams.generator.generator.CallDiagramGenerator
-import com.kn.diagrams.generator.generator.StructureDiagramGenerator
-import com.kn.diagrams.generator.generator.VcsCommit
-import com.kn.diagrams.generator.generator.createVcsContent
+import com.kn.diagrams.generator.createIfNotExists
+import com.kn.diagrams.generator.generator.*
+import com.kn.diagrams.generator.generator.vcs.VcsCommit
 import com.kn.diagrams.generator.graph.*
+import java.io.File
 import kotlin.math.absoluteValue
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -17,9 +17,7 @@ import kotlin.reflect.KProperty
 abstract class AbstractVcsDiagramGeneratorTest : AbstractGeneratorTest() {
 
     fun vcsDiagram(commits: VcsCommits, config: (VcsConfiguration.() -> Unit)? = null): String {
-        val rootClass = commits.commits.first().files.first().asPsiClass()
-
-        val configuration = VcsConfiguration(rootClass, ProjectClassification(),  GraphRestriction(), GraphTraversal(), VcsDiagramDetails())
+        val configuration = VcsConfiguration(ProjectClassification(),  GraphRestriction(), VcsDiagramDetails())
 
         defaultClassification(configuration.projectClassification)
 
@@ -33,7 +31,7 @@ abstract class AbstractVcsDiagramGeneratorTest : AbstractGeneratorTest() {
 
         config?.invoke(configuration)
 
-        return createVcsContent(configuration) { rawCommits += commits.commits }.first().second
+        return createVcsContent(configuration, project) { rawCommits += commits.commits }.first().second
     }
 
     fun commits() = VcsCommits()
@@ -52,7 +50,6 @@ abstract class AbstractVcsDiagramGeneratorTest : AbstractGeneratorTest() {
         }
 
     }
-
 
 }
 
@@ -74,10 +71,11 @@ abstract class AbstractCallDiagramGeneratorTest : AbstractGeneratorTest() {
 
         config?.invoke(configuration)
 
-        return CallDiagramGenerator()
-            .createUmlContent(configuration)
+        return createCallDiagramUmlContent(configuration)
             .first().second
     }
+
+    // TODO check if each link has a node defined
 
 }
 
@@ -106,8 +104,7 @@ abstract class AbstractStructureDiagramGeneratorTest : AbstractGeneratorTest() {
 
         config?.invoke(configuration)
 
-        return StructureDiagramGenerator()
-            .createUmlContent(configuration)
+        return createStructureDiagramUmlContent(configuration)
             .first().second
     }
 
@@ -269,6 +266,13 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
     }
     fun assertNoClassEdge(sourceClass: KClass<*>, targetClass: KClass<*>, keyword: String? = null){
         assertEdge(sourceClass.asPsiClass().diagramId(), targetClass.asPsiClass().diagramId(), false, keyword)
+    }
+
+    fun saveDiagram(path: String){
+        val file = File(path)
+        println(file.absolutePath)
+        file.createIfNotExists()
+        file.writeText(diagram ?: "")
     }
 
 }

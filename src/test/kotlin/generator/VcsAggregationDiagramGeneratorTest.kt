@@ -121,11 +121,7 @@ class VcsAggregationDiagramGeneratorTest : AbstractVcsDiagramGeneratorTest() {
         }
 
         println(diagram)
-        val file = File("./base.puml")
-        println("saved to: "+file.absolutePath)
-
-        file.createIfNotExists()
-        file.writeText(diagram ?: "")
+        saveDiagram("./base.puml")
     }
     @Test
     fun testBaseAggregated() {
@@ -143,11 +139,7 @@ class VcsAggregationDiagramGeneratorTest : AbstractVcsDiagramGeneratorTest() {
         }
 
         println(diagram)
-        val file = File("./baseAggregated.puml")
-        println("saved to: "+file.absolutePath)
-
-        file.createIfNotExists()
-        file.writeText(diagram ?: "")
+        saveDiagram("./baseAggregated.puml")
     }
 }
 

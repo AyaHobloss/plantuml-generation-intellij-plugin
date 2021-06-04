@@ -7,6 +7,7 @@ import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.default
 import com.kn.diagrams.generator.generator.*
 import com.kn.diagrams.generator.graph.ClassReference
+import com.kn.diagrams.generator.graph.ProjectClassification
 import com.kn.diagrams.generator.graph.included
 import com.kn.diagrams.generator.throwExceptionIfCanceled
 import java.awt.Color
@@ -148,9 +149,10 @@ fun VcsConfiguration.visualizationConfig() = DiagramVisualizationConfiguration(
 )
 
 // TODO move and integrate into normal diagrams
-fun ClassReference.layer(config: DiagramVisualizationConfiguration): String {
-    // TODO simple way of configuring this?
-    with(config.projectClassification) {
+fun ClassReference.layer(visualizationConfiguration: DiagramVisualizationConfiguration) = layer(visualizationConfiguration.projectClassification)
+fun ClassReference.layer(classification: ProjectClassification): String {
+
+    with(classification) {
         val customLayerName = customLayers.entries
                 .firstOrNull { (_, pattern) -> included(pattern.name, pattern.path) }
                 ?.key
@@ -164,9 +166,7 @@ fun ClassReference.layer(config: DiagramVisualizationConfiguration): String {
                 { cls -> "Mapping".takeIf { cls.isMapping() } },
         ).mapNotNull { it(this@layer) }.firstOrNull()
 
-        if (layer == null) println(path)
-
-        return layer ?: "no layer"
+        return layer ?: "No Layer"
     }
 
 }

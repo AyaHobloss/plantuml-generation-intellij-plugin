@@ -274,7 +274,7 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
     }
 
     private void handleLoadFromMetadata(ActionEvent actionEvent) {
-        DiagramConfiguration loadedConfig = Optional.ofNullable(FileEditorManager.getInstance(project).getSelectedEditor())
+        BaseDiagramConfiguration loadedConfig = Optional.ofNullable(FileEditorManager.getInstance(project).getSelectedEditor())
                 .map(editor -> ((TextEditor) editor).getEditor().getDocument().getText())
                 .map(diagramText -> SerializationKt.loadFromMetadata(DiagramConfiguration.Companion, diagramText))
                 .orElse(null);

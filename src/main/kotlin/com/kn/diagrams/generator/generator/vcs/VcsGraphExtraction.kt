@@ -2,6 +2,8 @@ package com.kn.diagrams.generator.generator
 
 import com.kn.diagrams.generator.config.EdgeAggregation
 import com.kn.diagrams.generator.config.VcsNodeAggregation
+import com.kn.diagrams.generator.generator.vcs.UndirectedEdge
+import com.kn.diagrams.generator.generator.vcs.VcsCommit
 import com.kn.diagrams.generator.generator.vcs.VcsVisualization
 import com.kn.diagrams.generator.generator.vcs.layer
 import com.kn.diagrams.generator.graph.ClassReference

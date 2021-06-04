@@ -1,15 +1,19 @@
 package com.kn.diagrams.generator.notifications
 
+import com.intellij.diff.tools.util.DiffNotifications.createNotification
 import com.intellij.notification.NotificationDisplayType
 import com.intellij.notification.NotificationGroup
+import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
+import com.intellij.notification.impl.NotificationGroupEP
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
 
 fun notifyError(project: Project?, text: String) {
     if (project == null) return
-    NotificationGroup("Diagram Generation plugin", NotificationDisplayType.BALLOON, true)
+
+    NotificationGroupManager.getInstance().getNotificationGroup("Diagram Generation plugin")
             .createNotification(text, NotificationType.ERROR)
             .notify(project)
 }
@@ -19,7 +23,11 @@ fun notifyErrorOccurred(project: Project?) {
 }
 
 fun notifyErrorMissingClass(project: Project?) {
-    notifyError(project, "No class found for diagram generation. Please check you filter settings.")
+    notifyError(project, "No class found for diagram generation. The used Java file seems to have no class inside. ")
+}
+
+fun notifyErrorClassNotFound(project: Project?, qualifiedName: String) {
+    notifyError(project, "Class not found for qualified name $qualifiedName")
 }
 
 fun notifyErrorMissingPublicMethod(project: Project?, rootClass: PsiClass, rootMethod: PsiMethod?) {

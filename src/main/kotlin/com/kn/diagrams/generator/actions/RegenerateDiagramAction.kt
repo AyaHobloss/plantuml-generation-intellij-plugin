@@ -29,11 +29,11 @@ open class RegenerateDiagramAction : AnAction() {
             event.startBackgroundAction("Regenerate Diagram") {
                 val newDiagramText = when (val loadedConfig = DiagramConfiguration.loadFromMetadata(file.text)) {
                     is CallConfiguration -> {
-                        val newMethodDiagrams = CallDiagramGenerator().createUmlContent(loadedConfig)
+                        val newMethodDiagrams = createCallDiagramUmlContent(loadedConfig)
                         newMethodDiagrams.firstOrNull()?.second
                     }
                     is StructureConfiguration -> {
-                        StructureDiagramGenerator().createUmlContent(loadedConfig).firstOrNull()?.second
+                        createStructureDiagramUmlContent(loadedConfig).firstOrNull()?.second
                     }
                     is FlowConfiguration -> {
                         FlowDiagramGenerator().createUmlContent(loadedConfig).firstOrNull()?.second
@@ -42,7 +42,7 @@ open class RegenerateDiagramAction : AnAction() {
                         ClusterDiagramGenerator().createUmlContent(loadedConfig).firstOrNull()?.second
                     }
                     is VcsConfiguration -> {
-                        createVcsContent(loadedConfig).firstOrNull()?.second
+                        createVcsContent(loadedConfig, event.project!!).firstOrNull()?.second
                     }
                     else -> null
                 }

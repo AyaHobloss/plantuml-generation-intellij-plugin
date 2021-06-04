@@ -19,7 +19,7 @@ class FlowDiagramGenerator {
 
         return config.perTerminalTaggedMethod { root ->
             val rootMethod = inReadAction { cache.methodFor(root)!! }
-            val chains = cache.search(config.traversalFilter(rootMethod)) {
+            val chains = cache.search(config.traversalFilter()) {
                 roots = rootMethod.toSingleList()
                 forwardDepth = config.graphTraversal.forwardDepth
                 backwardDepth = config.graphTraversal.backwardDepth

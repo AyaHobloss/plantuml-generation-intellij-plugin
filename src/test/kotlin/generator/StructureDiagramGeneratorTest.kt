@@ -164,6 +164,8 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
             ).joinToString(";")
         }
 
+        saveDiagram("./failing.puml")
+
         assertClassField(TestFacadeImpl::mapper)
         assertClassField(TestServiceImpl::manager)
         assertClassField(TestManagerImpl::dao)

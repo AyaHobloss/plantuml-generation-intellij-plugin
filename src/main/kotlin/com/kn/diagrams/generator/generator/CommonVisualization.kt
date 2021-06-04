@@ -33,7 +33,8 @@ fun DotDiagramBuilder.addDirectLink(edge: SquashedGraphEdge, config: DiagramVisu
             return@perContext
         }
 
-        addLink(from, to) {
+        // TODO better strategy needed to decide which information is displayed in which cases
+        addLink(from.diagramId(), to.diagramId()) {
             when (context) {
                 is MethodClassUsage -> {
                     style = "dashed"
@@ -48,16 +49,19 @@ fun DotDiagramBuilder.addDirectLink(edge: SquashedGraphEdge, config: DiagramVisu
                     label = context.field.name + "\n" + context.field.cardinality()
                 }
                 is InheritanceType -> {
-                    dir = "both"
-                    arrowHead = "none"
-                    arrowTail = "empty"
+                    val hasFullInheritance = edge.edges().all { InheritanceType.Implementation in it.context || InheritanceType.SubClass in it.context }
+                    if(hasFullInheritance){
+                        dir = "both"
+                        arrowHead = "none"
+                        arrowTail = "empty"
+                    }
                 }
             }
         }
     }
 }
 
-private fun fromAndTo(context: EdgeContext, edge: SquashedGraphEdge): Pair<String, String> {
+fun fromAndTo(context: EdgeContext, edge: SquashedGraphEdge): Pair<GraphNode, GraphNode> {
     return when (context) { // fixing from/to for forced directed bi-directional edges
         is MethodClassUsage -> edge.direction.switchIfBackward(edge.diagramIdsFromTo())
         InheritanceType.SubClass -> edge.direction.switchIfBackward(edge.diagramIdsFromTo())
@@ -66,7 +70,7 @@ private fun fromAndTo(context: EdgeContext, edge: SquashedGraphEdge): Pair<Strin
     }
 }
 
-private fun Direction.switchIfBackward(fromTo: Pair<String, String>): Pair<String, String> {
+private fun Direction.switchIfBackward(fromTo: Pair<GraphNode, GraphNode>): Pair<GraphNode, GraphNode> {
     return if (this == Direction.Forward) {
         fromTo
     } else {
@@ -75,10 +79,10 @@ private fun Direction.switchIfBackward(fromTo: Pair<String, String>): Pair<Strin
 }
 
 private fun SquashedGraphEdge.diagramIdsFromTo() =
-    from()!!.diagramId() to to()!!.diagramId()
+    from()!! to to()!!
 
 private fun SquashedGraphEdge.diagramIdsToFrom() =
-    to()!!.diagramId() to from()!!.diagramId()
+    to()!! to from()!!
 
 
 fun ClassReference.diagramId() = name + path.hashCode().absoluteValue
@@ -135,9 +139,6 @@ fun AnalyzeMethod.signature(config: DiagramVisualizationConfiguration? = null): 
     return "${visibility.symbol() + name}($parameters)$returnType"
 }
 
-// TODO unify with diagramId()
-fun ClassReference.diagramNameWithId() = name + hashCode().absoluteValue.toString()
-
 val mandatoryAnnotations = sequenceOf("NotNull", "NotBlank", "NotEmpty")
 private fun Variable.hasMandatoryAnnotation(): Boolean {
     return annotations.any {
@@ -183,7 +184,7 @@ fun AnalyzeClass.createBoxOrTableShape(config: DiagramVisualizationConfiguration
     createBoxShape()
 }
 
-fun AnalyzeClass.createBoxShape() = DotShape(symbol() + reference.name, diagramId()).with {
+fun AnalyzeClass.createBoxShape() = DotShape(symbol() + " " + reference.name, diagramId()).with {
     shape = Rectangle
     style = "filled"
     fillColor = color()
@@ -205,14 +206,14 @@ fun AnalyzeClass.createHTMLShape(config: DiagramVisualizationConfiguration) = Do
         cellPadding = 4
 
         row {
-            cell(symbol() + reference.displayName)
+            cell(symbol() + " " + reference.displayName.escapeHTML())
         }
 
         if (fields.isNotEmpty()) horizontalSeparator()
         fields.sortedWith(compareBy({ !it.isEnumInstance }, { it.name }))
             .forEach { field ->
                 row {
-                    cell(field.visibility.symbol() + "  " + field.name + ": " + field.typeDisplay + " " + field.cardinality())
+                    cell(field.visibility.symbol() + "  " + field.name + ": " + field.typeDisplay.escapeHTML() + " " + field.cardinality())
                 }
             }
 
@@ -220,7 +221,7 @@ fun AnalyzeClass.createHTMLShape(config: DiagramVisualizationConfiguration) = Do
             if (methods.isNotEmpty()) horizontalSeparator()
             methods.values.sortedBy { it.name }.forEach { method ->
                 row {
-                    cell(method.signature(config))
+                    cell(method.signature(config).escapeHTML())
                 }
             }
         }

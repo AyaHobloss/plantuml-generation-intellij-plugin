@@ -206,6 +206,13 @@ open class DotCluster(val name: String, val id: String = name) : DotNode() {
         return this
     }
 
+    fun addNode(newNode: DotNode) {
+        childs.add(newNode)
+    }
+
+    fun addNode(provider: () -> DotNode) {
+        childs.add(provider())
+    }
 
     fun addShape(name: String, id: String = name, configure: (DotShapeConfig.() -> Unit)? = null) {
         val shape = DotShape(name, id)
@@ -243,6 +250,10 @@ open class DotCluster(val name: String, val id: String = name) : DotNode() {
     }
 
 
+}
+
+inline fun <reified T : DotNode> MutableSet<DotNode>.computeIfAbsent(id: String, creator: (String) -> T): T {
+    return firstOrNull { it.id() == id }?.cast<T>() ?: creator(id).apply { add(this) }
 }
 
 abstract class DotEdge {

@@ -12,6 +12,8 @@ class GraphTraversal(
         var classNameIncludeFilter: String = "",
         var methodNameExcludeFilter: String = "",
         var methodNameIncludeFilter: String = "",
+        var includeLayers: List<String> = emptyList(),
+        var excludeLayers: List<String> = emptyList(),
         var hideMappings: Boolean = true,
         var hideDataStructures: Boolean = true,
         var hideMethodsInDataStructures: Boolean = true,
@@ -29,6 +31,8 @@ class GraphRestriction(
         var classNameIncludeFilter: String = "",
         var methodNameExcludeFilter: String = "",
         var methodNameIncludeFilter: String = "",
+        var includeLayers: List<String> = emptyList(),
+        var excludeLayers: List<String> = emptyList(),
         @CommentWithValue("inheritance/annotation based filtering is done in a second step")
         var removeByInheritance: String = "",
         var removeByAnnotation: String = "",

@@ -2,7 +2,9 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import com.intellij.util.io.isFile
+import com.kn.diagrams.generator.createIfNotExists
 import com.kn.diagrams.generator.graph.ClassReference
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.reflect.KClass

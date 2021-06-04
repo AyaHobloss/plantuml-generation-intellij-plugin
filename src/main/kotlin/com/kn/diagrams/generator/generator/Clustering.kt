@@ -6,7 +6,6 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.util.castSafelyTo
 import com.kn.diagrams.generator.builder.*
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.createIfNotExists
@@ -83,9 +82,7 @@ class ClusterDiagramGenerator {
         val restrictionFilter = inReadAction { config.restrictionFilter() }
         val cache = analysisCache.getOrCompute(config.rootClass.project, restrictionFilter, config.projectClassification.searchMode)
 
-        val root = inReadAction { cache.classFor(config.rootClass)!! }
-
-        val filter = config.traversalFilter(root)
+        val filter = config.traversalFilter()
         val clusterRootNodes = cache.nodesForClustering(filter, config.details)
         val edges = cache.search(filter) {
             roots = clusterRootNodes
@@ -192,12 +189,8 @@ fun loadPackageClusters(
         .groupBy { (node, _) -> node.containingClass().diagramPath(visualConfig) }
         .flatMap { (cluster, links) ->
             links.map { (node, _) ->
-                val nameInCluster = node.nameInCluster(aggregation)
-                if (nameInCluster == "(" || nameInCluster.contains("createMandatorySurchargeCharges")
-                    || node.castSafelyTo<AnalyzeMethod>()?.name == "createMandatorySurchargeCharges"){
-                    ""
-                }
-                nameInCluster to cluster}
+                node.nameInCluster(aggregation) to cluster
+            }
         }.toMap()
 
     return ClusterDefinition(clusters)
@@ -422,9 +415,9 @@ fun DotDiagramBuilder.visualizeGroupedByClustersSimplified(
 ) {
     val aggregation = config.details.nodeAggregation
 
-    val pathCluster = DotPathGroup("path cluster manager") { i, packageCluster ->
+    val pathCluster = DotHierarchicalGroupCluster() { _, packageCluster, color, _ ->
         packageCluster.config.style = "filled"
-        packageCluster.config.fillColor = "#" + groupColorLevel[i].toHex()
+        packageCluster.config.fillColor = "#" + color.toHex()
 
     }
     nodes.add(pathCluster)
@@ -486,7 +479,8 @@ fun DotDiagramBuilder.visualizeGroupedByClustersSimplified(
                 if(sameClusterName.contains(",")){
                     nodes.add(table)
                 }else{
-                    pathCluster.addNode(table, sameClusterName)
+                    // TODO check
+                    pathCluster.addNode(table, Grouping(sameClusterName))
                 }
 
             }
@@ -510,14 +504,14 @@ fun DotDiagramBuilder.visualizeGroupedByClustersSimplified(
                                 cell(method.signature(visualConfig))
                             }
                         }
-
-                }, cluster)
+                }, Grouping(cluster ?: "missing cluster name"))
             }
 
         edges.groupBy { edge ->
             val from = edge.from()!!
             val to = edge.to()!!
 
+            // TODO check warnings
             if(from.clusterName() == to.clusterName() && classUsages[from.containingClass()]?.contains(",") != true && classUsages[to.containingClass()]?.contains(",") != true){
                 null
             }else{
@@ -552,27 +546,21 @@ fun DotDiagramBuilder.visualizeGroupedByClusters(
     clusters: ClusterDefinition
 ) {
     val aggregation = config.details.nodeAggregation
-    val classClusterCache = mutableMapOf<ClassReference, DotCluster>()
 
-    val pathCluster = DotPathGroup("path cluster manager") { i, packageCluster ->
+    val pathCluster = DotHierarchicalGroupCluster { _, packageCluster, color, isLast ->
         packageCluster.config.style = "filled"
-        packageCluster.config.fillColor = "#" + groupColorLevel[i].toHex()
-
+        packageCluster.config.fillColor = "#" + color.toHex()
     }
     nodes.add(pathCluster)
 
-    fun addShapeForMethod(method: AnalyzeMethod) = classClusterCache.computeIfAbsent(method.containingClass) {
-        pathCluster.addGroup(method.containingClass.displayName, method.containingClass.diagramId(), clusters.cluster(method.nameInCluster(aggregation)))
-    }.with {
-        this.config.style = "filled"
-        this.config.fillColor = "white"
-    }.addShape(method.signature(visualConfig), method.diagramId()) {
-        tooltip = method.containingClass.name + "\n\n" + method.javaDoc
-        fontColor = method.visibility.color()
-        style = "filled"
-        fillColor = "white"
+    fun addShapeForMethod(method: AnalyzeMethod) {
+        pathCluster.addNode(DotShape(method.signature(visualConfig), method.diagramId()).with {
+            tooltip = method.containingClass.name + "\n\n" + method.javaDoc
+            fontColor = method.visibility.color()
+            style = "filled"
+            fillColor = "white"
+        }, Grouping(method.containingClass.displayName))
     }
-
 
     edges.forEach { edge ->
         edge.nodes().forEach { node ->
@@ -580,9 +568,9 @@ fun DotDiagramBuilder.visualizeGroupedByClusters(
                 is AnalyzeMethod -> if(aggregation == ClusterAggregation.None) {
                     addShapeForMethod(node)
                 } else {
-                    pathCluster.addNode(node.containingClass.createBoxShape(), clusters.cluster(node.nameInCluster(aggregation)))
+                    pathCluster.addNode(node.containingClass.createBoxShape(), Grouping(clusters.cluster(node.nameInCluster(aggregation)) ?: ""))
                 }
-                is AnalyzeClass -> pathCluster.addNode(node.createBoxOrTableShape(visualConfig), clusters.cluster(node.nameInCluster(aggregation)))
+                is AnalyzeClass -> pathCluster.addNode(node.createBoxOrTableShape(visualConfig), Grouping(clusters.cluster(node.nameInCluster(aggregation)) ?: ""))
             }
         }
 

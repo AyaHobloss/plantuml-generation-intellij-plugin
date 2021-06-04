@@ -15,12 +15,20 @@ class CallConfiguration(rootClass: PsiClass,
 
         override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
 
-        override fun traversalFilter(rootNode: GraphNode) = GraphTraversalFilter(rootNode, projectClassification, graphTraversal)
+        override fun traversalFilter() = GraphTraversalFilter(projectClassification, graphTraversal)
 }
+
+enum class NodeAggregation{ None, Class }
+enum class NodeGrouping{ None, Component, Layer }
 
 class CallDiagramDetails(
         @CommentWithEnumValues
         var aggregation: Aggregation = Aggregation.GroupByClass,
+        @CommentWithEnumValues
+        var nodeAggregation: NodeAggregation = NodeAggregation.None,
+        @CommentWithEnumValues
+        var nodeGrouping: NodeGrouping = NodeGrouping.Component,
+        var wrapMethodsWithItsClass: Boolean = true,
         var showMethodParametersTypes: Boolean = false,
         var showMethodParametersNames: Boolean = false,
         var showMethodReturnType: Boolean = false,

@@ -4,7 +4,7 @@
   <version>2021.1.0</version>
   <vendor>Andreas Pfau</vendor>
 
-  <idea-version since-build="202" until-build="203.*"/>
+  <idea-version since-build="203.3645.34" until-build="203.*"/>
 
   <description>
     This Plugin allows you to create an as-is 2D diagram of your code base. You can show only a specific area or specific classes of your code base by customizing the filter logic. The resulting diagram file is in text form (PlantUML) and can be included in the documentation (e.g. AsciiDoc), reviewed in a version control diff or manually adjusted.
@@ -39,6 +39,8 @@
 
     <applicationConfigurable instance="com.kn.diagrams.generator.settings.DiagramGeneratorSettingsPage"/>
     <applicationService serviceImplementation="com.kn.diagrams.generator.settings.DiagramGenerationSettings"/>
+
+    <notificationGroup id="Diagram Generation plugin" displayType="BALLOON"/>
   </extensions>
 
 </idea-plugin>

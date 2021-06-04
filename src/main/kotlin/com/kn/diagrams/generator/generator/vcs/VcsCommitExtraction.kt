@@ -1,4 +1,4 @@
-package com.kn.diagrams.generator.generator
+package com.kn.diagrams.generator.generator.vcs
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
@@ -8,7 +8,6 @@ import com.intellij.vcs.log.visible.filters.VcsLogFilterObject
 import com.kn.diagrams.generator.ProgressBar
 import com.kn.diagrams.generator.config.CommitFilter
 import com.kn.diagrams.generator.config.VcsConfiguration
-import com.kn.diagrams.generator.generator.vcs.visualizationConfig
 import com.kn.diagrams.generator.graph.ClassReference
 import com.kn.diagrams.generator.throwExceptionIfCanceled
 import java.io.File
@@ -23,22 +22,16 @@ class VcsAnalysis(val config: VcsConfiguration, val project: Project) {
 
     val totalFiles: MutableList<ClassReference> = mutableListOf()
 
-    constructor(config: VcsConfiguration, commits: VcsAnalysis.() -> Unit, flow: VcsAnalysis.() -> Unit) : this(config, config.rootClass.project) {
+    constructor(config: VcsConfiguration, project: Project, commits: VcsAnalysis.() -> Unit, flow: VcsAnalysis.() -> Unit) : this(config, project) {
         commits(this)
         flow(this)
     }
 
     fun List<VcsCommit>.filterByConfiguration(): List<VcsCommit> {
-        // TODO visualizationConfig really needed here?!
-        val visualizationConfiguration = config.visualizationConfig()
-
         val filter = config.restrictionFilter()
-        val includedComponents = config.details.includedComponents.split(";").filterNot { it == "" }.toSet()
 
         return mapNotNull { commit ->
-            val changes = commit.files
-                    .filter { filter.acceptClass(it) }
-                    .filter { includedComponents.isEmpty() || it.diagramPath(visualizationConfiguration) in includedComponents }
+            val changes = commit.files.filter { filter.acceptClass(it) }
 
             if (commit.message.matchesFilterPattern()) {
                 VcsCommit(commit.time, commit.message, changes)

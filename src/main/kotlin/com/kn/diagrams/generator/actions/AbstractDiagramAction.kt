@@ -7,18 +7,19 @@ import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFileFactory
 import com.kn.diagrams.generator.asyncWriteAction
-import com.kn.diagrams.generator.config.DiagramConfiguration
+import com.kn.diagrams.generator.config.BaseDiagramConfiguration
 import com.kn.diagrams.generator.findClasses
 import com.kn.diagrams.generator.isJava
 import com.kn.diagrams.generator.notifications.notifyErrorMissingClass
 
 
-abstract class AbstractDiagramAction<T : DiagramConfiguration> : AnAction() {
+abstract class AbstractDiagramAction<T : BaseDiagramConfiguration> : AnAction() {
 
     init {
         this.setInjectedContext(true)
@@ -28,10 +29,11 @@ abstract class AbstractDiagramAction<T : DiagramConfiguration> : AnAction() {
         event.startBackgroundAction("Generate Diagrams") { progressIndicator ->
             val diagrams: MutableMap<String, String> = mutableMapOf()
 
-            val plantUMLDiagrams = createDiagramContent(configuration)
+            val project = event.project ?: return@startBackgroundAction
+            val plantUMLDiagrams = createDiagramContent(configuration, project)
 
             for ((diagramKeyword, diagramContent) in plantUMLDiagrams) {
-                val diagramFileName = configuration.rootClass.name + "_" + diagramKeyword + ".puml"
+                val diagramFileName = configuration.diagramFileName() + "_" + diagramKeyword + ".puml"
                 diagrams[diagramFileName] = diagramContent
 
             }
@@ -51,7 +53,7 @@ abstract class AbstractDiagramAction<T : DiagramConfiguration> : AnAction() {
         generateWith(event, defaultConfiguration(event.findFirstClass()))
     }
 
-    private fun writeDiagramToFile(directory: PsiDirectory, diagramFileName: String, diagramContent: String) {
+    protected open fun writeDiagramToFile(directory: PsiDirectory, diagramFileName: String, diagramContent: String) {
         val umlFile = directory.findFile(diagramFileName)
         if (umlFile == null) {
             val type = FileTypeRegistry.getInstance().getFileTypeByFileName(diagramFileName)
@@ -72,7 +74,7 @@ abstract class AbstractDiagramAction<T : DiagramConfiguration> : AnAction() {
 
     protected abstract fun defaultConfiguration(rootClass: PsiClass): T
 
-    protected abstract fun createDiagramContent(configuration: T): List<Pair<String, String>>
+    protected abstract fun createDiagramContent(configuration: T, project: Project): List<Pair<String, String>>
 
 }
 

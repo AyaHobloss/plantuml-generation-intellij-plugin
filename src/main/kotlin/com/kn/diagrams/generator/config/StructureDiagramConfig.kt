@@ -12,12 +12,16 @@ class StructureConfiguration(rootClass: PsiClass,
 
         override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
 
-        override fun traversalFilter(rootNode: GraphNode) = GraphTraversalFilter(rootNode, projectClassification, graphTraversal)
+        override fun traversalFilter() = GraphTraversalFilter(projectClassification, graphTraversal)
 }
 
 class StructureDiagramDetails(
     @CommentWithEnumValues
-        var aggregation: Aggregation = Aggregation.GroupByClass,
+    var aggregation: Aggregation = Aggregation.GroupByClass,
+    @CommentWithEnumValues
+    var nodeAggregation: NodeAggregation = NodeAggregation.None,
+    @CommentWithEnumValues
+    var nodeGrouping: NodeGrouping = NodeGrouping.Component,
     var showClassGenericTypes: Boolean = true,
     var showMethods: Boolean = true,
     var showMethodParameterNames: Boolean = false,

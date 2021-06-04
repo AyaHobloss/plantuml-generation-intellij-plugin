@@ -7,6 +7,7 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementVisitor
+import com.intellij.util.castSafelyTo
 import com.intellij.util.concurrency.NonUrgentExecutor
 import com.kn.diagrams.generator.config.DiagramConfiguration
 import com.kn.diagrams.generator.config.loadFromMetadata
@@ -16,6 +17,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 fun File.createIfNotExists(): File {
+    File(path.substringBeforeLast("\\")).mkdirs()
     if(!exists()){
         createNewFile()
     }
@@ -81,7 +83,7 @@ fun PsiFile.findClasses():List<PsiClass> {
             }
             accept(visitor)
         }
-        "puml" -> DiagramConfiguration.loadFromMetadata(text)?.rootClass?.let { classes.add(it) }
+        "puml" -> DiagramConfiguration.loadFromMetadata(text)?.castSafelyTo<DiagramConfiguration>()?.rootClass?.let { classes.add(it) }
     }
 
     return classes
