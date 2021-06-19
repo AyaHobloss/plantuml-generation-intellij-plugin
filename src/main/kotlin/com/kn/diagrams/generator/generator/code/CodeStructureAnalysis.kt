@@ -5,10 +5,11 @@ import com.kn.diagrams.generator.builder.DiagramDirection
 import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.generator.*
+import com.kn.diagrams.generator.generator.vcs.Layer
+import com.kn.diagrams.generator.generator.vcs.staticColor
 import com.kn.diagrams.generator.graph.*
 import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.notifications.notifyErrorMissingPublicMethod
-import kotlin.streams.toList
 
 class CodeStructureAnalysis {
 
@@ -42,7 +43,9 @@ class CodeStructureAnalysis {
                     details.wrapMethodsWithItsClass,
                     graphTraversal.forwardDepth,
                     graphTraversal.backwardDepth,
-                    EdgeMode.MethodsOnly
+                    details.edgeMode,
+                    details.methodColorCoding,
+                    details.classColorCoding
             )
         }
         metaDataSection = diagramConfig.metaDataSection()
@@ -79,7 +82,10 @@ class CodeStructureAnalysis {
                     false,
                     graphTraversal.forwardDepth,
                     graphTraversal.backwardDepth,
-                    EdgeMode.TypesOnly
+                    EdgeMode.TypesOnly,
+                    details.methodColorCoding,
+                    details.classColorCoding
+
             )
         }
         metaDataSection = diagramConfig.metaDataSection()
@@ -88,55 +94,8 @@ class CodeStructureAnalysis {
     }
 
 
-    fun buildDiagrams(): List<Pair<String, String>> {
-        return perRootNode {
-            methodNodes.forEach { method ->
-                method.grouping().addShape(method.signature(), method.diagramId()) {
-                    penWidth = method.rootNodePenWidth()
-                    tooltip = method.containingClass.name + "\n\n" + method.javaDoc
-                    fontColor = method.visibility.color()
-                    style = "filled"
-                    fillColor = "white"
-                }
-            }
-
-            classNodes.forEach { clazz ->
-                clazz.grouping().addNode {
-                    if (visualizationConfig.showDetailedClass) {
-                        clazz.createHTMLShape(visualizationConfig)
-                    } else {
-                        clazz.createBoxShape()
-                    }
-                }
-            }
-
-            edges.parallelStream().flatMap { edge ->
-                edge.createLinksPerContext { context, hasMoreEdges ->
-                    when (context) {
-                        is MethodClassUsage -> {
-                            style = "dashed"
-                            if (!hasMoreEdges) {
-                                label = context.reference
-                            }
-                        }
-                        is AnalyzeCall -> {
-                            label = context.sequence.toString().takeIf { it != "-1" }.takeIf { visualizationConfig.showCallOrder }
-                        }
-                        is FieldWithTargetType -> {
-                            label = context.field.name + "\n" + context.field.cardinality()
-                        }
-                        is InheritanceType -> {
-                            val hasFullInheritance = edge.edges().all { InheritanceType.Implementation in it.context || InheritanceType.SubClass in it.context }
-                            if(hasFullInheritance){
-                                dir = "both"
-                                arrowHead = "none"
-                                arrowTail = "empty"
-                            }
-                        }
-                    }
-                }.stream()
-            }.toList().let { dot.edges.addAll(it) }
-        }
+    fun buildDiagrams(builder: RootNodeBuildContext.() -> Unit): List<Pair<String, String>> {
+        return perRootNode(builder)
     }
 
     private fun perRootNode(diagramCreation: RootNodeBuildContext.() -> Unit): List<Pair<String, String>>{
@@ -150,6 +109,10 @@ class CodeStructureAnalysis {
 
 }
 
+enum class StructureColorCoding {
+    None, Component, Layer
+}
+
 class CodeDiagramConfig(
         val diagramDirection: DiagramDirection,
         val nodeAggregation: NodeAggregation,
@@ -158,5 +121,35 @@ class CodeDiagramConfig(
 
         var forwardDepth: Int? = null,
         var backwardDepth: Int? = null,
-        var edgeMode: EdgeMode
+        var edgeMode: EdgeMode,
+
+        var methodColorCoding: StructureColorCoding = StructureColorCoding.None,
+        var classColorCoding: StructureColorCoding = StructureColorCoding.None
 )
+
+fun ClassReference.layer(visualizationConfiguration: DiagramVisualizationConfiguration) = layer(visualizationConfiguration.projectClassification)
+fun ClassReference.layer(classification: ProjectClassification): Layer {
+
+    with(classification) {
+        val customLayer = customLayers.entries
+                .firstOrNull { (_, pattern) -> included(pattern.name, pattern.path) }
+                ?.let { Layer(it.key, it.value.color ?: it.key.staticColor().toHex("#")) }
+        val layer = customLayer ?: sequenceOf<(ClassReference) -> Layer?>(
+                { cls -> defaultLayer(cls.isTest(), "Test", "#3498db") },
+                { cls -> defaultLayer(cls.isInterfaceStructure(), "Interface Structure", "#12CBC4") },
+                { cls -> defaultLayer(cls.isDataStructure(), "Data Structure", "#d1ccc0") },
+                { cls -> defaultLayer(cls.isClient(), "Client", "#badc58") },
+                { cls -> defaultLayer(cls.isDataAccess(), "Data Access", "#ffda79") },
+                { cls -> defaultLayer(cls.isEntryPoint(), "Entry Point", "#6ab04c") },
+                { cls -> defaultLayer(cls.isMapping(), "Mapping", "#9c88ff") },
+        ).mapNotNull { it(this@layer) }.firstOrNull()
+
+        return layer ?: Layer("No Layer", "#F79F1F" )
+    }
+
+}
+
+
+fun defaultLayer(condition: Boolean, name: String, color: String): Layer? {
+    return if(condition) Layer(name, color) else null
+}

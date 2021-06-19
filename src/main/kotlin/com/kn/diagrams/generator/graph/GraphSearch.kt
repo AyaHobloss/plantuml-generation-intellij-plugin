@@ -102,7 +102,7 @@ class FindContext(private val graph: GraphDefinition,
     }
 
     private fun AnalyzeMethod.classUsages(): Sequence<GraphDirectedEdge> {
-        if (edgeMode != EdgeMode.MethodsAndDirectTypeUsage) return emptySequence()
+        if (edgeMode != EdgeMode.MethodsAndDirectTypeUsage && edgeMode != EdgeMode.TypesAndMethods) return emptySequence()
 
         return if (direction == Direction.Forward) {
             graph.forwardMethodClassUsage[id()]

@@ -2,7 +2,7 @@ package com.kn.diagrams.generator.graph
 
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiModifier
-import com.kn.diagrams.generator.generator.vcs.layer
+import com.kn.diagrams.generator.generator.code.layer
 import com.kn.diagrams.generator.inCase
 import com.kn.diagrams.generator.notReachable
 
@@ -99,7 +99,7 @@ class GraphTraversalFilter(val global: ProjectClassification, private val traver
 }
 
 fun ClassReference.layerIncludedAndNotExcluded(classification: ProjectClassification, includes: List<String>, excludes: List<String>): Boolean{
-    val layer = layer(classification)
+    val layer = layer(classification).name
 
     val included = includes.isEmpty() || layer in includes
     val excluded = includes.isNotEmpty() && layer in excludes

@@ -21,8 +21,6 @@ import kotlin.collections.LinkedHashSet
 
 class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, searchMode: SearchMode) {
 
-    private val LOG = Logger.getInstance("#com.kn.diagrams.generator.graph.GraphCache")
-
     val classes: MutableMap<String, AnalyzeClass> = mutableMapOf()
     val impenitenceInverted: MutableMap<String, List<ClassReference>> = mutableMapOf()
     val forwardCalls: MutableMap<String, List<AnalyzeCall>> = mutableMapOf()
@@ -60,7 +58,6 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
         // relation to other classes is needed, so all classes must be loaded first
         removeStructurallyFilteredClasses()
 
-        LOG.info("mapped to Ds: ${stop.elapsed(TimeUnit.MILLISECONDS)}")
     }
 
     private fun removeStructurallyFilteredClasses() {
@@ -97,7 +94,6 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
     }
 
     private fun findClasses(project: Project, searchMode: SearchMode, selector: ClassReference.() -> Boolean): MutableList<PsiClass> {
-        LOG.info("class collecting started")
         ProgressManager.getGlobalProgressIndicator()?.text = "Classes are collected"
         val stop = Stopwatch.createStarted()
         val classes = mutableListOf<PsiClass>()
@@ -116,8 +112,6 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
                 true
             }
         }
-
-        LOG.info("find classes: ${stop.elapsed(TimeUnit.MILLISECONDS)}")
 
         return classes
     }
@@ -174,8 +168,6 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
                         }
                     }
         }
-
-        LOG.info("optimization: ${stop.elapsed(TimeUnit.MILLISECONDS)}")
     }
 
     fun search(filter: TraversalFilter, config: SearchContext.() -> Unit): Set<List<SquashedGraphEdge>> {
@@ -195,7 +187,6 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
             Streams.concat(forwardChains.stream(), backwardChains.stream())
         }.collect(Collectors.toCollection { LinkedHashSet<List<SquashedGraphEdge>>() })
 
-        LOG.info("search: ${stop.elapsed(TimeUnit.MILLISECONDS)}")
         ProgressManager.getGlobalProgressIndicator()?.text = "Diagram is generated"
 
         return findings

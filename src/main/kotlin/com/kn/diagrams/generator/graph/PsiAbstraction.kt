@@ -12,7 +12,7 @@ import com.kn.diagrams.generator.union
 import org.jetbrains.java.generate.psi.PsiAdapter
 import java.util.*
 
-// TODO migrate to UAST? - get decoupled from Java and allow other languages - https://plugins.jetbrains.com/docs/intellij/uast.html
+// TODO later migrate to UAST? - get decoupled from Java and allow other languages - https://plugins.jetbrains.com/docs/intellij/uast.html
 
 class AnalyzeClass(clazz: PsiClass, filter: GraphRestrictionFilter) : GraphNode {
     val reference: ClassReference = ClassReference(clazz)

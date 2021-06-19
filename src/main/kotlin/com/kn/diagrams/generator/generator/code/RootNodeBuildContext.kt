@@ -5,6 +5,7 @@ import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.config.NodeAggregation
 import com.kn.diagrams.generator.config.NodeGrouping
 import com.kn.diagrams.generator.generator.*
+import com.kn.diagrams.generator.generator.vcs.staticColor
 import com.kn.diagrams.generator.graph.*
 import com.kn.diagrams.generator.toSingleList
 import java.util.stream.Collectors
@@ -57,6 +58,21 @@ class RootNodeBuildContext(val context: CodeStructureAnalysis,
 
     fun AnalyzeMethod.rootNodePenWidth() = if(this == root) 4 else null
     fun AnalyzeMethod.signature() = signature(visualizationConfig)
+
+    fun AnalyzeMethod.visibilityOrStructureBasedColor(): String {
+        return when(config.methodColorCoding){
+            StructureColorCoding.Component -> containingClass.diagramPath(visualizationConfig).staticColor().toHex("#")
+            StructureColorCoding.Layer -> containingClass.layer(visualizationConfig).color
+            StructureColorCoding.None -> "white"
+        }
+    }
+    fun AnalyzeClass.structureBasedColor(): String {
+        return when(config.classColorCoding){
+            StructureColorCoding.Component -> reference.diagramPath(visualizationConfig).staticColor().toHex("#")
+            StructureColorCoding.Layer -> reference.layer(visualizationConfig).color
+            StructureColorCoding.None -> "white"
+        }
+    }
 
     private fun GraphNode?.aggregateIfNeeded(): GraphNode? {
         return if(config.nodeAggregation == NodeAggregation.Class && this is AnalyzeMethod) {

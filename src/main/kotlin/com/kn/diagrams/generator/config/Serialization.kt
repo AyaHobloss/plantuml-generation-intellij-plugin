@@ -14,7 +14,8 @@ import java.lang.reflect.Type
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 
-val serializer: Gson = GsonBuilder().setVersion(1.2)
+val serializer: Gson = GsonBuilder().setVersion(1.3)
+        .serializeNulls()
         .setPrettyPrinting()
         .registerTypeAdapter(PsiClass::class.java, PsiClassSerializer())
         .registerTypeAdapter(PsiClass::class.java, PsiClassDeserializer())

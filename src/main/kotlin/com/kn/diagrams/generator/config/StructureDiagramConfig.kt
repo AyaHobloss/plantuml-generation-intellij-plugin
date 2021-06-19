@@ -1,7 +1,8 @@
 package com.kn.diagrams.generator.config
 
+import com.google.gson.annotations.Until
 import com.intellij.psi.PsiClass
-import com.kn.diagrams.generator.generator.Aggregation
+import com.kn.diagrams.generator.generator.code.StructureColorCoding
 import com.kn.diagrams.generator.graph.*
 
 class StructureConfiguration(rootClass: PsiClass,
@@ -17,6 +18,7 @@ class StructureConfiguration(rootClass: PsiClass,
 
 class StructureDiagramDetails(
     @CommentWithEnumValues
+    @Until(1.2)
     var aggregation: Aggregation = Aggregation.GroupByClass,
     @CommentWithEnumValues
     var nodeAggregation: NodeAggregation = NodeAggregation.None,
@@ -28,6 +30,10 @@ class StructureDiagramDetails(
     var showMethodParameterTypes: Boolean = false,
     var showMethodReturnType: Boolean = false,
     var showPackageLevels: Int = 99,
-    var showDetailedClassStructure: Boolean = true
+    var showDetailedClassStructure: Boolean = true,
+    @CommentWithEnumValues
+    var methodColorCoding: StructureColorCoding = StructureColorCoding.None,
+    @CommentWithEnumValues
+    var classColorCoding: StructureColorCoding = StructureColorCoding.None
 )
 

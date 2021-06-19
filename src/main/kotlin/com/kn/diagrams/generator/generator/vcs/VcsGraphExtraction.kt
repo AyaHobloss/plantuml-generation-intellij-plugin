@@ -2,10 +2,10 @@ package com.kn.diagrams.generator.generator
 
 import com.kn.diagrams.generator.config.EdgeAggregation
 import com.kn.diagrams.generator.config.VcsNodeAggregation
+import com.kn.diagrams.generator.generator.code.layer
 import com.kn.diagrams.generator.generator.vcs.UndirectedEdge
 import com.kn.diagrams.generator.generator.vcs.VcsCommit
 import com.kn.diagrams.generator.generator.vcs.VcsVisualization
-import com.kn.diagrams.generator.generator.vcs.layer
 import com.kn.diagrams.generator.graph.ClassReference
 import java.net.URL
 import java.util.stream.Stream
@@ -185,7 +185,7 @@ class AggregateDetails(visualizationContext: VcsVisualization) {
             val aggregated = context.totalFiles.groupBy(aggregation)
 
             filesByAggregate = aggregated.mapValues { it.value.size }
-            layersByAggregate = aggregated.mapValues { it.value.map { cls -> cls.layer(visualizationConfiguration) }.distinct() }
+            layersByAggregate = aggregated.mapValues { it.value.map { cls -> cls.layer(visualizationConfiguration).name }.distinct() }
             componentsByAggregate = aggregated.mapValues { it.value.map { cls -> cls.diagramPath(visualizationConfiguration) }.distinct() }
 
             totalFileCount = filesByAggregate.values.sum()

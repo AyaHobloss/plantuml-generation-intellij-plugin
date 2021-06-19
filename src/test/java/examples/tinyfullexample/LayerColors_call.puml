@@ -1,0 +1,287 @@
+@startuml
+
+/' diagram meta data start
+config=CallConfiguration;
+{
+  "rootMethod": "examples.tinyfullexample.data.client.DialogController#calculate()",
+  "projectClassification": {
+    "searchMode": "OpenProject", // OpenProject, AllProjects
+    "useCaching": false, // can be used when code base is not changed
+    "includedProjects": "examples.tinyfullexample.data",
+    "subComponentRoot": "", // sub-components will be shown separately but keep their identifier from the root (e.g. 'interfaces.adapter')
+    "pathEndKeywords": "*.impl",
+    "isClientPath": "",
+    "isClientName": "*Controller*",
+    "isTestPath": "",
+    "isTestName": "*Test",
+    "isMappingPath": "*.mapper",
+    "isMappingName": "*.Mapper;*.MapperImpl",
+    "isDataAccessPath": "*.dataaccess",
+    "isDataAccessName": "*Repository*",
+    "isDataStructurePath": "*.entity;*.ds",
+    "isDataStructureName": "*Entity",
+    "isInterfaceStructuresPath": "*.dto",
+    "isInterfaceStructuresName": "*Dts",
+    "isEntryPointPath": "",
+    "isEntryPointName": "*Facade*",
+    "customLayers": {} // first matching pattern is applied; e.g.: {"controller": { "name": "*.controller", "path": "controller" }}
+  },
+  "graphRestriction": {
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "includeLayers": [],
+    "excludeLayers": [],
+    "removeByInheritance": "", // inheritance/annotation based filtering is done in a second step
+    "removeByAnnotation": "",
+    "removeByClassPackage": "", // cleanup the graph after inheritance/annotation based filtering is done
+    "removeByClassName": "",
+    "cutMappings": false,
+    "cutEnum": true,
+    "cutTests": false,
+    "cutClient": false,
+    "cutDataAccess": false,
+    "cutInterfaceStructures": false,
+    "cutDataStructures": false,
+    "cutGetterAndSetter": true,
+    "cutConstructors": true
+  },
+  "graphTraversal": {
+    "forwardDepth": 9,
+    "backwardDepth": 9,
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "includeLayers": [],
+    "excludeLayers": [],
+    "hideMappings": false,
+    "hideDataStructures": false,
+    "hideMethodsInDataStructures": true,
+    "hidePrivateMethods": false,
+    "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
+    "onlyShowApplicationEntryPoints": false // root node is included
+  },
+  "details": {
+    "nodeAggregation": "None", // None, Class
+    "nodeGrouping": "Component", // None, Component, Layer
+    "wrapMethodsWithItsClass": true,
+    "showMethodParametersTypes": false,
+    "showMethodParametersNames": false,
+    "showMethodReturnType": false,
+    "showPackageLevels": 2,
+    "showCallOrder": false,
+    "edgeMode": "MethodsAndDirectTypeUsage", // TypesOnly, MethodsOnly, TypesAndMethods, MethodsAndDirectTypeUsage
+    "showDetailedClassStructure": true,
+    "methodColorCoding": "Layer", // None, Component, Layer
+    "classColorCoding": "None" // None, Component, Layer
+  },
+  "rootClass": "examples.tinyfullexample.data.client.DialogController"
+}
+diagram meta data end '/
+
+
+
+
+
+digraph g {
+    rankdir="LR"
+    
+    node[fontname="calibri"]
+
+'nodes 
+subgraph cluster_1354814997 { 
+   	label=common
+	labeljust=l
+	fillcolor=white
+	style=filled
+   
+   BusinessDts1991903255[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT"  >(C) BusinessDts</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT"  >+   magicNumber: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT"  >+   name: String [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin="0.0"
+	shape=plaintext
+	fillcolor=white
+];
+} 
+
+subgraph cluster_1357712437 { 
+   	label=client
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   subgraph cluster_722958556 { 
+   	label=DialogController
+	labeljust=l
+	fillcolor=white
+	style=filled
+   
+   DialogController1989005815XXXcalculate0[
+	label="+ calculate()"
+	style=filled
+	fillcolor="#badc58"
+	tooltip="DialogController
+
+null"
+	penwidth=4
+	fontcolor=darkgreen
+];
+
+DialogController1989005815XXXrefreshView0[
+	label="- refreshView()"
+	style=filled
+	fillcolor="#badc58"
+	tooltip="DialogController
+
+null"
+	fontcolor=red
+];
+
+DialogController1989005815XXXupdateModel1401889309[
+	label="# updateModel()"
+	style=filled
+	fillcolor="#badc58"
+	tooltip="DialogController
+
+null"
+	fontcolor=blue
+];
+} 
+} 
+
+subgraph cluster_905826493 { 
+   	label=server
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   BusinessEntity1854075537[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT"  >(C) BusinessEntity</TD></TR>
+</TABLE>>
+	style=filled
+	margin="0.0"
+	shape=plaintext
+	fillcolor=white
+];
+
+subgraph cluster_166516770 { 
+   	label=DialogFacade
+	labeljust=l
+	fillcolor=white
+	style=filled
+   
+   DialogFacade1854075537XXXcalculate0[
+	label="+ calculate()"
+	style=filled
+	fillcolor="#6ab04c"
+	tooltip="DialogFacade
+
+null"
+	fontcolor=darkgreen
+];
+} 
+
+subgraph cluster_726081205 { 
+   	label=BusinessService
+	labeljust=l
+	fillcolor=white
+	style=filled
+   
+   BusinessService1854075537XXXcalculate0[
+	label="+ calculate()"
+	style=filled
+	fillcolor="#F79F1F"
+	tooltip="BusinessService
+
+null"
+	fontcolor=darkgreen
+];
+
+BusinessService1854075537XXXcalculation600804323[
+	label="- calculation()"
+	style=filled
+	fillcolor="#F79F1F"
+	tooltip="BusinessService
+
+null"
+	fontcolor=red
+];
+} 
+
+subgraph cluster_817718849 { 
+   	label=BusinessMapper
+	labeljust=l
+	fillcolor=white
+	style=filled
+   
+   BusinessMapper1854075537XXXtoDts600804323[
+	label="+ toDts()"
+	style=filled
+	fillcolor="#9c88ff"
+	tooltip="BusinessMapper
+
+null"
+	fontcolor=darkgreen
+];
+} 
+
+subgraph cluster_818833076 { 
+   	label=DataRepository
+	labeljust=l
+	fillcolor=white
+	style=filled
+   
+   DataRepository1854075537XXXexecuteQuery0[
+	label="- executeQuery()"
+	style=filled
+	fillcolor="#ffda79"
+	tooltip="DataRepository
+
+null"
+	fontcolor=red
+];
+
+DataRepository1854075537XXXload0[
+	label="+ load()"
+	style=filled
+	fillcolor="#ffda79"
+	tooltip="DataRepository
+
+null"
+	fontcolor=darkgreen
+];
+} 
+} 
+
+'edges    
+BusinessMapper1854075537XXXtoDts600804323 -> BusinessDts1991903255[label=return, style=dashed];
+BusinessMapper1854075537XXXtoDts600804323 -> BusinessEntity1854075537[label=entity, style=dashed];
+BusinessService1854075537XXXcalculate0 -> BusinessEntity1854075537[label=return, style=dashed];
+BusinessService1854075537XXXcalculate0 -> BusinessService1854075537XXXcalculation600804323;
+BusinessService1854075537XXXcalculate0 -> DataRepository1854075537XXXload0;
+BusinessService1854075537XXXcalculation600804323 -> BusinessEntity1854075537[label=entity, style=dashed];
+DataRepository1854075537XXXexecuteQuery0 -> BusinessEntity1854075537[label=return, style=dashed];
+DataRepository1854075537XXXload0 -> BusinessEntity1854075537[label=return, style=dashed];
+DataRepository1854075537XXXload0 -> DataRepository1854075537XXXexecuteQuery0;
+DialogController1989005815XXXcalculate0 -> DialogController1989005815XXXrefreshView0;
+DialogController1989005815XXXcalculate0 -> DialogController1989005815XXXupdateModel1401889309;
+DialogController1989005815XXXcalculate0 -> DialogFacade1854075537XXXcalculate0;
+DialogController1989005815XXXupdateModel1401889309 -> BusinessDts1991903255[label=data, style=dashed];
+DialogFacade1854075537XXXcalculate0 -> BusinessDts1991903255[label=return, style=dashed];
+DialogFacade1854075537XXXcalculate0 -> BusinessMapper1854075537XXXtoDts600804323;
+DialogFacade1854075537XXXcalculate0 -> BusinessService1854075537XXXcalculate0;
+    
+}
+@enduml

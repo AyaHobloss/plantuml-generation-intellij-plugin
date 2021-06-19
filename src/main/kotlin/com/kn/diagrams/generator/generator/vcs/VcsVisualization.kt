@@ -6,6 +6,7 @@ import com.kn.diagrams.generator.clamp
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.default
 import com.kn.diagrams.generator.generator.*
+import com.kn.diagrams.generator.generator.code.layer
 import com.kn.diagrams.generator.graph.ClassReference
 import com.kn.diagrams.generator.graph.ProjectClassification
 import com.kn.diagrams.generator.graph.included
@@ -113,13 +114,13 @@ class VcsVisualization(val context: VcsAnalysis) {
             VcsNodeAggregation.ComponentAndLayer -> {
                 {
                     throwExceptionIfCanceled()
-                    Aggregate(diagramPath(visualizationConfiguration) + " [" + layer(visualizationConfiguration) + "]")
+                    Aggregate(diagramPath(visualizationConfiguration) + " [" + layer(visualizationConfiguration).name + "]")
                 }
             }
             VcsNodeAggregation.Layer -> {
                 {
                     throwExceptionIfCanceled()
-                    Aggregate(layer(visualizationConfiguration))
+                    Aggregate(layer(visualizationConfiguration).name)
                 }
             }
             VcsNodeAggregation.None -> {
@@ -148,28 +149,8 @@ fun VcsConfiguration.visualizationConfig() = DiagramVisualizationConfiguration(
         showDetailedClass = false
 )
 
-// TODO move and integrate into normal diagrams
-fun ClassReference.layer(visualizationConfiguration: DiagramVisualizationConfiguration) = layer(visualizationConfiguration.projectClassification)
-fun ClassReference.layer(classification: ProjectClassification): String {
+data class Layer(val name: String, val color: String)
 
-    with(classification) {
-        val customLayerName = customLayers.entries
-                .firstOrNull { (_, pattern) -> included(pattern.name, pattern.path) }
-                ?.key
-        val layer = customLayerName ?: sequenceOf<(ClassReference) -> String?>(
-                { cls -> "Test".takeIf { cls.isTest() } },
-                { cls -> "Interface Structure".takeIf { cls.isInterfaceStructure() } },
-                { cls -> "Data Structure".takeIf { cls.isDataStructure() } },
-                { cls -> "Client".takeIf { cls.isClient() } },
-                { cls -> "Data Access".takeIf { cls.isDataAccess() } },
-                { cls -> "Entry Point".takeIf { cls.isEntryPoint() } },
-                { cls -> "Mapping".takeIf { cls.isMapping() } },
-        ).mapNotNull { it(this@layer) }.firstOrNull()
-
-        return layer ?: "No Layer"
-    }
-
-}
 
 fun String.staticColor(): Color {
     val r = (hashCode() * 5) % 255

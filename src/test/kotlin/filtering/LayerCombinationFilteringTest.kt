@@ -9,7 +9,7 @@ class LayerCombinationFilteringTest : AbstractPsiContextTest(){
 
 
     private fun classification(): ProjectClassification {
-        return ProjectClassification(customLayers = mapOf("Service" to Layer("*Service*", "")))
+        return ProjectClassification(customLayers = mapOf("Service" to LayerDefinition("*Service*", "")))
     }
 
     @Test

@@ -1,7 +1,6 @@
 package com.kn.diagrams.generator.settings
 
 import com.kn.diagrams.generator.config.*
-import com.kn.diagrams.generator.generator.Aggregation
 import com.kn.diagrams.generator.graph.EdgeMode
 import com.kn.diagrams.generator.graph.GraphRestriction
 import com.kn.diagrams.generator.graph.GraphTraversal

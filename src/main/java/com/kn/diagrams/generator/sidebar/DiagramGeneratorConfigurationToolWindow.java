@@ -11,7 +11,6 @@ import com.kn.diagrams.generator.actions.AbstractDiagramAction;
 import com.kn.diagrams.generator.actions.AbstractDiagramActionKt;
 import com.kn.diagrams.generator.actions.DiagramActions;
 import com.kn.diagrams.generator.config.*;
-import com.kn.diagrams.generator.generator.Aggregation;
 import com.kn.diagrams.generator.graph.EdgeMode;
 import com.kn.diagrams.generator.graph.GraphRestriction;
 import com.kn.diagrams.generator.graph.GraphTraversal;

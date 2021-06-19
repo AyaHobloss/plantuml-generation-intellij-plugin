@@ -3,7 +3,7 @@ package com.kn.diagrams.generator.generator
 import com.kn.diagrams.generator.builder.DotCluster
 import com.kn.diagrams.generator.builder.DotNode
 import com.kn.diagrams.generator.config.NodeGrouping
-import com.kn.diagrams.generator.generator.vcs.layer
+import com.kn.diagrams.generator.generator.code.layer
 import com.kn.diagrams.generator.graph.ClassReference
 import com.kn.diagrams.generator.graph.bySemicolon
 import java.awt.Color
@@ -22,7 +22,7 @@ data class Grouping(val name: String, val path: String = ""){
 
 fun ClassReference.group(level: NodeGrouping, config: DiagramVisualizationConfiguration): Grouping {
     return when(level){
-        NodeGrouping.Layer -> Grouping(layer(config))
+        NodeGrouping.Layer -> Grouping(layer(config).name)
         NodeGrouping.Component -> {
             val fullPath = diagramPath(config)
             val lastComponentPart = fullPath.split(".").last()

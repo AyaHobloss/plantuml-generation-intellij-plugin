@@ -54,7 +54,9 @@ enum class SearchMode {
     OpenProject, AllProjects
 }
 
-class Layer(override var name: String, override var path: String): Filterable
+class LayerDefinition(override var name: String,
+                      override var path: String,
+                      var color: String? = null): Filterable
 
 class ProjectClassification(
         @CommentWithEnumValues
@@ -80,7 +82,7 @@ class ProjectClassification(
         var isEntryPointPath: String = "",
         var isEntryPointName: String = "",
         @CommentWithValue("first matching pattern is applied; e.g.: {\"controller\": { \"name\": \"*.controller\", \"path\": \"controller\" }}")
-        var customLayers: Map<String, Layer> = mapOf() // TODO restriction / visibility filter options
+        var customLayers: Map<String, LayerDefinition> = mapOf()
 
 ) {
 

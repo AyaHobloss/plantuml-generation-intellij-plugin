@@ -4,15 +4,15 @@ import com.intellij.psi.PsiClass
 import com.kn.diagrams.generator.generator.ClusterAggregation
 import com.kn.diagrams.generator.graph.*
 
-class ClusterConfiguration(rootClass: PsiClass,
-                           var projectClassification: ProjectClassification,
+class ClusterConfiguration(var projectClassification: ProjectClassification,
                            var graphRestriction: GraphRestriction,
                            var graphTraversal: GraphTraversal,
-                           var details: ClusterDiagramDetails) : DiagramConfiguration(rootClass) {
+                           var details: ClusterDiagramDetails) : BaseDiagramConfiguration {
+    override fun diagramFileName() = "Cluster_Diagram"
 
     override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
 
-    override fun traversalFilter() = GraphTraversalFilter(projectClassification, graphTraversal)
+    fun traversalFilter() = GraphTraversalFilter(projectClassification, graphTraversal)
 }
 
 

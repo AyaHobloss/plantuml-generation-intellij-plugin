@@ -130,7 +130,6 @@ class VcsAggregationDiagramGeneratorTest : AbstractVcsDiagramGeneratorTest() {
                 .commit(TestDataDao::class, TestData::class)
                 .commit(TestDataDs::class, TestFacade::class)
         ){
-            // TODO service has no layer name yet
             details.showMaximumNumberOfEdges = 99
             details.nodeAggregation = VcsNodeAggregation.Layer
             details.nodeColorCoding = NodeColorCoding.Layer

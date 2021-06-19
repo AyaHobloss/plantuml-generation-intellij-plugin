@@ -33,7 +33,7 @@ class VcsDiagramDetails(
         @CommentWithEnumValues
         var nodeSize: NodeSizing = NodeSizing.FileCount,
         var nodeSizeFactor: Double = 1.0,
-        @CommentWithValue("depends on visible edges / nodes") // TODO automatic scaling towards # shown edges / nodes?
+        @CommentWithValue("depends on visible edges / nodes")
         var coloredNodeFactor: Double = 1.0,
         @CommentWithEnumValues
         var edgeColorCoding: EdgeColorCoding = EdgeColorCoding.None,

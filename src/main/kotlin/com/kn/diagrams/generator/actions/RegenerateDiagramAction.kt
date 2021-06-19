@@ -39,7 +39,7 @@ open class RegenerateDiagramAction : AnAction() {
                         FlowDiagramGenerator().createUmlContent(loadedConfig).firstOrNull()?.second
                     }
                     is ClusterConfiguration -> {
-                        ClusterDiagramGenerator().createUmlContent(loadedConfig).firstOrNull()?.second
+                        createClusterDiagramUmlContent(loadedConfig, event.project!!).firstOrNull()?.second
                     }
                     is VcsConfiguration -> {
                         createVcsContent(loadedConfig, event.project!!).firstOrNull()?.second

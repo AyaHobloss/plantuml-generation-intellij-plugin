@@ -1,8 +1,9 @@
 package com.kn.diagrams.generator.config
 
+import com.google.gson.annotations.Until
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
-import com.kn.diagrams.generator.generator.Aggregation
+import com.kn.diagrams.generator.generator.code.StructureColorCoding
 import com.kn.diagrams.generator.graph.*
 
 
@@ -21,8 +22,14 @@ class CallConfiguration(rootClass: PsiClass,
 enum class NodeAggregation{ None, Class }
 enum class NodeGrouping{ None, Component, Layer }
 
+@Deprecated("replaced by NodeAggregation/NodeGrouping")
+enum class Aggregation {
+        ByClass, GroupByClass, GroupByLayer, GroupByComponent, None
+}
+
 class CallDiagramDetails(
         @CommentWithEnumValues
+        @Until(1.2)
         var aggregation: Aggregation = Aggregation.GroupByClass,
         @CommentWithEnumValues
         var nodeAggregation: NodeAggregation = NodeAggregation.None,
@@ -36,5 +43,9 @@ class CallDiagramDetails(
         var showCallOrder: Boolean = true,
         @CommentWithEnumValues
         var edgeMode: EdgeMode = EdgeMode.MethodsOnly,
-        var showDetailedClassStructure: Boolean = false
+        var showDetailedClassStructure: Boolean = false,
+        @CommentWithEnumValues
+        var methodColorCoding: StructureColorCoding = StructureColorCoding.None,
+        @CommentWithEnumValues
+        var classColorCoding: StructureColorCoding = StructureColorCoding.None
 )
