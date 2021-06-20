@@ -1,24 +1,22 @@
 package com.kn.diagrams.generator.generator
 
+import com.intellij.openapi.project.Project
 import com.kn.diagrams.generator.builder.DiagramDirection
 import com.kn.diagrams.generator.builder.DotDiagramBuilder
 import com.kn.diagrams.generator.config.StructureConfiguration
 import com.kn.diagrams.generator.config.attacheMetaData
-import com.kn.diagrams.generator.graph.EdgeMode
-import com.kn.diagrams.generator.graph.GraphCache
-import com.kn.diagrams.generator.graph.reference
+import com.kn.diagrams.generator.graph.*
 import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.toSingleList
 
 
 class StructureDiagramGenerator {
 
-    fun createUmlContent(config: StructureConfiguration): List<Pair<String, String>> {
-        val project = inReadAction { config.rootClass.project }
-        val restrictionFilter = inReadAction { config.restrictionFilter() }
+    fun createUmlContent(config: StructureConfiguration, project: Project): List<Pair<String, String>> {
+        val restrictionFilter = inReadAction { config.restrictionFilter(project) }
         val cache = GraphCache(project, restrictionFilter, config.projectClassification.searchMode)
 
-        val root = inReadAction { cache.classFor(config.rootClass)!! }
+        val root = inReadAction { cache.classFor(config.rootClass.psiClassFromQualifiedName(project))!! }
 
         val edges = cache.search(config.traversalFilter(root)) {
             roots = root.toSingleList()
@@ -27,7 +25,7 @@ class StructureDiagramGenerator {
             edgeMode = EdgeMode.TypesOnly
         }.flatten()
 
-        val visualizationConfiguration = inReadAction { config.visualizationConfig(cache) }
+        val visualizationConfiguration = inReadAction { config.visualizationConfig(root) }
         val dot = DotDiagramBuilder()
         dot.direction = DiagramDirection.TopToBottom
 
@@ -41,8 +39,8 @@ class StructureDiagramGenerator {
     }
 }
 
-fun StructureConfiguration.visualizationConfig(cache: GraphCache) = DiagramVisualizationConfiguration(
-    cache.classes[rootClass.reference().id()]!!,
+fun StructureConfiguration.visualizationConfig(root: AnalyzeClass) = DiagramVisualizationConfiguration(
+    root,
     projectClassification,
     projectClassification.includedProjects,
     projectClassification.pathEndKeywords,

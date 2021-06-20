@@ -1,13 +1,14 @@
 package com.kn.diagrams.generator.config
 
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiClass
 import com.kn.diagrams.generator.graph.GraphNode
 import com.kn.diagrams.generator.graph.RestrictionFilter
 import com.kn.diagrams.generator.graph.TraversalFilter
 
-abstract class DiagramConfiguration(val rootClass: PsiClass) {
+abstract class DiagramConfiguration(val rootClass: String) {
 
-    abstract fun restrictionFilter(): RestrictionFilter
+    abstract fun restrictionFilter(project: Project): RestrictionFilter
 
     abstract fun traversalFilter(rootNode: GraphNode): TraversalFilter
 

@@ -1,16 +1,20 @@
 package com.kn.diagrams.generator.config
 
-import com.intellij.psi.PsiClass
+import com.intellij.openapi.project.Project
 import com.kn.diagrams.generator.generator.Aggregation
 import com.kn.diagrams.generator.graph.*
 
-class StructureConfiguration(rootClass: PsiClass,
+class StructureConfiguration(rootClass: String,
                              var projectClassification: ProjectClassification,
                              var graphRestriction: GraphRestriction,
                              var graphTraversal: GraphTraversal,
                              var details: StructureDiagramDetails) : DiagramConfiguration(rootClass) {
 
-        override fun restrictionFilter() = GraphRestrictionFilter(rootClass.reference(), null, projectClassification, graphRestriction)
+        override fun restrictionFilter(project: Project) = GraphRestrictionFilter(
+                rootClass.psiClassFromQualifiedName(project)!!.reference(),
+                null,
+                projectClassification,
+                graphRestriction)
 
         override fun traversalFilter(rootNode: GraphNode) = GraphTraversalFilter(rootNode, projectClassification, graphTraversal)
 }

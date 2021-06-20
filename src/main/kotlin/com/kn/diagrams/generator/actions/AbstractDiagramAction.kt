@@ -7,10 +7,9 @@ import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiFileFactory
+import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
+import com.intellij.psi.*
 import com.kn.diagrams.generator.asyncWriteAction
 import com.kn.diagrams.generator.config.DiagramConfiguration
 import com.kn.diagrams.generator.findClasses
@@ -28,10 +27,10 @@ abstract class AbstractDiagramAction<T : DiagramConfiguration> : AnAction() {
         event.startBackgroundAction("Generate Diagrams") { progressIndicator ->
             val diagrams: MutableMap<String, String> = mutableMapOf()
 
-            val plantUMLDiagrams = createDiagramContent(configuration)
+            val plantUMLDiagrams = createDiagramContent(configuration, event.project!!)
 
             for ((diagramKeyword, diagramContent) in plantUMLDiagrams) {
-                val diagramFileName = configuration.rootClass.name + "_" + diagramKeyword + ".puml"
+                val diagramFileName = configuration.rootClass.substringAfterLast(".") + "_" + diagramKeyword + ".puml"
                 diagrams[diagramFileName] = diagramContent
 
             }
@@ -66,13 +65,14 @@ abstract class AbstractDiagramAction<T : DiagramConfiguration> : AnAction() {
     override fun update(anActionEvent: AnActionEvent) {
         val project = anActionEvent.getData(CommonDataKeys.PROJECT)
         val file = anActionEvent.getData(CommonDataKeys.PSI_FILE)
+        val indexesAreReady = project?.let { !DumbService.isDumb(it) } ?: false
 
-        anActionEvent.presentation.isVisible = project != null && file.isJava()
+        anActionEvent.presentation.isVisible = project != null && file.isJava() && indexesAreReady
     }
 
     protected abstract fun defaultConfiguration(rootClass: PsiClass): T
 
-    protected abstract fun createDiagramContent(configuration: T): List<Pair<String, String>>
+    protected abstract fun createDiagramContent(configuration: T, project: Project): List<Pair<String, String>>
 
 }
 
@@ -86,7 +86,7 @@ fun AnActionEvent.findFirstClass(): PsiClass {
     return psiClass!!
 }
 
-fun AnActionEvent.document() = PsiDocumentManager.getInstance(project!!).getDocument(file().containingFile)
+fun AnActionEvent.document(file: PsiFile) = PsiDocumentManager.getInstance(project!!).getDocument(file.containingFile)
 fun AnActionEvent.file() = getData(CommonDataKeys.PSI_FILE)!! // ensured by update()
 
 fun AnActionEvent.startBackgroundAction(title: String, action: (ProgressIndicator) -> Unit) {

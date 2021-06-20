@@ -9,6 +9,7 @@ import com.intellij.psi.PsiRecursiveElementVisitor
 import com.intellij.util.concurrency.NonUrgentExecutor
 import com.kn.diagrams.generator.config.DiagramConfiguration
 import com.kn.diagrams.generator.config.loadFromMetadata
+import com.kn.diagrams.generator.graph.psiClassFromQualifiedName
 import java.util.concurrent.TimeUnit
 
 infix fun <T> Sequence<T>.union(elements: Sequence<T>): Sequence<T> {
@@ -67,7 +68,7 @@ fun PsiFile.findClasses():List<PsiClass> {
             }
             accept(visitor)
         }
-        "puml" -> DiagramConfiguration.loadFromMetadata(text)?.rootClass?.let { classes.add(it) }
+        "puml" -> DiagramConfiguration.loadFromMetadata(text)?.rootClass?.let { classes.add(it.psiClassFromQualifiedName(project)!!) }
     }
 
     return classes
