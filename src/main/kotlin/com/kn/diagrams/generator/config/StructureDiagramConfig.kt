@@ -5,7 +5,7 @@ import com.intellij.psi.PsiClass
 import com.kn.diagrams.generator.generator.code.StructureColorCoding
 import com.kn.diagrams.generator.graph.*
 
-class StructureConfiguration(rootClass: PsiClass,
+class StructureConfiguration(rootClass: String,
                              var projectClassification: ProjectClassification,
                              var graphRestriction: GraphRestriction,
                              var graphTraversal: GraphTraversal,

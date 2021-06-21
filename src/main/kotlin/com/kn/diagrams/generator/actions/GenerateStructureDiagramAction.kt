@@ -10,12 +10,12 @@ import com.kn.diagrams.generator.settings.ConfigurationDefaults
 class GenerateStructureDiagramAction : AbstractDiagramAction<StructureConfiguration>() {
 
     override fun createDiagramContent(configuration: StructureConfiguration, project: Project): List<Pair<String, String>> {
-        return createStructureDiagramUmlContent(configuration)
+        return createStructureDiagramUmlContent(configuration, project)
     }
 
     override fun defaultConfiguration(rootClass: PsiClass): StructureConfiguration {
         val defaults = ConfigurationDefaults.structureDiagram()
-        return StructureConfiguration(rootClass,
+        return StructureConfiguration(rootClass.qualifiedName ?: "",
                 ConfigurationDefaults.classification(),
                 defaults.graphRestriction,
                 defaults.graphTraversal,

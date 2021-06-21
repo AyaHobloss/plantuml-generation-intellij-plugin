@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'com.kn.diagrams.generator.generator'
-version '2021.1.0'
+version '2021.2.0'
 
 repositories {
     mavenCentral()
@@ -23,18 +23,18 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 11
+targetCompatibility = 11
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
 
 intellij {
-    version '2020.3.1'
+    version '2021.1.2'
     plugins = ['com.intellij.java', 'Git4Idea']
 }
 

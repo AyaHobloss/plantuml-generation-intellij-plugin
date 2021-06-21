@@ -1,13 +1,15 @@
 package com.kn.diagrams.generator.graph
 
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.javadoc.PsiDocComment
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTypesUtil
 import com.kn.diagrams.generator.cast
-import com.kn.diagrams.generator.config.simpleSignature
 import com.kn.diagrams.generator.escape
+import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.union
 import org.jetbrains.java.generate.psi.PsiAdapter
 import java.util.*
@@ -374,6 +376,25 @@ fun PsiClass.type() = when {
     isInterface -> ClassType.Interface
     isEnum -> ClassType.Enum
     else -> ClassType.Class
+}
+
+fun PsiMethod.simpleSignature() = "$name(${parameterList.parameters.joinToString(",") { it.type.presentableText }})"
+fun AnalyzeMethod.simpleSignature() = "$name(${parameter.joinToString(",") { it.typeDisplay }})"
+
+fun String.psiClassFromQualifiedName(project: Project) = inReadAction {
+    JavaPsiFacade.getInstance(project)
+            .findClass(this, GlobalSearchScope.allScope(project))
+}
+
+fun PsiMethod.toSimpleReference() = inReadAction { containingClass?.qualifiedName + "#" + simpleSignature() }
+
+fun String.psiMethodFromSimpleReference(project: Project) = inReadAction {
+    val methodSignature = substringAfter("#")
+
+    val classOfMethod = JavaPsiFacade.getInstance(project)
+            .findClass(substringBefore("#"), GlobalSearchScope.allScope(project))
+
+    return@inReadAction classOfMethod?.methods?.firstOrNull { it.simpleSignature() == methodSignature }
 }
 
 fun PsiClass.reference() = ClassReference(this)

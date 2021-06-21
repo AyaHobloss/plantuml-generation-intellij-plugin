@@ -58,7 +58,11 @@ abstract class AbstractCallDiagramGeneratorTest : AbstractGeneratorTest() {
     fun callDiagram(method: KFunction<*>, config: (CallConfiguration.() -> Unit)? = null): String {
         val rootMethod = method.psiMethod()
 
-        val configuration = CallConfiguration(rootMethod.containingClass!!, rootMethod, ProjectClassification(),  GraphRestriction(), GraphTraversal(), CallDiagramDetails())
+        val configuration = CallConfiguration(
+                rootMethod.containingClass!!.qualifiedName!!,
+                rootMethod.toSimpleReference(),
+                ProjectClassification(),  GraphRestriction(), GraphTraversal(), CallDiagramDetails()
+        )
 
         defaultClassification(configuration.projectClassification)
 
@@ -71,7 +75,7 @@ abstract class AbstractCallDiagramGeneratorTest : AbstractGeneratorTest() {
 
         config?.invoke(configuration)
 
-        return createCallDiagramUmlContent(configuration)
+        return createCallDiagramUmlContent(configuration, project)
             .first().second
     }
 
@@ -82,7 +86,7 @@ abstract class AbstractCallDiagramGeneratorTest : AbstractGeneratorTest() {
 abstract class AbstractStructureDiagramGeneratorTest : AbstractGeneratorTest() {
 
     fun classDiagram(clazz: KClass<*>, config: (StructureConfiguration.() -> Unit)? = null): String {
-        val configuration = StructureConfiguration(clazz.asPsiClass(), ProjectClassification(),  GraphRestriction(), GraphTraversal(), StructureDiagramDetails())
+        val configuration = StructureConfiguration(clazz.asPsiClass().qualifiedName!!, ProjectClassification(),  GraphRestriction(), GraphTraversal(), StructureDiagramDetails())
 
         defaultClassification(configuration.projectClassification)
 
@@ -104,7 +108,7 @@ abstract class AbstractStructureDiagramGeneratorTest : AbstractGeneratorTest() {
 
         config?.invoke(configuration)
 
-        return createStructureDiagramUmlContent(configuration)
+        return createStructureDiagramUmlContent(configuration, project)
             .first().second
     }
 

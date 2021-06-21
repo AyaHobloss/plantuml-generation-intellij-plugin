@@ -4,9 +4,12 @@ import com.intellij.openapi.project.Project
 import com.kn.diagrams.generator.builder.DiagramDirection
 import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.config.*
-import com.kn.diagrams.generator.generator.*
+import com.kn.diagrams.generator.generator.DiagramVisualizationConfiguration
+import com.kn.diagrams.generator.generator.diagramId
+import com.kn.diagrams.generator.generator.toHex
 import com.kn.diagrams.generator.generator.vcs.Layer
 import com.kn.diagrams.generator.generator.vcs.staticColor
+import com.kn.diagrams.generator.generator.visualizationConfig
 import com.kn.diagrams.generator.graph.*
 import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.notifications.notifyErrorMissingPublicMethod
@@ -24,16 +27,16 @@ class CodeStructureAnalysis {
     val visualizationConfig: DiagramVisualizationConfiguration
     val metaDataSection: String
 
-    constructor(diagramConfig: CallConfiguration) {
-        fileNamingPattern = { method, i -> "${i}_${ method.cast<AnalyzeMethod>()?.name }}_calls" }
+    constructor(diagramConfig: CallConfiguration, _project: Project) {
+        fileNamingPattern = { method, i -> "${i}_${ method.cast<AnalyzeMethod>()?.name }_calls" }
 
-        project =  diagramConfig.rootClass.project
-        restrictionFilter = inReadAction { diagramConfig.restrictionFilter() }
+        project = _project
+        restrictionFilter = diagramConfig.restrictionFilter()
 
         cache = analysisCache.getOrCompute(project, restrictionFilter, diagramConfig.projectClassification.searchMode)
 
-        traversalFilter = inReadAction { diagramConfig.traversalFilter() }
-        visualizationConfig = inReadAction { diagramConfig.visualizationConfig(cache) }
+        traversalFilter = diagramConfig.traversalFilter()
+        visualizationConfig = diagramConfig.visualizationConfig(cache)
 
         with(diagramConfig){
             config = CodeDiagramConfig(
@@ -50,12 +53,10 @@ class CodeStructureAnalysis {
         }
         metaDataSection = diagramConfig.metaDataSection()
 
-        rootNodes = inReadAction {
-            val requestedMethod = diagramConfig.rootMethod
-            diagramConfig.rootClass.methods
-                    .filter { requestedMethod == null || requestedMethod == it }
-                    .filter { requestedMethod != null || !it.isPrivate() }
-                    .mapNotNull { cache.methodFor(it) }
+        rootNodes = when(val node = visualizationConfig.rootNode){
+            is AnalyzeMethod -> listOf(node)
+            is AnalyzeClass -> node.methods.values.filter { it.visibility == MethodVisibility.PUBLIC }
+            else -> emptyList()
         }
 
         if (rootNodes.isEmpty()) {
@@ -63,16 +64,16 @@ class CodeStructureAnalysis {
         }
     }
 
-    constructor(diagramConfig: StructureConfiguration) {
-        fileNamingPattern = { method, _ -> "${method.cast<AnalyzeClass>()?.reference?.name }_structure" }
+    constructor(diagramConfig: StructureConfiguration, _project: Project) {
+        fileNamingPattern = { _, _ -> "structure" }
 
-        project = inReadAction { diagramConfig.rootClass.project }
-        restrictionFilter = inReadAction { diagramConfig.restrictionFilter() }
+        project = _project
+        restrictionFilter = diagramConfig.restrictionFilter()
 
         cache = analysisCache.getOrCompute(project, restrictionFilter, diagramConfig.projectClassification.searchMode)
 
-        traversalFilter = inReadAction { diagramConfig.traversalFilter() }
-        visualizationConfig = inReadAction { diagramConfig.visualizationConfig() }
+        traversalFilter = diagramConfig.traversalFilter()
+        visualizationConfig = diagramConfig.visualizationConfig()
 
         with(diagramConfig){
             config = CodeDiagramConfig(
@@ -90,7 +91,11 @@ class CodeStructureAnalysis {
         }
         metaDataSection = diagramConfig.metaDataSection()
 
-        rootNodes = listOfNotNull(inReadAction { cache.classFor(diagramConfig.rootClass) })
+        rootNodes = listOfNotNull(inReadAction { cache.classFor(diagramConfig.rootClass.psiClassFromQualifiedName(project)) })
+
+        if (rootNodes.isEmpty()) {
+            notifyErrorMissingPublicMethod(inReadAction { project }, diagramConfig.rootClass, null)
+        }
     }
 
 

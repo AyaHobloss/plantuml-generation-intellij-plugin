@@ -71,6 +71,16 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
         return classes[psiClass.reference().id()]
     }
 
+    fun fromConfigReference(ref: String): GraphNode? {
+        val clazz = classes[ClassReference(ref.substringBefore("#")).id()]
+        return if(ref.contains("#")){
+            val simpleSignature = ref.substringAfter("#")
+
+            clazz?.methods?.values
+                 ?.firstOrNull { it.simpleSignature() == simpleSignature }
+        } else clazz
+    }
+
     fun methodFor(psiMethod: PsiMethod?): AnalyzeMethod? {
         if (psiMethod == null) return null
         return classes.values.asSequence().mapNotNull { it.methods[psiMethod.id()] }.firstOrNull()

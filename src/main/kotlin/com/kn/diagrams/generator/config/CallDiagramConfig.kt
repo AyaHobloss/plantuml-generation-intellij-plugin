@@ -7,8 +7,8 @@ import com.kn.diagrams.generator.generator.code.StructureColorCoding
 import com.kn.diagrams.generator.graph.*
 
 
-class CallConfiguration(rootClass: PsiClass,
-                        var rootMethod: PsiMethod?,
+class CallConfiguration(rootClass: String,
+                        var rootMethod: String?,
                         var projectClassification: ProjectClassification,
                         var graphRestriction: GraphRestriction,
                         var graphTraversal: GraphTraversal,

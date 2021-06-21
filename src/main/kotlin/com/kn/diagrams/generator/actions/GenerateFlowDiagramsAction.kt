@@ -10,12 +10,12 @@ import org.jetbrains.annotations.Nullable
 class GenerateFlowDiagramsAction : AbstractDiagramAction<FlowConfiguration>() {
 
     override fun createDiagramContent(configuration: FlowConfiguration, project: Project): List<Pair<String, String>> {
-        return FlowDiagramGenerator().createUmlContent(configuration)
+        return FlowDiagramGenerator().createUmlContent(configuration, project)
     }
 
     override fun defaultConfiguration(rootClass: PsiClass): FlowConfiguration {
         val defaults = ConfigurationDefaults.flowDiagram()
-        return FlowConfiguration(rootClass, null,
+        return FlowConfiguration(rootClass.qualifiedName ?: "", null,
                 ConfigurationDefaults.classification(),
                 defaults.graphRestriction,
                 defaults.graphTraversal

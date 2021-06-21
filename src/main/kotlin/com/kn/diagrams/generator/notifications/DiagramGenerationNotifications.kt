@@ -30,7 +30,7 @@ fun notifyErrorClassNotFound(project: Project?, qualifiedName: String) {
     notifyError(project, "Class not found for qualified name $qualifiedName")
 }
 
-fun notifyErrorMissingPublicMethod(project: Project?, rootClass: PsiClass, rootMethod: PsiMethod?) {
-    notifyError(project, "no public methods found to generate diagrams in class ${rootClass.name}, method ${rootMethod?.name}")
+fun notifyErrorMissingPublicMethod(project: Project?, rootClass: String, rootMethod: String?) {
+    notifyError(project, "no public methods found to generate diagrams in class ${rootClass}, method ${rootMethod?.substringAfterLast("#")}")
 }
 

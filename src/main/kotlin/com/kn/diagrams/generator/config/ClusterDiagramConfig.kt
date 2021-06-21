@@ -8,7 +8,7 @@ class ClusterConfiguration(var projectClassification: ProjectClassification,
                            var graphRestriction: GraphRestriction,
                            var graphTraversal: GraphTraversal,
                            var details: ClusterDiagramDetails) : BaseDiagramConfiguration {
-    override fun diagramFileName() = "Cluster_Diagram"
+    override fun diagramFileName() = "Cluster_Diagram" // TODO find better naming
 
     override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
 

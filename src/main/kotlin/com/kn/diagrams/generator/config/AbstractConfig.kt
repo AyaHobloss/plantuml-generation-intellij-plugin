@@ -12,11 +12,11 @@ interface BaseDiagramConfiguration {
     fun restrictionFilter(): GraphRestrictionFilter
 }
 
-abstract class DiagramConfiguration(val rootClass: PsiClass): BaseDiagramConfiguration {
+abstract class DiagramConfiguration(val rootClass: String): BaseDiagramConfiguration {
 
     abstract fun traversalFilter(): TraversalFilter
 
-    override fun diagramFileName() = rootClass.name ?: "missing root class"
+    override fun diagramFileName() = rootClass.substringAfterLast(".")
 
     companion object // use for serialization
 }

@@ -1,17 +1,18 @@
 package com.kn.diagrams.generator.generator
 
+import com.intellij.openapi.project.Project
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.generator.code.CodeStructureAnalysis
 import com.kn.diagrams.generator.generator.code.callAndStructureDiagramTemplate
 import com.kn.diagrams.generator.graph.*
 
-fun createCallDiagramUmlContent(config: CallConfiguration): List<Pair<String, String>> {
-    return CodeStructureAnalysis(config).buildDiagrams(callAndStructureDiagramTemplate)
+fun createCallDiagramUmlContent(config: CallConfiguration, project: Project): List<Pair<String, String>> {
+    return CodeStructureAnalysis(config, project).buildDiagrams(callAndStructureDiagramTemplate)
 }
 
 fun CallConfiguration.visualizationConfig(cache: GraphDefinition) = DiagramVisualizationConfiguration(
     // TODO NPE when class is explicitly excluded
-    rootMethod?.let { cache.methodFor(it) } ?: cache.classes[rootClass.reference().id()]!!,
+    cache.fromConfigReference(rootMethod ?: rootClass),
     projectClassification,
     details.showPackageLevels,
     false,

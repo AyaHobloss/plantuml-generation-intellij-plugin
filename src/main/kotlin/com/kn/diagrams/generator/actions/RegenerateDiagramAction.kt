@@ -12,6 +12,7 @@ import com.intellij.util.castSafelyTo
 import com.kn.diagrams.generator.asyncWriteAction
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.generator.*
+import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.isPlantUML
 import com.kn.diagrams.generator.notifications.notifyErrorOccurred
 
@@ -24,36 +25,37 @@ open class RegenerateDiagramAction : AnAction() {
     }
 
     override fun actionPerformed(event: AnActionEvent) {
+        val project = event.project!!
 
         event.filesFromDirectoryOrSelection().forEach { file ->
             event.startBackgroundAction("Regenerate Diagram") {
-                val newDiagramText = when (val loadedConfig = DiagramConfiguration.loadFromMetadata(file.text)) {
+                val newDiagramText = when (val loadedConfig = DiagramConfiguration.loadFromMetadata(inReadAction { file.text })) {
                     is CallConfiguration -> {
-                        val newMethodDiagrams = createCallDiagramUmlContent(loadedConfig)
+                        val newMethodDiagrams = createCallDiagramUmlContent(loadedConfig, project)
                         newMethodDiagrams.firstOrNull()?.second
                     }
                     is StructureConfiguration -> {
-                        createStructureDiagramUmlContent(loadedConfig).firstOrNull()?.second
+                        createStructureDiagramUmlContent(loadedConfig, project).firstOrNull()?.second
                     }
                     is FlowConfiguration -> {
-                        FlowDiagramGenerator().createUmlContent(loadedConfig).firstOrNull()?.second
+                        FlowDiagramGenerator().createUmlContent(loadedConfig, project).firstOrNull()?.second
                     }
                     is ClusterConfiguration -> {
-                        createClusterDiagramUmlContent(loadedConfig, event.project!!).firstOrNull()?.second
+                        createClusterDiagramUmlContent(loadedConfig, project).firstOrNull()?.second
                     }
                     is VcsConfiguration -> {
-                        createVcsContent(loadedConfig, event.project!!).firstOrNull()?.second
+                        createVcsContent(loadedConfig, project).firstOrNull()?.second
                     }
                     else -> null
                 }
 
                 if (newDiagramText != null) {
                     asyncWriteAction {
-                        val document = PsiDocumentManager.getInstance(event.project!!).getDocument(file.containingFile)
+                        val document = PsiDocumentManager.getInstance(project).getDocument(file.containingFile)
                         document?.setText(newDiagramText)
                     }
                 } else {
-                    notifyErrorOccurred(event.project)
+                    notifyErrorOccurred(project)
                 }
             }
         }

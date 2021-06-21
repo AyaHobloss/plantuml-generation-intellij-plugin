@@ -1,5 +1,6 @@
 package com.kn.diagrams.generator.generator
 
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMethod
 import com.kn.diagrams.generator.builder.*
 import com.kn.diagrams.generator.cast
@@ -11,13 +12,12 @@ import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.toSingleList
 
 class FlowDiagramGenerator {
-    fun createUmlContent(config: FlowConfiguration): List<Pair<String, String>> {
-        val project = inReadAction { config.rootClass.project }
-        val restrictionFilter = inReadAction { config.restrictionFilter() }
+    fun createUmlContent(config: FlowConfiguration, project: Project): List<Pair<String, String>> {
+        val restrictionFilter = config.restrictionFilter()
         val cache = analysisCache.getOrCompute(project, restrictionFilter, config.projectClassification.searchMode)
         val diagram = DotDiagramBuilder()
 
-        return config.perTerminalTaggedMethod { root ->
+        return config.perTerminalTaggedMethod(project) { root ->
             val rootMethod = inReadAction { cache.methodFor(root)!! }
             val chains = cache.search(config.traversalFilter()) {
                 roots = rootMethod.toSingleList()
@@ -109,13 +109,13 @@ class FlowDiagramGenerator {
         }.distinct()
     }
 
-    private fun FlowConfiguration.perTerminalTaggedMethod(creator: (PsiMethod) -> String): List<Pair<String, String>> {
+    private fun FlowConfiguration.perTerminalTaggedMethod(project: Project, creator: (PsiMethod) -> String): List<Pair<String, String>> {
         val requestedMethod = rootMethod
-        return rootClass.methods
-                .filter { requestedMethod == null || requestedMethod == it }
+        return rootClass.psiClassFromQualifiedName(project)!!.methods
+                .filter { requestedMethod == null || requestedMethod == inReadAction { it.toSimpleReference() } }
                 .filter { inReadAction { it.annotationsMapped().any { a -> relevant.any { it.annotationName == "FlowDiagramTerminal" } } } }
                 .map { rootMethod ->
-                    this.rootMethod = rootMethod
+                    this.rootMethod = inReadAction { rootMethod.toSimpleReference() }
                     val plainDiagram = creator(rootMethod)
                     val diagramText = plainDiagram.attacheMetaData(this)
 

@@ -299,19 +299,19 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
         DiagramConfiguration configuration = null;
 
         if(actionId == DiagramActions.GenerateCallDiagramAction){
-            configuration = new CallConfiguration(rootClass, null,
+            configuration = new CallConfiguration(rootClass.getQualifiedName(), null,
                     ConfigurationDefaults.Companion.classification(),
                     getRestrictions(),
                     getTraversal(),
                     getCallDetails());
         } else if(actionId == DiagramActions.GenerateStructureDiagramAction){
-            configuration = new StructureConfiguration(rootClass,
+            configuration = new StructureConfiguration(rootClass.getQualifiedName(),
                     ConfigurationDefaults.Companion.classification(),
                     getRestrictions(),
                     getTraversal(),
                     getStructureDetails());
         } else if(actionId == DiagramActions.GenerateFlowDiagramAction){
-            configuration = new FlowConfiguration(rootClass, null,
+            configuration = new FlowConfiguration(rootClass.getQualifiedName(), null,
                     ConfigurationDefaults.Companion.classification(),
                     getRestrictions(),
                     getTraversal());

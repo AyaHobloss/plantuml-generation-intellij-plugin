@@ -8,14 +8,13 @@ import com.kn.diagrams.generator.settings.ConfigurationDefaults
 
 class GenerateCallDiagramsAction : AbstractDiagramAction<CallConfiguration>() {
 
-
     override fun createDiagramContent(configuration: CallConfiguration, project: Project): List<Pair<String, String>> {
-        return createCallDiagramUmlContent(configuration)
+        return createCallDiagramUmlContent(configuration, project)
     }
 
     override fun defaultConfiguration(rootClass: PsiClass): CallConfiguration {
         val defaults = ConfigurationDefaults.callDiagram()
-        return CallConfiguration(rootClass, null,
+        return CallConfiguration(rootClass.qualifiedName ?: "", null,
                 ConfigurationDefaults.classification(),
                 defaults.graphRestriction,
                 defaults.graphTraversal,

@@ -4,8 +4,8 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
 import com.kn.diagrams.generator.graph.*
 
-class FlowConfiguration(rootClass: PsiClass,
-                        var rootMethod: PsiMethod?,
+class FlowConfiguration(rootClass: String,
+                        var rootMethod: String?,
                         var projectClassification: ProjectClassification,
                         var graphRestriction: GraphRestriction,
                         var graphTraversal: GraphTraversal) : DiagramConfiguration(rootClass) {

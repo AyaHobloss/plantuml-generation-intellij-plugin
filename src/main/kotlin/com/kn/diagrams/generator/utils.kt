@@ -11,6 +11,7 @@ import com.intellij.util.castSafelyTo
 import com.intellij.util.concurrency.NonUrgentExecutor
 import com.kn.diagrams.generator.config.DiagramConfiguration
 import com.kn.diagrams.generator.config.loadFromMetadata
+import com.kn.diagrams.generator.graph.psiClassFromQualifiedName
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
@@ -83,7 +84,10 @@ fun PsiFile.findClasses():List<PsiClass> {
             }
             accept(visitor)
         }
-        "puml" -> DiagramConfiguration.loadFromMetadata(text)?.castSafelyTo<DiagramConfiguration>()?.rootClass?.let { classes.add(it) }
+        "puml" -> DiagramConfiguration
+                .loadFromMetadata(text)
+                ?.castSafelyTo<DiagramConfiguration>()
+                ?.rootClass?.let { it.psiClassFromQualifiedName(project)?.let { it1 -> classes.add(it1) } }
     }
 
     return classes

@@ -8,6 +8,7 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.search.GlobalSearchScope
 import com.kn.diagrams.generator.cast
+import com.kn.diagrams.generator.graph.simpleSignature
 import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.notifications.notifyErrorClassNotFound
 import java.lang.reflect.Type
@@ -17,10 +18,6 @@ import kotlin.reflect.full.memberProperties
 val serializer: Gson = GsonBuilder().setVersion(1.3)
         .serializeNulls()
         .setPrettyPrinting()
-        .registerTypeAdapter(PsiClass::class.java, PsiClassSerializer())
-        .registerTypeAdapter(PsiClass::class.java, PsiClassDeserializer())
-        .registerTypeAdapter(PsiMethod::class.java, PsiMethodSerializer())
-        .registerTypeAdapter(PsiMethod::class.java, PsiMethodDeserializer())
         .create()
 
 fun toJsonWithComments(config: Any) = addComments(serializer.toJson(config), config)
@@ -69,58 +66,6 @@ fun typeOf(className: String) = sequenceOf(
             ClusterConfiguration::class.java,
             VcsConfiguration::class.java)
         .firstOrNull { it.simpleName == className }
-
-class PsiClassSerializer : JsonSerializer<PsiClass?> {
-    override fun serialize(clazz: PsiClass?, type: Type, context: JsonSerializationContext): JsonElement {
-        return JsonPrimitive(inReadAction { clazz?.qualifiedName })
-    }
-}
-
-class PsiClassDeserializer : JsonDeserializer<PsiClass?> {
-    override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): PsiClass? {
-        val activeProject = activeProject() ?: return null
-
-        return inReadAction {
-            val qualifiedName = json.asJsonPrimitive.asString
-            val foundClass = JavaPsiFacade.getInstance(activeProject)
-                    .findClass(qualifiedName, GlobalSearchScope.allScope(activeProject))
-
-            if(foundClass == null){
-                notifyErrorClassNotFound(activeProject, qualifiedName)
-            }
-
-            foundClass
-        }
-    }
-}
-
-class PsiMethodSerializer : JsonSerializer<PsiMethod?> {
-    override fun serialize(method: PsiMethod?, type: Type, context: JsonSerializationContext): JsonElement {
-
-        return JsonPrimitive(inReadAction { method?.containingClass?.qualifiedName + "#" + method?.simpleSignature() })
-    }
-}
-
-class PsiMethodDeserializer : JsonDeserializer<PsiMethod?> {
-
-    override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): PsiMethod? {
-        return inReadAction {
-            val activeProject = activeProject() ?: return@inReadAction null
-            val fullString = json.asJsonPrimitive.asString
-            val methodSignature = fullString.substringAfter("#")
-
-            val classOfMethod = JavaPsiFacade.getInstance(activeProject)
-                    .findClass(fullString.substringBefore("#"), GlobalSearchScope.allScope(activeProject))
-            classOfMethod?.methods?.firstOrNull { it.simpleSignature() == methodSignature }
-        }
-    }
-}
-
-fun PsiMethod.simpleSignature() = "$name(${parameterList.parameters.joinToString(",") { it.type.presentableText }})"
-
-private fun activeProject() = ProjectManager.getInstance().openProjects
-        .firstOrNull { WindowManager.getInstance().suggestParentWindow(it)?.isActive == true }
-
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FIELD)

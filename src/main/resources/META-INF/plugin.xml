@@ -4,7 +4,7 @@
   <version>2021.1.0</version>
   <vendor>Andreas Pfau</vendor>
 
-  <idea-version since-build="203.3645.34" until-build="203.*"/>
+  <idea-version since-build="211"/>
 
   <description>
     This Plugin allows you to create an as-is 2D diagram of your code base. You can show only a specific area or specific classes of your code base by customizing the filter logic. The resulting diagram file is in text form (PlantUML) and can be included in the documentation (e.g. AsciiDoc), reviewed in a version control diff or manually adjusted.
@@ -16,7 +16,6 @@
   <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.java</depends>
   <depends>com.intellij.java</depends>
-<!--  <depends>Git4Idea</depends>-->
 
   <actions>
     <group>
