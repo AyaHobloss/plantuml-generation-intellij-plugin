@@ -3,6 +3,9 @@ package generator
 import AbstractPsiContextTest
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
+import com.kn.diagrams.generator.actions.ActionContext
+import com.kn.diagrams.generator.actions.call
+import com.kn.diagrams.generator.actions.structure
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.createIfNotExists
 import com.kn.diagrams.generator.generator.*
@@ -31,7 +34,9 @@ abstract class AbstractVcsDiagramGeneratorTest : AbstractGeneratorTest() {
 
         config?.invoke(configuration)
 
-        return createVcsContent(configuration, project) { rawCommits += commits.commits }.first().second
+        val actionContext = ActionContext(project, mutableListOf(), configuration, null, null)
+
+        return createVcsContent(actionContext) { rawCommits += commits.commits }.first().second
     }
 
     fun commits() = VcsCommits()
@@ -60,7 +65,7 @@ abstract class AbstractCallDiagramGeneratorTest : AbstractGeneratorTest() {
 
         val configuration = CallConfiguration(
                 rootMethod.containingClass!!.qualifiedName!!,
-                rootMethod.toSimpleReference(),
+                rootMethod.id(),
                 ProjectClassification(),  GraphRestriction(), GraphTraversal(), CallDiagramDetails()
         )
 
@@ -75,7 +80,9 @@ abstract class AbstractCallDiagramGeneratorTest : AbstractGeneratorTest() {
 
         config?.invoke(configuration)
 
-        return createCallDiagramUmlContent(configuration, project)
+        val actionContext = ActionContext(project, mutableListOf(rootMethod.id()), configuration, null, null)
+
+        return createCallDiagramUmlContent(actionContext.call())
             .first().second
     }
 
@@ -86,7 +93,8 @@ abstract class AbstractCallDiagramGeneratorTest : AbstractGeneratorTest() {
 abstract class AbstractStructureDiagramGeneratorTest : AbstractGeneratorTest() {
 
     fun classDiagram(clazz: KClass<*>, config: (StructureConfiguration.() -> Unit)? = null): String {
-        val configuration = StructureConfiguration(clazz.asPsiClass().qualifiedName!!, ProjectClassification(),  GraphRestriction(), GraphTraversal(), StructureDiagramDetails())
+        val rootClass = clazz.asPsiClass()
+        val configuration = StructureConfiguration(rootClass.qualifiedName!!, ProjectClassification(),  GraphRestriction(), GraphTraversal(), StructureDiagramDetails())
 
         defaultClassification(configuration.projectClassification)
 
@@ -108,7 +116,9 @@ abstract class AbstractStructureDiagramGeneratorTest : AbstractGeneratorTest() {
 
         config?.invoke(configuration)
 
-        return createStructureDiagramUmlContent(configuration, project)
+        val actionContext = ActionContext(project, mutableListOf(rootClass.reference().id()), configuration, null, null)
+
+        return createStructureDiagramUmlContent(actionContext.structure())
             .first().second
     }
 

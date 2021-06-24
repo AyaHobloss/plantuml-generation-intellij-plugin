@@ -1,24 +1,29 @@
 package com.kn.diagrams.generator.generator
 
-import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiMethod
+import com.kn.diagrams.generator.actions.ActionContext
 import com.kn.diagrams.generator.builder.*
 import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.config.FlowConfiguration
 import com.kn.diagrams.generator.config.attacheMetaData
-import com.kn.diagrams.generator.config.metaDataSection
 import com.kn.diagrams.generator.graph.*
 import com.kn.diagrams.generator.inReadAction
+import com.kn.diagrams.generator.settings.ConfigurationDefaults
 import com.kn.diagrams.generator.toSingleList
 
 class FlowDiagramGenerator {
-    fun createUmlContent(config: FlowConfiguration, project: Project): List<Pair<String, String>> {
+    fun createUmlContent(actionContext: ActionContext): List<Pair<String, String>> {
+        actionContext
+                .defaultConfig { defaultConfiguration() }
+                .plantUmlNamingPattern { node, i -> "${fileName}_${i}_${ node.cast<AnalyzeMethod>()?.name }_flow.puml" }
+
+        val config = actionContext.config<FlowConfiguration>()
+        val project = actionContext.project
+
         val restrictionFilter = config.restrictionFilter()
         val cache = analysisCache.getOrCompute(project, restrictionFilter, config.projectClassification.searchMode)
         val diagram = DotDiagramBuilder()
 
-        return config.perTerminalTaggedMethod(project) { root ->
-            val rootMethod = inReadAction { cache.methodFor(root)!! }
+        return actionContext.perTerminalTaggedMethod(cache) { rootMethod ->
             val chains = cache.search(config.traversalFilter()) {
                 roots = rootMethod.toSingleList()
                 forwardDepth = config.graphTraversal.forwardDepth
@@ -93,7 +98,7 @@ class FlowDiagramGenerator {
                         }
 
                         method.annotations
-                                .filter { a -> relevant.any { it.annotationName == a.type.name } }
+                                .filter { a -> relevantFlowElements.any { it.annotationName == a.type.name } }
                                 .map {
                                     val branch = it.parameter.firstOrNull { it.name == "branch" }?.value
                                     val alternativeBranch = it.parameter.firstOrNull { it.name == "alternativeBranch" }?.value
@@ -109,18 +114,19 @@ class FlowDiagramGenerator {
         }.distinct()
     }
 
-    private fun FlowConfiguration.perTerminalTaggedMethod(project: Project, creator: (PsiMethod) -> String): List<Pair<String, String>> {
-        val requestedMethod = rootMethod
-        return rootClass.psiClassFromQualifiedName(project)!!.methods
-                .filter { requestedMethod == null || requestedMethod == inReadAction { it.toSimpleReference() } }
-                .filter { inReadAction { it.annotationsMapped().any { a -> relevant.any { it.annotationName == "FlowDiagramTerminal" } } } }
-                .map { rootMethod ->
-                    this.rootMethod = inReadAction { rootMethod.toSimpleReference() }
-                    val plainDiagram = creator(rootMethod)
-                    val diagramText = plainDiagram.attacheMetaData(this)
+    private fun ActionContext.perTerminalTaggedMethod(cache: GraphDefinition, creator: (AnalyzeMethod) -> String?): List<Pair<String, String>> {
+        val config = config<FlowConfiguration>()
+        var i = 0
+        return rootNodeIds.mapNotNull { methodId ->
+            config.brandWithRootNode(methodId)
+            val method = cache.methodFor(methodId) ?: return@mapNotNull null
 
-                    "${ inReadAction { rootMethod.name } }_flow" to diagramText
-                }
+            val plainDiagram = creator(method) ?: return@mapNotNull null
+            val diagramText = plainDiagram.attacheMetaData(config)
+
+
+            plantUmlNamingPattern!!(this, method, i++) to diagramText
+        }
     }
 
     private fun checkForGapsInConditionOrder(value: LinkedHashSet<FlowElement>, diagram: DotDiagramBuilder) {
@@ -256,4 +262,13 @@ enum class FlowElements(val annotationName: String) {
     Stop("FlowDiagramStop")
 }
 
-val relevant = FlowElements.values().asSequence().filter { it != FlowElements.Stop }
+val relevantFlowElements = FlowElements.values().asSequence().filter { it != FlowElements.Stop }
+
+private fun defaultConfiguration(): FlowConfiguration {
+    val defaults = ConfigurationDefaults.flowDiagram()
+    return FlowConfiguration("", null,
+            ConfigurationDefaults.classification(),
+            defaults.graphRestriction,
+            defaults.graphTraversal
+    )
+}

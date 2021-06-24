@@ -2,11 +2,9 @@ package com.kn.diagrams.generator
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiRecursiveElementVisitor
+import com.intellij.psi.*
 import com.intellij.util.castSafelyTo
 import com.intellij.util.concurrency.NonUrgentExecutor
 import com.kn.diagrams.generator.config.DiagramConfiguration
@@ -35,6 +33,11 @@ fun <T> inReadAction(action: () -> T): T { // read access needed for PSI classes
     return ApplicationManager.getApplication().runReadAction<T>(action)
 }
 
+// !!! do not stack read actions - when a write action comes in, it will produce a dead lock !!!
+fun doReadAction(action: () -> Unit) { // read access needed for PSI classes/searches
+    return ApplicationManager.getApplication().runReadAction(action)
+}
+
 fun <T : Any> T?.toSingleList() = listOfNotNull(this)
 
 fun notReachable(): Nothing {
@@ -46,6 +49,18 @@ fun asyncWriteAction(action: () -> Unit){
         ApplicationManager.getApplication().runWriteAction {
             action()
         }
+    }
+}
+
+fun writeDiagramFile(directory: PsiDirectory, diagramFileName: String, diagramContent: String) {
+    val umlFile = directory.findFile(diagramFileName)
+    if (umlFile == null) {
+        val type = FileTypeRegistry.getInstance().getFileTypeByFileName(diagramFileName)
+        val newFile = PsiFileFactory.getInstance(directory.project).createFileFromText(diagramFileName, type, diagramContent)
+        directory.add(newFile)
+    } else {
+        PsiDocumentManager.getInstance(directory.project).getDocument(umlFile.containingFile)
+                ?.setText(diagramContent)
     }
 }
 

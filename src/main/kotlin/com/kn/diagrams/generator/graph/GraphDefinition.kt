@@ -80,6 +80,11 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
                  ?.firstOrNull { it.simpleSignature() == simpleSignature }
         } else clazz
     }
+    fun methodFor(methodId: String): AnalyzeMethod? {
+        val classId = ClassReference(methodId.substringBefore("#")).id()
+
+        return classes[classId]?.methods?.get(methodId)
+    }
 
     fun methodFor(psiMethod: PsiMethod?): AnalyzeMethod? {
         if (psiMethod == null) return null
@@ -105,7 +110,6 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
 
     private fun findClasses(project: Project, searchMode: SearchMode, selector: ClassReference.() -> Boolean): MutableList<PsiClass> {
         ProgressManager.getGlobalProgressIndicator()?.text = "Classes are collected"
-        val stop = Stopwatch.createStarted()
         val classes = mutableListOf<PsiClass>()
 
         inReadAction {

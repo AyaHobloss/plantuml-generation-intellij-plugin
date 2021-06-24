@@ -51,7 +51,7 @@ class AnalyzeClass(clazz: PsiClass, filter: GraphRestrictionFilter) : GraphNode 
                 }.groupBy { it.source.classReference.id() }
     }
 
-    fun id() = reference.id()
+    override fun id() = reference.id()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -197,7 +197,7 @@ class ClassReference: Filterable {
     }
 
 
-    fun id() = "$path;$name"
+    fun id() = qualifiedName()
 
     fun qualifiedName() = "$path.$name"
 
@@ -222,27 +222,8 @@ class ClassReference: Filterable {
     }
 }
 
-class MethodReference(val classReference: ClassReference, val method: String) {
+data class MethodReference(val classReference: ClassReference, val method: String) {
     fun id() = classReference.id().replace(";", ".") + ";" + method
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as MethodReference
-
-        if (classReference != other.classReference) return false
-        if (method != other.method) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = classReference.hashCode()
-        result = 31 * result + method.hashCode()
-        return result
-    }
-
-
 }
 
 
@@ -381,24 +362,11 @@ fun PsiClass.type() = when {
 fun PsiMethod.simpleSignature() = "$name(${parameterList.parameters.joinToString(",") { it.type.presentableText }})"
 fun AnalyzeMethod.simpleSignature() = "$name(${parameter.joinToString(",") { it.typeDisplay }})"
 
-fun String.psiClassFromQualifiedName(project: Project) = inReadAction {
-    JavaPsiFacade.getInstance(project)
+fun String.psiClassFromQualifiedName(project: Project) = JavaPsiFacade.getInstance(project)
             .findClass(this, GlobalSearchScope.allScope(project))
-}
-
-fun PsiMethod.toSimpleReference() = inReadAction { containingClass?.qualifiedName + "#" + simpleSignature() }
-
-fun String.psiMethodFromSimpleReference(project: Project) = inReadAction {
-    val methodSignature = substringAfter("#")
-
-    val classOfMethod = JavaPsiFacade.getInstance(project)
-            .findClass(substringBefore("#"), GlobalSearchScope.allScope(project))
-
-    return@inReadAction classOfMethod?.methods?.firstOrNull { it.simpleSignature() == methodSignature }
-}
 
 fun PsiClass.reference() = ClassReference(this)
-fun PsiMethod.id() = containingClass?.qualifiedName + ";" + simpleSignature()
+fun PsiMethod.id() = containingClass?.qualifiedName + "#" + simpleSignature()
 fun PsiMethod.reference() = MethodReference(containingClass!!.reference(), id())
 fun PsiMethod.annotationsMapped() = annotations.map { AnalyzeAnnotation(it) }
 fun PsiParameter.annotationsMapped() = annotations.map { AnalyzeAnnotation(it) }

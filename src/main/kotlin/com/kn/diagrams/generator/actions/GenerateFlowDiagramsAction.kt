@@ -1,25 +1,23 @@
 package com.kn.diagrams.generator.actions
 
-import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiClass
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.psi.PsiMethod
 import com.kn.diagrams.generator.config.FlowConfiguration
 import com.kn.diagrams.generator.generator.FlowDiagramGenerator
+import com.kn.diagrams.generator.generator.relevantFlowElements
+import com.kn.diagrams.generator.graph.annotationsMapped
 import com.kn.diagrams.generator.settings.ConfigurationDefaults
-import org.jetbrains.annotations.Nullable
 
 class GenerateFlowDiagramsAction : AbstractDiagramAction<FlowConfiguration>() {
 
-    override fun createDiagramContent(configuration: FlowConfiguration, project: Project): List<Pair<String, String>> {
-        return FlowDiagramGenerator().createUmlContent(configuration, project)
+    override fun createDiagramContent(event: AnActionEvent): List<Pair<String, String>> {
+        return generateWith(event.methodBasedContext{ hasTerminalAnnotation() })
     }
 
-    override fun defaultConfiguration(rootClass: PsiClass): FlowConfiguration {
-        val defaults = ConfigurationDefaults.flowDiagram()
-        return FlowConfiguration(rootClass.qualifiedName ?: "", null,
-                ConfigurationDefaults.classification(),
-                defaults.graphRestriction,
-                defaults.graphTraversal
-        )
+    override fun generateWith(actionContext: ActionContext): List<Pair<String, String>> {
+        return FlowDiagramGenerator().createUmlContent(actionContext)
     }
 
 }
+
+fun PsiMethod.hasTerminalAnnotation() = annotationsMapped().any { a -> a.type.name == "FlowDiagramTerminal"  }

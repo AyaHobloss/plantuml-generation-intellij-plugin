@@ -7,7 +7,6 @@ import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDocumentManager
@@ -17,6 +16,7 @@ import com.kn.diagrams.generator.config.BaseDiagramConfiguration
 import com.kn.diagrams.generator.findClasses
 import com.kn.diagrams.generator.isJava
 import com.kn.diagrams.generator.notifications.notifyErrorMissingClass
+import com.kn.diagrams.generator.writeDiagramFile
 
 
 abstract class AbstractDiagramAction<T : BaseDiagramConfiguration> : AnAction() {
@@ -25,17 +25,14 @@ abstract class AbstractDiagramAction<T : BaseDiagramConfiguration> : AnAction() 
         this.setInjectedContext(true)
     }
 
-    fun generateWith(event: AnActionEvent, configuration: T) {
+    override fun actionPerformed(event: AnActionEvent) {
         event.startBackgroundAction("Generate Diagrams") { progressIndicator ->
             val diagrams: MutableMap<String, String> = mutableMapOf()
 
-            val project = event.project ?: return@startBackgroundAction
-            val plantUMLDiagrams = createDiagramContent(configuration, project)
+            val plantUMLDiagrams = createDiagramContent(event)
 
-            for ((diagramKeyword, diagramContent) in plantUMLDiagrams) {
-                val diagramFileName = configuration.diagramFileName() + "_" + diagramKeyword + ".puml"
-                diagrams[diagramFileName] = diagramContent
-
+            for ((diagramFile, diagramContent) in plantUMLDiagrams) {
+                diagrams[diagramFile] = diagramContent
             }
 
             progressIndicator.fraction = 0.98
@@ -49,20 +46,8 @@ abstract class AbstractDiagramAction<T : BaseDiagramConfiguration> : AnAction() 
         }
     }
 
-    override fun actionPerformed(event: AnActionEvent) {
-        generateWith(event, defaultConfiguration(event.findFirstClass()))
-    }
-
     protected open fun writeDiagramToFile(directory: PsiDirectory, diagramFileName: String, diagramContent: String) {
-        val umlFile = directory.findFile(diagramFileName)
-        if (umlFile == null) {
-            val type = FileTypeRegistry.getInstance().getFileTypeByFileName(diagramFileName)
-            val newFile = PsiFileFactory.getInstance(directory.project).createFileFromText(diagramFileName, type, diagramContent)
-            directory.add(newFile)
-        } else {
-            PsiDocumentManager.getInstance(directory.project).getDocument(umlFile.containingFile)
-                    ?.setText(diagramContent)
-        }
+        writeDiagramFile(directory, diagramFileName, diagramContent)
     }
 
     override fun update(anActionEvent: AnActionEvent) {
@@ -72,10 +57,9 @@ abstract class AbstractDiagramAction<T : BaseDiagramConfiguration> : AnAction() 
         anActionEvent.presentation.isVisible = project != null && file.isJava()
     }
 
-    protected abstract fun defaultConfiguration(rootClass: PsiClass): T
+    protected abstract fun createDiagramContent(event: AnActionEvent): List<Pair<String, String>>
 
-    protected abstract fun createDiagramContent(configuration: T, project: Project): List<Pair<String, String>>
-
+    abstract fun generateWith(actionContext: ActionContext): List<Pair<String, String>>
 }
 
 fun AnActionEvent.findFirstClass(): PsiClass {

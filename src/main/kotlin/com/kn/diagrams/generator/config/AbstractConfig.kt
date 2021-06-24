@@ -7,16 +7,14 @@ import com.kn.diagrams.generator.graph.TraversalFilter
 
 interface BaseDiagramConfiguration {
 
-    fun diagramFileName(): String
-
     fun restrictionFilter(): GraphRestrictionFilter
+
+    fun brandWithRootNode(rootNodeId: String)
 }
 
-abstract class DiagramConfiguration(val rootClass: String): BaseDiagramConfiguration {
+abstract class DiagramConfiguration(var rootClass: String): BaseDiagramConfiguration {
 
     abstract fun traversalFilter(): TraversalFilter
-
-    override fun diagramFileName() = rootClass.substringAfterLast(".")
 
     companion object // use for serialization
 }

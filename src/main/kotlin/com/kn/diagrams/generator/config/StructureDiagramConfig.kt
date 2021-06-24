@@ -11,9 +11,13 @@ class StructureConfiguration(rootClass: String,
                              var graphTraversal: GraphTraversal,
                              var details: StructureDiagramDetails) : DiagramConfiguration(rootClass) {
 
-        override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
+    override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
 
-        override fun traversalFilter() = GraphTraversalFilter(projectClassification, graphTraversal)
+    override fun traversalFilter() = GraphTraversalFilter(projectClassification, graphTraversal)
+
+    override fun brandWithRootNode(rootNodeId: String) {
+        rootClass = rootNodeId
+    }
 }
 
 class StructureDiagramDetails(

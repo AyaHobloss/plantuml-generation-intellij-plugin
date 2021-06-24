@@ -1,6 +1,8 @@
 package com.kn.diagrams.generator.graph
 
-interface GraphNode
+interface GraphNode{
+    fun id(): String
+}
 
 interface EdgeContext
 

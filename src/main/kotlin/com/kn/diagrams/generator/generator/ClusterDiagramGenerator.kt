@@ -1,6 +1,7 @@
 package com.kn.diagrams.generator.generator
 
 import com.intellij.openapi.project.Project
+import com.kn.diagrams.generator.actions.ActionContext
 import com.kn.diagrams.generator.builder.DiagramDirection
 import com.kn.diagrams.generator.builder.DotDiagramBuilder
 import com.kn.diagrams.generator.config.ClusterConfiguration
@@ -11,9 +12,11 @@ import com.kn.diagrams.generator.graph.analysisCache
 import com.kn.diagrams.generator.inReadAction
 
 
-fun createClusterDiagramUmlContent(config: ClusterConfiguration, project: Project): List<Pair<String, String>> {
-    val restrictionFilter = inReadAction { config.restrictionFilter() }
-    val cache = analysisCache.getOrCompute(project, restrictionFilter, config.projectClassification.searchMode)
+fun createClusterDiagramUmlContent(actionContext: ActionContext): List<Pair<String, String>> {
+    val config = actionContext.config<ClusterConfiguration>()
+    val restrictionFilter = config.restrictionFilter()
+    val cache = analysisCache.getOrCompute(actionContext.project, restrictionFilter, config.projectClassification.searchMode)
+
 
     val filter = config.traversalFilter()
     val clusterRootNodes = cache.nodesForClustering(filter, config.details)
@@ -52,5 +55,5 @@ fun createClusterDiagramUmlContent(config: ClusterConfiguration, project: Projec
     }
 
 
-    return listOf("cluster" to dot.create().attacheMetaData(config))
+    return listOf("ClusterDiagram.puml" to dot.create().attacheMetaData(config))
 }

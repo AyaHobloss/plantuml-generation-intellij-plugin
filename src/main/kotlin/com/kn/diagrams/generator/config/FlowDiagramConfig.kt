@@ -13,5 +13,9 @@ class FlowConfiguration(rootClass: String,
 
     override fun traversalFilter() = GraphTraversalFilter(projectClassification, graphTraversal)
 
+    override fun brandWithRootNode(rootNodeId: String) {
+        rootClass = rootNodeId.substringBefore("#")
+        rootMethod = rootNodeId
+    }
 }
 

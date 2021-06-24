@@ -29,22 +29,24 @@ open class RegenerateDiagramAction : AnAction() {
 
         event.filesFromDirectoryOrSelection().forEach { file ->
             event.startBackgroundAction("Regenerate Diagram") {
-                val newDiagramText = when (val loadedConfig = DiagramConfiguration.loadFromMetadata(inReadAction { file.text })) {
+                val actionContext = file.fileBasedContext()
+
+                val newDiagramText = when(actionContext.config<BaseDiagramConfiguration>()) {
                     is CallConfiguration -> {
-                        val newMethodDiagrams = createCallDiagramUmlContent(loadedConfig, project)
+                        val newMethodDiagrams = createCallDiagramUmlContent(actionContext)
                         newMethodDiagrams.firstOrNull()?.second
                     }
                     is StructureConfiguration -> {
-                        createStructureDiagramUmlContent(loadedConfig, project).firstOrNull()?.second
+                        createStructureDiagramUmlContent(actionContext).firstOrNull()?.second
                     }
                     is FlowConfiguration -> {
-                        FlowDiagramGenerator().createUmlContent(loadedConfig, project).firstOrNull()?.second
+                        FlowDiagramGenerator().createUmlContent(actionContext).firstOrNull()?.second
                     }
                     is ClusterConfiguration -> {
-                        createClusterDiagramUmlContent(loadedConfig, project).firstOrNull()?.second
+                        createClusterDiagramUmlContent(actionContext).firstOrNull()?.second
                     }
                     is VcsConfiguration -> {
-                        createVcsContent(loadedConfig, project).firstOrNull()?.second
+                        createVcsContent(actionContext).firstOrNull()?.second
                     }
                     else -> null
                 }

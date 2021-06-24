@@ -10,7 +10,7 @@ import kotlin.math.absoluteValue
 
 
 data class DiagramVisualizationConfiguration(
-    val rootNode: GraphNode?,
+    var rootNode: GraphNode?,
     val projectClassification: ProjectClassification,
     val showPackageLevels: Int,
     val showClassGenericTypes: Boolean,

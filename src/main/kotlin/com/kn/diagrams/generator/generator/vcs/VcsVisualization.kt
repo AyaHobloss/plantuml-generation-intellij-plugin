@@ -133,7 +133,7 @@ class VcsVisualization(val context: VcsAnalysis) {
     }
 
 
-    fun buildDiagram() = listOf("vcs" to dot.create().attacheMetaData(context.config))
+    fun buildDiagram() = listOf("VcsDiagram.puml" to dot.create().attacheMetaData(context.config))
 }
 
 fun VcsConfiguration.visualizationConfig() = DiagramVisualizationConfiguration(

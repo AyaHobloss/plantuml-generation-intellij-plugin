@@ -1,8 +1,10 @@
 package com.kn.diagrams.generator.generator.code
 
 import com.intellij.openapi.project.Project
+import com.kn.diagrams.generator.actions.ActionContext
+import com.kn.diagrams.generator.actions.CallActionContext
+import com.kn.diagrams.generator.actions.StructureActionContext
 import com.kn.diagrams.generator.builder.DiagramDirection
-import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.generator.DiagramVisualizationConfiguration
 import com.kn.diagrams.generator.generator.diagramId
@@ -11,32 +13,31 @@ import com.kn.diagrams.generator.generator.vcs.Layer
 import com.kn.diagrams.generator.generator.vcs.staticColor
 import com.kn.diagrams.generator.generator.visualizationConfig
 import com.kn.diagrams.generator.graph.*
-import com.kn.diagrams.generator.inReadAction
+import com.kn.diagrams.generator.notifications.notifyErrorMissingClass
 import com.kn.diagrams.generator.notifications.notifyErrorMissingPublicMethod
 
 class CodeStructureAnalysis {
-
     val project: Project
     val config: CodeDiagramConfig
     val cache: GraphDefinition
     val rootNodes: List<GraphNode>
-    val fileNamingPattern: (GraphNode, Int) -> String
 
     val restrictionFilter: GraphRestrictionFilter
     val traversalFilter: TraversalFilter
     val visualizationConfig: DiagramVisualizationConfiguration
-    val metaDataSection: String
+    val actionContext: ActionContext
 
-    constructor(diagramConfig: CallConfiguration, _project: Project) {
-        fileNamingPattern = { method, i -> "${i}_${ method.cast<AnalyzeMethod>()?.name }_calls" }
+    constructor(actionContext: CallActionContext) {
+        this.actionContext = actionContext
+        val diagramConfig = actionContext.config<CallConfiguration>()
 
-        project = _project
+        project = actionContext.project
         restrictionFilter = diagramConfig.restrictionFilter()
 
         cache = analysisCache.getOrCompute(project, restrictionFilter, diagramConfig.projectClassification.searchMode)
 
         traversalFilter = diagramConfig.traversalFilter()
-        visualizationConfig = diagramConfig.visualizationConfig(cache)
+        visualizationConfig = diagramConfig.visualizationConfig()
 
         with(diagramConfig){
             config = CodeDiagramConfig(
@@ -51,23 +52,19 @@ class CodeStructureAnalysis {
                     details.classColorCoding
             )
         }
-        metaDataSection = diagramConfig.metaDataSection()
 
-        rootNodes = when(val node = visualizationConfig.rootNode){
-            is AnalyzeMethod -> listOf(node)
-            is AnalyzeClass -> node.methods.values.filter { it.visibility == MethodVisibility.PUBLIC }
-            else -> emptyList()
-        }
+        rootNodes = actionContext.rootNodeIds.mapNotNull { cache.methodFor(it) }
 
         if (rootNodes.isEmpty()) {
-            notifyErrorMissingPublicMethod(inReadAction { project }, diagramConfig.rootClass, diagramConfig.rootMethod)
+            notifyErrorMissingPublicMethod(project)
         }
     }
 
-    constructor(diagramConfig: StructureConfiguration, _project: Project) {
-        fileNamingPattern = { _, _ -> "structure" }
+    constructor(actionContext: StructureActionContext) {
+        this.actionContext = actionContext
 
-        project = _project
+        val diagramConfig = actionContext.config<StructureConfiguration>()
+        project = actionContext.project
         restrictionFilter = diagramConfig.restrictionFilter()
 
         cache = analysisCache.getOrCompute(project, restrictionFilter, diagramConfig.projectClassification.searchMode)
@@ -89,12 +86,11 @@ class CodeStructureAnalysis {
 
             )
         }
-        metaDataSection = diagramConfig.metaDataSection()
 
-        rootNodes = listOfNotNull(inReadAction { cache.classFor(diagramConfig.rootClass.psiClassFromQualifiedName(project)) })
+        rootNodes = actionContext.rootNodeIds.mapNotNull { cache.classes[it] }
 
         if (rootNodes.isEmpty()) {
-            notifyErrorMissingPublicMethod(inReadAction { project }, diagramConfig.rootClass, null)
+            notifyErrorMissingClass(project)
         }
     }
 
@@ -104,10 +100,15 @@ class CodeStructureAnalysis {
     }
 
     private fun perRootNode(diagramCreation: RootNodeBuildContext.() -> Unit): List<Pair<String, String>>{
-        return rootNodes.sortedBy { it.diagramId() }.mapIndexed() { i, it ->
-            val diagramContent = RootNodeBuildContext(this, it).buildDiagram(diagramCreation)
-            val diagramFileName = fileNamingPattern(it, i)
+        return rootNodes.sortedBy { it.diagramId() }.mapIndexed() { i, rootNode ->
+            val diagramContent = RootNodeBuildContext(this, rootNode).buildDiagram(diagramCreation)
+            val diagramFileName = actionContext.plantUmlNamingPattern!!(actionContext, rootNode, i)
 
+            val diagramConfig = actionContext.config<BaseDiagramConfiguration>()
+            diagramConfig.brandWithRootNode(rootNode.id())
+            visualizationConfig.rootNode = rootNode
+
+            val metaDataSection = diagramConfig.metaDataSection()
             diagramFileName to diagramContent.replace("@startuml", "@startuml\n\n$metaDataSection\n\n")
         }
     }

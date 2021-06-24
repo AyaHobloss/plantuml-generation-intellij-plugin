@@ -9,10 +9,11 @@ class VcsConfiguration(var projectClassification: ProjectClassification,
                        var graphRestriction: GraphRestriction,
                        var details: VcsDiagramDetails) : BaseDiagramConfiguration{
 
-        override fun diagramFileName() = "VCS_Diagram"
-
         override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
 
+        override fun brandWithRootNode(rootNodeId: String) {
+                // directory based diagrams have no root node
+        }
 }
 
 class VcsDiagramDetails(

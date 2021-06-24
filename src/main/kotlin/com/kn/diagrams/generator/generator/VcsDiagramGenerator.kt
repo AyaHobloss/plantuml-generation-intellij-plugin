@@ -1,6 +1,7 @@
 package com.kn.diagrams.generator.generator
 
 import com.intellij.openapi.project.Project
+import com.kn.diagrams.generator.actions.ActionContext
 import com.kn.diagrams.generator.builder.DotShape
 import com.kn.diagrams.generator.builder.addLink
 import com.kn.diagrams.generator.config.VcsConfiguration
@@ -8,9 +9,9 @@ import com.kn.diagrams.generator.generator.vcs.VcsAnalysis
 import com.kn.diagrams.generator.generator.vcs.buildDiagram
 import com.kn.diagrams.generator.generator.vcs.percent
 
-fun createVcsContent(config: VcsConfiguration, project: Project,
+fun createVcsContent(actionContext: ActionContext,
                      commits: VcsAnalysis.() -> Unit = VcsAnalysis::loadAndCacheRawCommits): List<Pair<String, String>> {
-    return VcsAnalysis(config, project, commits) {
+    return VcsAnalysis(actionContext.config(), actionContext.project, commits) {
         val fullTimeRangeFilteredCommits = rawCommits
                 .squashWithSameTicket()
                 .filterByConfiguration()

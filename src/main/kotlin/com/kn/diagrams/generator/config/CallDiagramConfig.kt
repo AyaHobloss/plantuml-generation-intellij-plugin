@@ -14,9 +14,14 @@ class CallConfiguration(rootClass: String,
                         var graphTraversal: GraphTraversal,
                         var details: CallDiagramDetails) : DiagramConfiguration(rootClass) {
 
-        override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
+    override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
 
-        override fun traversalFilter() = GraphTraversalFilter(projectClassification, graphTraversal)
+    override fun traversalFilter() = GraphTraversalFilter(projectClassification, graphTraversal)
+
+    override fun brandWithRootNode(rootNodeId: String) {
+        rootClass = rootNodeId.substringBefore("#")
+        rootMethod = rootNodeId
+    }
 }
 
 enum class NodeAggregation{ None, Class }

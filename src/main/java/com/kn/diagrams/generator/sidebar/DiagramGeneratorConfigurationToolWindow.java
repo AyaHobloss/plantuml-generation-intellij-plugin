@@ -6,21 +6,28 @@ import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.kn.diagrams.generator.actions.AbstractDiagramAction;
-import com.kn.diagrams.generator.actions.AbstractDiagramActionKt;
-import com.kn.diagrams.generator.actions.DiagramActions;
+import com.kn.diagrams.generator.actions.*;
 import com.kn.diagrams.generator.config.*;
 import com.kn.diagrams.generator.graph.EdgeMode;
 import com.kn.diagrams.generator.graph.GraphRestriction;
 import com.kn.diagrams.generator.graph.GraphTraversal;
 import com.kn.diagrams.generator.settings.CallConfigurationDefaults;
 import com.kn.diagrams.generator.settings.ConfigurationDefaults;
+import kotlin.Pair;
+import kotlin.Unit;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Optional;
+
+import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
+import static com.kn.diagrams.generator.UtilsKt.asyncWriteAction;
+import static com.kn.diagrams.generator.UtilsKt.writeDiagramFile;
+import static com.kn.diagrams.generator.actions.ActionContextKt.classBasedContext;
+import static com.kn.diagrams.generator.actions.ActionContextKt.methodBasedContext;
+import static org.apache.commons.lang3.StringUtils.substringAfterLast;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
 
 public class DiagramGeneratorConfigurationToolWindow extends JPanel{
 
@@ -295,29 +302,51 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
         }
     }
 
-    private DiagramConfiguration getDiagramConfiguration(DiagramActions actionId, PsiClass rootClass){
+    private DiagramConfiguration getDiagramConfiguration(DiagramActions actionId){
         DiagramConfiguration configuration = null;
 
         if(actionId == DiagramActions.GenerateCallDiagramAction){
-            configuration = new CallConfiguration(rootClass.getQualifiedName(), null,
+            configuration = new CallConfiguration("", null,
                     ConfigurationDefaults.Companion.classification(),
                     getRestrictions(),
                     getTraversal(),
                     getCallDetails());
         } else if(actionId == DiagramActions.GenerateStructureDiagramAction){
-            configuration = new StructureConfiguration(rootClass.getQualifiedName(),
+            configuration = new StructureConfiguration("",
                     ConfigurationDefaults.Companion.classification(),
                     getRestrictions(),
                     getTraversal(),
                     getStructureDetails());
         } else if(actionId == DiagramActions.GenerateFlowDiagramAction){
-            configuration = new FlowConfiguration(rootClass.getQualifiedName(), null,
+            configuration = new FlowConfiguration("", null,
                     ConfigurationDefaults.Companion.classification(),
                     getRestrictions(),
                     getTraversal());
         }
 
         return configuration;
+    }
+
+    private ActionContext getActionContext(DiagramActions actionId, AnActionEvent event){
+        ActionContext actionContext = null;
+
+        if(actionId == DiagramActions.GenerateCallDiagramAction){
+            actionContext = methodBasedContext(event, (m) -> true);
+        } else if(actionId == DiagramActions.GenerateStructureDiagramAction){
+            actionContext = classBasedContext(event);
+        } else if(actionId == DiagramActions.GenerateFlowDiagramAction){
+            actionContext = methodBasedContext(event, GenerateFlowDiagramsActionKt::hasTerminalAnnotation);
+        }
+        DiagramConfiguration diagramConfiguration = getDiagramConfiguration(actionId);
+        actionContext.setConfig(diagramConfiguration);
+
+        // overwrite the existing puml file
+        actionContext.setFileName(actionContext.getRootNodeIds().stream()
+                .map(id -> substringBefore(id, "#"))
+                .map(id -> substringAfterLast(id, "."))
+                .findFirst().orElse(null));
+
+        return actionContext;
     }
 
     private void performAction(DiagramActions actionId) {
@@ -330,10 +359,16 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
 
         AnAction action = ActionManager.getInstance().getAction(actionId.name());
         if(action instanceof AbstractDiagramAction){
-            PsiClass rootClass = AbstractDiagramActionKt.findFirstClass(event);
-            DiagramConfiguration configuration = getDiagramConfiguration(actionId, rootClass);
+            ActionContext actionContext = getActionContext(actionId, event);
 
-            ((AbstractDiagramAction) action).generateWith(event, configuration);
+            Pair<String, String> diagram = ((AbstractDiagramAction<BaseDiagramConfiguration>) action)
+                    .generateWith(actionContext).get(0);
+
+            asyncWriteAction(() -> {
+                writeDiagramFile(event.getData(PSI_FILE).getContainingDirectory(), diagram.component1(), diagram.component2());
+
+                return Unit.INSTANCE;
+            });
         } else {
             action.actionPerformed(event);
         }
