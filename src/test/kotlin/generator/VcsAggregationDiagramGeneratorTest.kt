@@ -15,6 +15,7 @@ import testdata.oneComponent.richclient.TestFacade
 import testdata.oneComponent.service.TestDataService
 import java.io.File
 
+// TODO UI tests for actions and Sidebar - basic generate & regenerate
 class VcsAggregationDiagramGeneratorTest : AbstractVcsDiagramGeneratorTest() {
 
     @Test

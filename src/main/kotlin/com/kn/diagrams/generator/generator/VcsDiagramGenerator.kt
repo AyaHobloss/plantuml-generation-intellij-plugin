@@ -1,10 +1,8 @@
 package com.kn.diagrams.generator.generator
 
-import com.intellij.openapi.project.Project
 import com.kn.diagrams.generator.actions.ActionContext
 import com.kn.diagrams.generator.builder.DotShape
 import com.kn.diagrams.generator.builder.addLink
-import com.kn.diagrams.generator.config.VcsConfiguration
 import com.kn.diagrams.generator.generator.vcs.VcsAnalysis
 import com.kn.diagrams.generator.generator.vcs.buildDiagram
 import com.kn.diagrams.generator.generator.vcs.percent
