@@ -1,10 +1,10 @@
 <idea-plugin>
   <id>com.kn.diagrams.generator.generator</id>
   <name>PlantUML Diagram Generator</name>
-  <version>2021.1.2</version>
+  <version>2021.1.3</version>
   <vendor>Andreas Pfau</vendor>
 
-  <idea-version since-build="211"/>
+  <idea-version since-build="212"/>
 
   <description><![CDATA[
     <p>
@@ -39,6 +39,10 @@
     ]]></description>
 
   <change-notes><![CDATA[
+      <p>2021.1.3<p>
+      <ul>
+        <li>Added 2021.2.* to compatibility</li>
+      </ul>
       <p>2021.1.2<p>
       <ul>
         <li>Added 2021.1.* to compatibility</li>
