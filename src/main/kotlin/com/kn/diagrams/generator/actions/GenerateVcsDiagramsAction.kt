@@ -29,16 +29,7 @@ class GenerateVcsDiagramsAction : AbstractDiagramAction<VcsConfiguration>() {
     }
 
     override fun writeDiagramToFile(directory: PsiDirectory, diagramFileName: String, diagramContent: String) {
-        // TODO make default?
-        if(directory.findFile(diagramFileName) != null){
-            val noneExistingFileName = IntRange(0, 100)
-                    .map { diagramFileName + it }
-                    .firstOrNull { directory.findFile(diagramFileName) == null }
-
-            super.writeDiagramToFile(directory, noneExistingFileName ?: diagramFileName, diagramContent)
-        }
-
-        super.writeDiagramToFile(directory, diagramFileName, diagramContent)
+        super.writeDiagramToFile(directory, directory.findNonExistingFile(diagramFileName), diagramContent)
     }
 
 }

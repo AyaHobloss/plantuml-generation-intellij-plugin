@@ -87,3 +87,13 @@ fun AnActionEvent.startBackgroundAction(title: String, action: (ProgressIndicato
                 }
             })
 }
+
+fun PsiDirectory.findNonExistingFile(diagramFileName: String): String {
+    return if(findFile(diagramFileName) != null){
+        val noneExistingFileName = IntRange(0, 100)
+                .map { diagramFileName + it }
+                .firstOrNull { findFile(diagramFileName) == null }
+
+        noneExistingFileName ?: diagramFileName
+    } else diagramFileName
+}

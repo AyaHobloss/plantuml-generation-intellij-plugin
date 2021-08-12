@@ -348,8 +348,6 @@ class DotDiagramBuilder {
     var notes: String = ""
 
     fun create(): String {
-        // TODO configure styling?!
-//        |    splines=polyline
         return """
             |@startuml
             |

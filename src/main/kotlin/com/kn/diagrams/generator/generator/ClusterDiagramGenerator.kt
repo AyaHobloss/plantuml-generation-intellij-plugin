@@ -1,59 +1,58 @@
 package com.kn.diagrams.generator.generator
 
-import com.intellij.openapi.project.Project
 import com.kn.diagrams.generator.actions.ActionContext
-import com.kn.diagrams.generator.builder.DiagramDirection
-import com.kn.diagrams.generator.builder.DotDiagramBuilder
-import com.kn.diagrams.generator.config.ClusterConfiguration
+import com.kn.diagrams.generator.builder.addLink
 import com.kn.diagrams.generator.config.ClusterSource
 import com.kn.diagrams.generator.config.ClusterVisualization
-import com.kn.diagrams.generator.config.attacheMetaData
-import com.kn.diagrams.generator.graph.analysisCache
-import com.kn.diagrams.generator.inReadAction
+import com.kn.diagrams.generator.generator.code.*
+import com.kn.diagrams.generator.graph.AnalyzeClass
+import com.kn.diagrams.generator.graph.AnalyzeMethod
+import com.kn.diagrams.generator.graph.ClassReference
 
 
 fun createClusterDiagramUmlContent(actionContext: ActionContext): List<Pair<String, String>> {
-    val config = actionContext.config<ClusterConfiguration>()
-    val restrictionFilter = config.restrictionFilter()
-    val cache = analysisCache.getOrCompute(actionContext.project, restrictionFilter, config.projectClassification.searchMode)
-
-
-    val filter = config.traversalFilter()
-    val clusterRootNodes = cache.nodesForClustering(filter, config.details)
-    val edges = cache.search(filter) {
-        roots = clusterRootNodes
-        forwardDepth = config.graphTraversal.forwardDepth
-        backwardDepth = config.graphTraversal.backwardDepth
-        edgeMode = config.details.edgeMode
-    }.flatten().distinct()
-
-    val visualizationConfiguration = config.visualizationConfig()
-    val dot = DotDiagramBuilder()
-    dot.direction = DiagramDirection.LeftToRight
-
-
-    when(config.details.visualization){
-        ClusterVisualization.Cluster, ClusterVisualization.ClusterWithoutDetails -> dot.aggregateToCluster(cache, edges, config, visualizationConfiguration)
-        ClusterVisualization.Nodes -> {
-            val clusters = if(config.details.clusteringAlgorithm == ClusterSource.TakeFromFile) {
-                loadPredefinedClusters(config.details.clusterDefinitionFile)
-            }else if(config.details.clusteringAlgorithm == ClusterSource.Package) {
-                loadPackageClusters(edges, config, visualizationConfiguration)
-            } else {
-                ClusterDefinition(clusterRootNodes.map { it.nameInCluster(config.details.nodeAggregation) to "cluster_0" }.toMap())
+    return actionContext.createClusterContext{
+                searchEdgesBySelectedNodes()
+                clustering { algorithm -> when(algorithm){
+                    ClusterSource.Package -> loadPackageClusters()
+                    ClusterSource.Leiden -> loadLeidenClusters()
+                    ClusterSource.None -> clusterRootNodes.clusterTo("cluster_0") // leave empty?
+                } }
+            }.buildNodeBasedDiagram {
+                if(config.details.visualization == ClusterVisualization.Nodes){
+                    nodes.forEach { node ->
+                        when (node) {
+                            // TODO wrapper for Method class inside createShape()?!
+                            is AnalyzeMethod -> node.grouping().addNode(node.createShape(visualConfig))
+                            is ClassReference -> node.grouping().addNode(node.createBoxShape())
+                            is AnalyzeClass -> node.grouping().addNode(node.createBoxOrTableShape(visualConfig))
+                        }
+                    }
+                    // TODO fix aggregation to class
+                    edges.forEach { dot.addDirectLink(it, visualConfig) }
+                }else{
+                    // TODO generify, is it used anymore?! check presentation
+                    visualizeGroupedByClustersSimplified()
+                }
             }
-            dot.visualizeGroupedByClusters(edges, config, visualizationConfiguration, clusters)
-        }
-        ClusterVisualization.NodesSimplified -> {
-            val clusters = if(config.details.clusteringAlgorithm == ClusterSource.TakeFromFile) {
-                loadPredefinedClusters(config.details.clusterDefinitionFile)
-            } else {
-                ClusterDefinition(clusterRootNodes.map { it.nameInCluster(config.details.nodeAggregation) to "cluster_0" }.toMap())
+            .buildClusterAggregatedDiagram {
+                forEachNode { dot.nodes.add(this.toClusterDotNode()) }
+
+                forEachEdge {
+                    dot.addLink(to, from) {
+                        // IMPROVE: find the GraphDirectedEdge (maybe hidden) between both clusters and count the context
+                        if(config.details.showCallsInEdgeToolTips){
+                            tooltip = calls.allCalls(false)
+                        }
+                        if(inverted){
+                            label = "inverted calls =    " + calls.size // counts parallel edges only once!!
+                            color = "red"
+                        }else{
+                            label = "calls =    " + calls.size // counts parallel edges only once!!
+                        }
+                    }
+                }
             }
-            dot.visualizeGroupedByClustersSimplified(edges, config, visualizationConfiguration, clusters)
-        }
-    }
+            .build()
 
-
-    return listOf("ClusterDiagram.puml" to dot.create().attacheMetaData(config))
 }

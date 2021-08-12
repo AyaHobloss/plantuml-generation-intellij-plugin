@@ -20,13 +20,15 @@
   <actions>
     <group>
       <separator/>
-      <action id="GenerateFlowDiagramAction" class="com.kn.diagrams.generator.actions.GenerateFlowDiagramsAction" text="Generate Flow Diagram"/>
       <action id="GenerateCallDiagramAction" class="com.kn.diagrams.generator.actions.GenerateCallDiagramsAction" text="Generate Call Diagrams"/>
       <action id="GenerateStructureDiagramAction" class="com.kn.diagrams.generator.actions.GenerateStructureDiagramAction" text="Generate Structure Diagram"/>
-      <action id="GenerateClusterDiagramAction" class="com.kn.diagrams.generator.actions.GenerateClusterDiagramAction" text="Generate Cluster Diagram"/>
-      <action id="GenerateVcsDiagramsAction" class="com.kn.diagrams.generator.actions.GenerateVcsDiagramsAction" text="Generate Version Control Diagram"/>
       <action id="RegenerateDiagramAction" class="com.kn.diagrams.generator.actions.RegenerateDiagramAction" text="Regenerate Diagrams"/>
       <action id="RegenerateDiagramRecursiveAction" class="com.kn.diagrams.generator.actions.RegenerateDiagramRecursiveAction" text="Regenerate Diagrams Recursive"/>
+      <group id="org.intellij.sdk.action.GroupedActions" text="Other Diagrams" popup="true">
+        <action id="GenerateFlowDiagramAction" class="com.kn.diagrams.generator.actions.GenerateFlowDiagramsAction" text="Generate Flow Diagrams"/>
+        <action id="GenerateClusterDiagramAction" class="com.kn.diagrams.generator.actions.GenerateClusterDiagramAction" text="Generate Cluster Diagram"/>
+        <action id="GenerateVcsDiagramsAction" class="com.kn.diagrams.generator.actions.GenerateVcsDiagramsAction" text="Generate Version Control Diagram"/>
+      </group>
       <separator/>
       <add-to-group group-id="EditorPopupMenu" anchor="first"/>
       <add-to-group group-id="ProjectViewPopupMenu" anchor="first" />

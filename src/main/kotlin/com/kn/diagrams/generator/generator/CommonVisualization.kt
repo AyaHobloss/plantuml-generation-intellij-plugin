@@ -93,9 +93,10 @@ fun GraphNode.diagramId() = when (this) {
     else -> notReachable()
 }
 
-fun GraphNode.containingClass() = when (this) {
+fun Any.containingClass() = when (this) {
     is AnalyzeClass -> reference
     is AnalyzeMethod -> containingClass
+    is ClassReference -> this
     else -> notReachable()
 }
 
@@ -194,6 +195,13 @@ fun ClassReference.createBoxShape() = DotShape(name, diagramId()).with {
     shape = Rectangle
     style = "filled"
     fillColor = "#FFFFFF"
+}
+
+fun AnalyzeMethod.createShape(visualConfig: DiagramVisualizationConfiguration) = DotShape(signature(visualConfig), diagramId()).with {
+    tooltip = containingClass.name + "\n\n" + javaDoc
+    fontColor = visibility.color()
+    style = "filled"
+    fillColor = "white"
 }
 
 fun AnalyzeClass.createHTMLShape(config: DiagramVisualizationConfiguration) = DotHTMLShape(reference.name, diagramId()).with {

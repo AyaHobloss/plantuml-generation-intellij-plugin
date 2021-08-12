@@ -100,7 +100,7 @@ class CodeStructureAnalysis {
     }
 
     private fun perRootNode(diagramCreation: RootNodeBuildContext.() -> Unit): List<Pair<String, String>>{
-        return rootNodes.sortedBy { it.diagramId() }.mapIndexed() { i, rootNode ->
+        return rootNodes.sortedBy { it.diagramId() }.mapIndexed { i, rootNode ->
             val diagramContent = RootNodeBuildContext(this, rootNode).buildDiagram(diagramCreation)
             val diagramFileName = actionContext.plantUmlNamingPattern!!(actionContext, rootNode, i)
 

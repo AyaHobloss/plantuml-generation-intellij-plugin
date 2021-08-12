@@ -24,7 +24,7 @@ class RootNodeBuildContext(val context: CodeStructureAnalysis,
     var classNodes: Set<AnalyzeClass>
     var edges = mutableListOf<SquashedGraphEdge>()
 
-    private val groupHierarchyCluster = DotHierarchicalGroupCluster() { _, packageCluster, color, isLast ->
+    private val groupHierarchyCluster = DotHierarchicalGroupCluster { _, packageCluster, color, isLast ->
         packageCluster.config.style = "filled"
         if(isLast && config.wrapMethodsWithItsClass){
             packageCluster.config.fillColor = "white"
@@ -42,8 +42,8 @@ class RootNodeBuildContext(val context: CodeStructureAnalysis,
                 .collect(Collectors.groupingByConcurrent { it?.javaClass })
 
         when(val rootNode = root.aggregateIfNeeded()){
-            is AnalyzeClass -> types.getOrPut(AnalyzeClass::class.java.cast(), { mutableListOf() })?.add(rootNode)
-            is AnalyzeMethod -> types.getOrPut(AnalyzeMethod::class.java.cast(), { mutableListOf() })?.add(rootNode)
+            is AnalyzeClass -> types.getOrPut(AnalyzeClass::class.java.cast()) { mutableListOf() }?.add(rootNode)
+            is AnalyzeMethod -> types.getOrPut(AnalyzeMethod::class.java.cast()) { mutableListOf() }?.add(rootNode)
         }
 
         classNodes = types[AnalyzeClass::class.java.cast()]?.toSet().cast<Set<AnalyzeClass>>() ?: emptySet()
@@ -86,7 +86,7 @@ class RootNodeBuildContext(val context: CodeStructureAnalysis,
         return containingClass.grouping(config.wrapMethodsWithItsClass)
     }
 
-    fun ClassReference.grouping(classWrapper: Boolean = false): DotCluster {
+    private fun ClassReference.grouping(classWrapper: Boolean = false): DotCluster {
         if(config.nodeGrouping == NodeGrouping.None) return groupHierarchyCluster
 
         var group = group(config.nodeGrouping, visualizationConfig)
@@ -95,13 +95,12 @@ class RootNodeBuildContext(val context: CodeStructureAnalysis,
             group = Grouping(name, group.path.takeIf { it != "" }?.let { "$it.${group.name}" } ?: group.name)
         }
 
-        // TODO inline in pathCluster
         return groupHierarchyCluster.groupCluster(group)
     }
 
     fun AnalyzeClass.grouping() = reference.grouping()
 
-    fun searchEdges(): List<SquashedGraphEdge> {
+    private fun searchEdges(): List<SquashedGraphEdge> {
         return cache.search(context.traversalFilter) {
             roots = root.toSingleList()
             forwardDepth = config.forwardDepth

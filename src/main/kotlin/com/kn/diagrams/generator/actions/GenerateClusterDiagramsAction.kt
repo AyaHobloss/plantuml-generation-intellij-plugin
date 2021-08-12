@@ -1,6 +1,7 @@
 package com.kn.diagrams.generator.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.psi.PsiDirectory
 import com.kn.diagrams.generator.config.ClusterConfiguration
 import com.kn.diagrams.generator.generator.createClusterDiagramUmlContent
 import com.kn.diagrams.generator.settings.ConfigurationDefaults
@@ -28,5 +29,10 @@ class GenerateClusterDiagramAction : AbstractDiagramAction<ClusterConfiguration>
                 defaults.details
         )
     }
+
+    override fun writeDiagramToFile(directory: PsiDirectory, diagramFileName: String, diagramContent: String) {
+        super.writeDiagramToFile(directory, directory.findNonExistingFile(diagramFileName), diagramContent)
+    }
+
 
 }
