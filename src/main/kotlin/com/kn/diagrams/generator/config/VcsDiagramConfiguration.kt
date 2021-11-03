@@ -17,6 +17,7 @@ class VcsConfiguration(var projectClassification: ProjectClassification,
 }
 
 class VcsDiagramDetails(
+        var nodeSelection: VcsNodeSelection = VcsNodeSelection(),
         @CommentWithValue("a cross-product is calculated and consumes your resources")
         var ignoreCommitsAboveFileCount: Int = 600,
         var squashCommitsContainingOneTicketReference: Boolean = true,
@@ -27,6 +28,7 @@ class VcsDiagramDetails(
         var commitFilter: CommitFilter = CommitFilter.All,
         var showMaximumNumberOfEdges: Int = 30,
         var showMaximumNumberOfIsolatedNodes: Int = 20,
+        @CommentWithValue("format YYYY-MM-dd")
         var startDay: String? = "",
         var endDay: String? = "",
         @CommentWithEnumValues
@@ -39,7 +41,6 @@ class VcsDiagramDetails(
         @CommentWithEnumValues
         var edgeColorCoding: EdgeColorCoding = EdgeColorCoding.None,
         var coloredEdgeFactor: Double = 15.0,
-
         var coloredEdgeWidthFactor: Double = 1.0,
 
         @CommentWithEnumValues
@@ -48,12 +49,17 @@ class VcsDiagramDetails(
         var componentEdgeAggregationMethod: EdgeAggregation = EdgeAggregation.ClassRatioWithCommitSize,
         @CommentWithValue("weight * (1 / size ratio)^sizeNormalization, one commit should have a higher impact for smaller aggregates but a smaller impact on bigger aggregates")
         var sizeNormalization: Double = 0.0
+)
 
+
+class VcsNodeSelection(
+        var className: String = "",
+        var classPackage: String = "",
 )
 
 enum class CommitFilter{ All, Matching, NotMatching }
 enum class NodeSizing { None, FileCount, WeightDistribution }
-enum class NodeColorCoding { None, Layer, Component, WeightDistribution, CodeCoverage }
+enum class NodeColorCoding { None, Layer, Component, WeightDistribution }
 enum class EdgeColorCoding { None, WeightDistribution }
 enum class EdgeAggregation{ GraphConnections, CommitCount, TotalTouchedClasses, TouchedClassesOfCommit, ClassRatioWithCommitSize }
 enum class VcsNodeAggregation{ None, Component, Layer, ComponentAndLayer }

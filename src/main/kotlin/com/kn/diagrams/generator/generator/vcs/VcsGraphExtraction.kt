@@ -7,37 +7,45 @@ import com.kn.diagrams.generator.generator.vcs.UndirectedEdge
 import com.kn.diagrams.generator.generator.vcs.VcsCommit
 import com.kn.diagrams.generator.generator.vcs.VcsVisualization
 import com.kn.diagrams.generator.graph.ClassReference
+import com.kn.diagrams.generator.graph.included
 import java.net.URL
 import java.util.stream.Stream
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.pow
-import kotlin.math.roundToInt
+import kotlin.math.*
 import kotlin.streams.toList
 
 
 class AggregatedVcsGraph(val context: VcsVisualization) {
     val groupByAggregation: Map<UndirectedEdge<Aggregate>, List<UndirectedClassEdgeWithCommitInfo>>
-    val weightsPerEdges: Map<UndirectedEdge<Aggregate>, Int>
-    val commitsPerEdges: Map<UndirectedEdge<Aggregate>, Int>
-    val totalWeight: Int
-    var totalEdgesCount: Int
-    var totalNodesCount: Int
+    val weightsPerEdges: Map<UndirectedEdge<Aggregate>, Long>
+    val commitsPerEdges: Map<UndirectedEdge<Aggregate>, Long>
+    val totalWeight: Long
+    var totalEdgesCount: Long
+    var totalNodesCount: Long
 
     init {
         with(context) {
             groupByAggregation = context.filteredCommits
                     .createFullyConnectedEdges()
+                    .matchingNodeSelection()
                     .groupByAggregation()
             commitsPerEdges = groupByAggregation.commitCount()
 
             weightsPerEdges = groupByAggregation.calculateWeights()
-            totalEdgesCount = weightsPerEdges.noInnerAggregateChanges().keys.size
+            totalEdgesCount = weightsPerEdges.noInnerAggregateChanges().keys.size.toLong()
 
             totalWeight = weightsPerEdges.values.sum()
-            totalNodesCount = weightsPerEdges.keys.flatMap { sequenceOf(it.from, it.to) }.distinct().size
+            totalNodesCount = weightsPerEdges.keys.flatMap { sequenceOf(it.from, it.to) }.distinct().size.toLong()
         }
     }
+
+    private fun Map<UndirectedEdge<ClassReference>, List<VcsCommit>>.matchingNodeSelection(): Map<UndirectedEdge<ClassReference>, List<VcsCommit>>{
+        if (context.detailsConfig.nodeSelection.let { it.className == "" && it.classPackage == "" }) return this
+
+        return filter { (edge, _) -> edge.from.matchingSelection() || edge.to.matchingSelection() }
+    }
+
+    private fun ClassReference.matchingSelection() = included(context.detailsConfig.nodeSelection.className, context.detailsConfig.nodeSelection.classPackage)
+
 
     private fun List<VcsCommit>.createFullyConnectedEdges() = parallelStream()
             .flatMap { commit ->
@@ -58,24 +66,24 @@ class AggregatedVcsGraph(val context: VcsVisualization) {
 
     // IMPROVEMENT: use LOC instead of file count
     // IMPROVEMENT: use relation based on commit time - e.g. project is growing over time and earlier commits are weighted based on total file count
-    private fun Map<UndirectedEdge<Aggregate>, List<UndirectedClassEdgeWithCommitInfo>>.calculateWeights(): Map<UndirectedEdge<Aggregate>, Int> {
+    private fun Map<UndirectedEdge<Aggregate>, List<UndirectedClassEdgeWithCommitInfo>>.calculateWeights(): Map<UndirectedEdge<Aggregate>, Long> {
         return when (context.detailsConfig.componentEdgeAggregationMethod) {
             EdgeAggregation.ClassRatioWithCommitSize -> mapValues { entry ->
                 entry.value
                         .groupBy { it.commits.map { change -> (change.message + change.time) } }
-                        .values.sumBy { changes ->
+                        .values.sumOf { changes ->
                             val leftNode = entry.key.sortedNodes().first()
                             val rightNode = entry.key.sortedNodes().last()
                             val classes = changes.flatMap { it.edge.sortedNodes() }.distinct()
 
                             if (entry.key.isLoop()) {
-                                (100.0 * classes.size * context.stats.sizeNormalizationFactor(leftNode)).toInt()
+                                (100.0 * classes.size * context.stats.sizeNormalizationFactor(leftNode)).toLong()
                             } else {
                                 val changesLeft = classes.count { context.aggregation(it) == leftNode }.toDouble() * context.stats.sizeNormalizationFactor(leftNode)
                                 val changesRight = classes.count { context.aggregation(it) == rightNode }.toDouble() * context.stats.sizeNormalizationFactor(rightNode)
                                 val ratio = min(changesLeft, changesRight) / max(changesLeft, changesRight)
 
-                                (100.0 * ratio * classes.size).toInt()
+                                (100.0 * ratio * classes.size).toLong()
                             }
                         }
             }
@@ -85,26 +93,26 @@ class AggregatedVcsGraph(val context: VcsVisualization) {
                         .values.sumByDouble { changes ->
                             changes.flatMap { it.edge.sortedNodes() }.distinct()
                                     .sumByDouble { context.stats.sizeNormalizationFactor(it) }
-                        }.roundToInt()
+                        }.roundToLong()
             }
             EdgeAggregation.TotalTouchedClasses -> mapValues { entry ->
                 entry.value
                         .flatMap { it.edge.sortedNodes() }.distinct()
                         .sumByDouble { context.stats.sizeNormalizationFactor(it) }
-                        .roundToInt()
+                        .roundToLong()
             }
             EdgeAggregation.CommitCount -> mapValues { entry ->
-                commitsPerEdges[entry.key] ?: 0
+                commitsPerEdges[entry.key] ?: 0L
             }
-            EdgeAggregation.GraphConnections -> mapValues { entry -> entry.value.sumBy { it.commits.size } }
+            EdgeAggregation.GraphConnections -> mapValues { entry -> entry.value.sumOf { it.commits.size.toLong() } }
         }
     }
 
-    private fun Map<UndirectedEdge<Aggregate>, List<UndirectedClassEdgeWithCommitInfo>>.commitCount(): Map<UndirectedEdge<Aggregate>, Int> {
+    private fun Map<UndirectedEdge<Aggregate>, List<UndirectedClassEdgeWithCommitInfo>>.commitCount(): Map<UndirectedEdge<Aggregate>, Long> {
         return mapValues { entry ->
             entry.value.flatMap { it.commits }
                     .distinctBy { it.message + it.time }
-                    .count()
+                    .count().toLong()
         }
     }
 }
@@ -112,13 +120,11 @@ class AggregatedVcsGraph(val context: VcsVisualization) {
 class UndirectedClassEdgeWithCommitInfo(val edge: UndirectedEdge<ClassReference>, val commits: List<VcsCommit>)
 
 class VisibleVcsGraph(val context: VcsVisualization) {
-    private val maxValidWeight: Int
-    val sumWeight: Int
+    private val maxValidWeight: Long
+    val sumWeight: Long
 
-    val edges: Map<UndirectedEdge<Aggregate>, Int>
-    val nodes: Map<Aggregate, Int>
-
-    val codeCoverage: Map<Aggregate, Double?> // TODO remove
+    val edges: Map<UndirectedEdge<Aggregate>, Long>
+    val nodes: Map<Aggregate, Long>
 
     init {
         with(context) {
@@ -138,26 +144,21 @@ class VisibleVcsGraph(val context: VcsVisualization) {
 
             nodes = (nodesWithWeightFromEdges + isolatedNodesWithWeight).toMap()
 
-            codeCoverage = if(detailsConfig.nodeAggregation == VcsNodeAggregation.None){
-                nodes.keys.map { it to it.getCodeCoverage() }.toMap()
-            }else{
-                emptyMap()
-            }
         }
     }
 
-    private fun Map<UndirectedEdge<Aggregate>, Int>.nodesOnly() = keys.flatMap { sequenceOf(it.from, it.to) }.toSet()
+    private fun Map<UndirectedEdge<Aggregate>, Long>.nodesOnly() = keys.flatMap { sequenceOf(it.from, it.to) }.toSet()
 
-    private fun Map<UndirectedEdge<Aggregate>, Int>.takeHighestWeightedEdges() = entries
+    private fun Map<UndirectedEdge<Aggregate>, Long>.takeHighestWeightedEdges() = entries
             .sortedByDescending { (_, weight) -> weight }
             .take(context.detailsConfig.showMaximumNumberOfEdges)
             .map { it.key to it.value }.toMap()
 
-    private fun Map<UndirectedEdge<Aggregate>, Int>.visibleInnerComponentChangesOrOverMinimumWeight() = this.filter { (edge, weight) ->
+    private fun Map<UndirectedEdge<Aggregate>, Long>.visibleInnerComponentChangesOrOverMinimumWeight() = this.filter { (edge, weight) ->
         weight >= maxValidWeight || (edge.isLoop() && anyEdgeFor(edge.from, maxValidWeight))
     }
 
-    private fun pickWeightByNumberOfEdgesToShow(symmetricWeightedEdges: Map<UndirectedEdge<Aggregate>, Int>): Int {
+    private fun pickWeightByNumberOfEdgesToShow(symmetricWeightedEdges: Map<UndirectedEdge<Aggregate>, Long>): Long {
         return symmetricWeightedEdges.values.asSequence().sortedDescending()
                 .mapIndexed { edges, weight -> weight to edges }
                 .groupBy { (weight, _) -> weight }
@@ -224,26 +225,8 @@ class AggregateDetails(visualizationContext: VcsVisualization) {
 // needed for Classes with same name under different package
 data class Aggregate(val key: String, val display: String = key)
 
-private fun Map<UndirectedEdge<Aggregate>, Int>.anyEdgeFor(aggregate: Aggregate, minimumWeight: Int) = this
+private fun Map<UndirectedEdge<Aggregate>, Long>.anyEdgeFor(aggregate: Aggregate, minimumWeight: Long) = this
         .any { (edge, weight) -> edge.contains(aggregate) && weight >= minimumWeight }
 
-private fun Map<UndirectedEdge<Aggregate>, Int>.noInnerAggregateChanges() = filterNot { it.key.isLoop() }
+private fun Map<UndirectedEdge<Aggregate>, Long>.noInnerAggregateChanges() = filterNot { it.key.isLoop() }
 
-private fun Aggregate.getCodeCoverage(): Double?{
-    try {
-        val sonarResourceKey = URL("http://sonar-salog.int.kn:8080/api/components/suggestions?s=$display.java&recentlyBrowsed=com.kn%3Asalog-aggregator%3Atrunk%2Ccom.kn%3Asalog-aggregator%3Atrunk")
-                .readText()
-                .split("\"key\":\"")
-                .map { it.substringBefore("\"") }
-                .filter { it.startsWith("com.kn:salog-aggregator:trunk:") }
-                .map { it.replace("/", "%2F").replace(":", "%3A") }
-                .firstOrNull { it.contains("$display.java") } ?: return null
-
-        val url = "http://sonar-salog.int.kn:8080/api/components/app?component=$sonarResourceKey"
-        val response = URL(url).readText().substringAfter("\"coverage\":\"").substringBefore("\"")
-
-        return response.toDoubleOrNull()
-    } catch (e: Exception){
-        return null
-    }
-}

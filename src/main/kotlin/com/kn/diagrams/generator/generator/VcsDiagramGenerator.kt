@@ -6,7 +6,7 @@ import com.kn.diagrams.generator.builder.addLink
 import com.kn.diagrams.generator.generator.vcs.VcsAnalysis
 import com.kn.diagrams.generator.generator.vcs.buildDiagram
 import com.kn.diagrams.generator.generator.vcs.percent
-
+// TODO nodes selection to still see dependencies to other stuff; check node selection in cluster diagram
 fun createVcsContent(actionContext: ActionContext,
                      commits: VcsAnalysis.() -> Unit = VcsAnalysis::loadAndCacheRawCommits): List<Pair<String, String>> {
     return VcsAnalysis(actionContext.config(), actionContext.project, commits) {
@@ -30,11 +30,6 @@ fun createVcsContent(actionContext: ActionContext,
                         "/ commits: ${ aggregate.commitCount() } &#013;" +
                         "component: ${ aggregate.component() ?: "-" } &#013;" +
                         "layer: ${ aggregate.layer() ?: "-"}"
-
-                // TODO remove
-                aggregate.codeCoverage()?.let {
-                    tooltip += "&#013;code test coverage: $it"
-                }
 
                 fillColor = aggregate.weightOrStructureBasedColor()
                 fontSize = aggregate.fontSize()

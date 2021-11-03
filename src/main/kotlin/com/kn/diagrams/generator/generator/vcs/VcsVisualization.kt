@@ -36,8 +36,6 @@ class VcsVisualization(val context: VcsAnalysis) {
     fun Aggregate.commitCount() = UndirectedEdge(this, this).commitCount()
     fun UndirectedEdge<Aggregate>.commitCount() = aggregatedGraph.commitsPerEdges.getOrDefault(this, null) ?: 0
 
-    fun Aggregate.codeCoverage() = visibleGraph.codeCoverage.getOrDefault(this, null)
-
     fun Aggregate.nodeSize(): Double? {
         return when(detailsConfig.nodeSize){
             NodeSizing.None -> null
@@ -91,13 +89,6 @@ class VcsVisualization(val context: VcsAnalysis) {
             NodeColorCoding.WeightDistribution -> {
                 val red = (255.0 * detailsConfig.coloredNodeFactor * weight() / visibleGraph.sumWeight).toInt().clamp(0, 255)
                 Color(255, 255 - red, 255 - red).toHex("#")
-            }
-            NodeColorCoding.CodeCoverage -> {
-                val coverage = codeCoverage() ?: return null
-                val red = (255.0 * (100 - coverage)) / 100
-                val green = (255.0 * coverage) / 100
-
-                Color(red.toInt(), green.toInt() , 0).toHex("#")
             }
             NodeColorCoding.None -> null
         }

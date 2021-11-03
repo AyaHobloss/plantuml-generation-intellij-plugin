@@ -70,9 +70,11 @@ class ClusterBuildingContext(actionContext: ActionContext, init: ClusterDiagramC
 
                     val allCalls = calls + eliminationMatrix.replacedDependenciesFor(dependency).flatMap { clustersToEdges[it] ?: emptyList()}
 
-                    val invertedDependencies = calls.filter { edge ->
-                        edge.isInverted(cache, visualConfig)
-                    }.filter { it in calls }
+                    val invertedDependencies = if(config.details.showInvertedDependenciesExplicitly) {
+                        calls.filter { edge ->
+                            edge.isInverted(cache, visualConfig)
+                        }.filter { it in calls }
+                    } else emptyList()
 
 
                     if (invertedDependencies.isNotEmpty()) {
@@ -81,7 +83,7 @@ class ClusterBuildingContext(actionContext: ActionContext, init: ClusterDiagramC
 
                     val withoutInverted = allCalls - invertedDependencies
                     if (withoutInverted.isNotEmpty()) {
-                        allEdges += ClusterEdge(to, from, withoutInverted.distinctBy { it.from() to it.to() }, false)
+                        allEdges += ClusterEdge(from, to, withoutInverted.distinctBy { it.from() to it.to() }, false)
                     }
                 }
 
@@ -172,6 +174,8 @@ open class ClusterDiagramContext(actionContext: ActionContext, init: ClusterDiag
 
     fun List<GraphNode>.clusterTo(clusterName: String) = ClusterDefinition(associate { it.nameInCluster() to clusterName })
 
+    // TODO SimplifiedNodes have a lot of missing edges
+    // TODO cluster definition is empty when optimization is used?!
     private fun GraphNode.cluster() = clusterDefinition.cluster(nameInCluster()) ?: notReachable()
     private fun ClassReference.cluster() = clusterDefinition.cluster(this.name) ?: notReachable()
     fun Any.cluster() = when(this){

@@ -5,6 +5,7 @@ import com.kn.diagrams.generator.config.LeidenParametersVariation
 import com.kn.diagrams.generator.config.serializer
 import com.kn.diagrams.generator.createIfNotExists
 import com.kn.diagrams.generator.generator.containingClass
+import com.kn.diagrams.generator.throwExceptionIfCanceled
 import nl.cwts.networkanalysis.run.RunNetworkClustering
 import java.io.File
 import kotlin.math.pow
@@ -29,7 +30,7 @@ fun ClusterDiagramContext.loadLeidenClusters(): ClusterDefinition {
     if(config.details.leiden.optimizeClusterDistribution){
         val bestClusters = variate(config.details.leiden.leidenOptimization).parallelStream()
                 .map {
-                    if(ProgressManager.getGlobalProgressIndicator()?.isCanceled == true) throw RuntimeException("aborted")
+                    throwExceptionIfCanceled()
                     it to edgesToClusters() }.toList()
                 .sortedBy { score(it.second) }
                 .take(20)

@@ -1,22 +1,17 @@
 package com.kn.diagrams.generator.graph
 
-import com.google.common.base.Stopwatch
 import com.google.common.collect.Streams
 import com.intellij.codeInsight.completion.AllClassesGetter
 import com.intellij.codeInsight.completion.PlainPrefixMatcher
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiMethod
 import com.intellij.psi.search.GlobalSearchScope
 import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.nonBlockingRead
+import com.kn.diagrams.generator.throwExceptionIfCanceled
 import java.util.*
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.stream.Collectors
-import kotlin.collections.LinkedHashSet
 
 
 class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, searchMode: SearchMode) {
@@ -38,21 +33,17 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
     }
 
     private fun addClassesToCache(allClasses: MutableList<PsiClass>) {
-        val stop = Stopwatch.createStarted()
-
-        val i = AtomicInteger(0)
         val chunks = allClasses.chunked(10)
         ProgressManager.getGlobalProgressIndicator()?.text = "Cache class details"
 
         chunks.parallelStream().forEach { chunk ->
-            if(ProgressManager.getGlobalProgressIndicator()?.isCanceled == true) throw RuntimeException("aborted")
+            throwExceptionIfCanceled()
 
             chunk.forEach { psiClass ->
                 nonBlockingRead {
                     add(AnalyzeClass(psiClass, filter))
                 }
             }
-
         }
 
         // relation to other classes is needed, so all classes must be loaded first
@@ -66,29 +57,10 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
                 .forEach { (key, _) -> classes.remove(key) }
     }
 
-    fun classFor(psiClass: PsiClass?): AnalyzeClass? {
-        if (psiClass == null) return null
-        return classes[psiClass.reference().id()]
-    }
-
-    fun fromConfigReference(ref: String): GraphNode? {
-        val clazz = classes[ClassReference(ref.substringBefore("#")).id()]
-        return if(ref.contains("#")){
-            val simpleSignature = ref.substringAfter("#")
-
-            clazz?.methods?.values
-                 ?.firstOrNull { it.simpleSignature() == simpleSignature }
-        } else clazz
-    }
     fun methodFor(methodId: String): AnalyzeMethod? {
         val classId = ClassReference(methodId.substringBefore("#")).id()
 
         return classes[classId]?.methods?.get(methodId)
-    }
-
-    fun methodFor(psiMethod: PsiMethod?): AnalyzeMethod? {
-        if (psiMethod == null) return null
-        return classes.values.asSequence().mapNotNull { it.methods[psiMethod.id()] }.firstOrNull()
     }
 
     fun allInheritedClasses(root: ClassReference): List<AnalyzeClass> {
@@ -135,7 +107,6 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
     }
 
     private fun optimize() {
-        val stop = Stopwatch.createStarted()
         ProgressManager.getGlobalProgressIndicator()?.text = "Datastructures getting optimized"
 
 
@@ -186,11 +157,12 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
 
     fun search(filter: TraversalFilter, config: SearchContext.() -> Unit): Set<List<SquashedGraphEdge>> {
         ProgressManager.getGlobalProgressIndicator()?.text = "Paths are searched and filtered"
-        val stop = Stopwatch.createStarted()
         val context = SearchContext()
         config(context)
 
         val findings = context.roots.parallelStream().flatMap { root ->
+            throwExceptionIfCanceled()
+
             val forwardChains = context.forwardDepth?.takeIf { it > 0 }?.let {
                 FindContext(this, Direction.Forward, filter, it, context.edgeMode).find(root)
             } ?: emptyList()
@@ -199,7 +171,7 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
             } ?: emptyList()
 
             Streams.concat(forwardChains.stream(), backwardChains.stream())
-        }.collect(Collectors.toCollection { LinkedHashSet<List<SquashedGraphEdge>>() })
+        }.collect(Collectors.toCollection { LinkedHashSet() })
 
         ProgressManager.getGlobalProgressIndicator()?.text = "Diagram is generated"
 

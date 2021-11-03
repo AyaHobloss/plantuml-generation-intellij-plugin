@@ -39,7 +39,7 @@ fun createClusterDiagramUmlContent(actionContext: ActionContext): List<Pair<Stri
                 forEachNode { dot.nodes.add(this.toClusterDotNode()) }
 
                 forEachEdge {
-                    dot.addLink(to, from) {
+                    dot.addLink(from, to) {
                         // IMPROVE: find the GraphDirectedEdge (maybe hidden) between both clusters and count the context
                         if(config.details.showCallsInEdgeToolTips){
                             tooltip = calls.allCalls(false)
