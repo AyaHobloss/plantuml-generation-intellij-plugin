@@ -61,7 +61,7 @@
   <depends>com.intellij.java</depends>
 
   <actions>
-    <group>
+    <group id="ap.diagrams.generator">
       <separator/>
       <action id="GenerateFlowDiagramAction" class="com.kn.diagrams.generator.actions.GenerateFlowDiagramsAction" text="Generate Flow Diagram"/>
       <action id="GenerateCallDiagramAction" class="com.kn.diagrams.generator.actions.GenerateCallDiagramsAction" text="Generate Call Diagrams"/>
@@ -79,6 +79,8 @@
 
     <applicationConfigurable instance="com.kn.diagrams.generator.settings.DiagramGeneratorSettingsPage"/>
     <applicationService serviceImplementation="com.kn.diagrams.generator.settings.DiagramGenerationSettings"/>
+
+    <notificationGroup id="Diagram Generation plugin" displayType="BALLOON" isLogByDefault="true"/>
   </extensions>
 
 </idea-plugin>

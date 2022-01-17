@@ -1,7 +1,7 @@
 package com.kn.diagrams.generator.settings
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
@@ -39,7 +39,7 @@ class DiagramGenerationSettings : PersistentStateComponent<DiagramGenerationSett
         @JvmStatic
         val instance: DiagramGenerationSettings
             get() {
-                val settings = ServiceManager.getService(DiagramGenerationSettings::class.java)
+                val settings = ApplicationManager.getApplication().getService(DiagramGenerationSettings::class.java)
 
                 if (StringUtils.isBlank(settings.projectClassification)) {
                     settings.projectClassification = toJsonWithComments(ProjectClassification())

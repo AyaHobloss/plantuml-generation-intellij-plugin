@@ -1,17 +1,14 @@
 package com.kn.diagrams.generator.notifications
 
-import com.intellij.notification.NotificationDisplayType
-import com.intellij.notification.NotificationGroup
+import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiMethod
 
 fun notifyError(project: Project?, text: String) {
     if (project == null) return
-    NotificationGroup("Diagram Generation plugin", NotificationDisplayType.BALLOON, true)
-            .createNotification(text, NotificationType.ERROR)
-            .notify(project)
+    NotificationGroupManager.getInstance().getNotificationGroup("Diagram Generation plugin")
+        .createNotification(text, NotificationType.ERROR)
+        .notify(project)
 }
 
 fun notifyErrorOccurred(project: Project?) {
