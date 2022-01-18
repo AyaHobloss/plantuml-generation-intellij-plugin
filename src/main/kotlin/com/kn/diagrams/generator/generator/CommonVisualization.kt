@@ -153,6 +153,7 @@ fun Variable?.cardinality(): String {
 
     val isMandatory = isPrimitive
             || castSafelyTo<AnalyzeField>()?.isEnumInstance == true
+            || castSafelyTo<AnalyzeField>()?.isFinal == true
             || hasMandatoryAnnotation()
 
     return when {

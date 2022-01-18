@@ -1,5 +1,6 @@
 package com.kn.diagrams.generator.graph
 
+import com.intellij.lang.jvm.JvmModifier
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.psi.*
@@ -127,6 +128,7 @@ class AnalyzeField(field: PsiField) : Variable(field.name, field.type, field.ann
     val containingClass: ClassReference? = field.containingClass?.reference()
     val visibility: MethodVisibility = field.modifierList?.visibility() ?: MethodVisibility.PACKAGE_LOCAL
     val isEnumInstance: Boolean = field is PsiEnumConstant
+    val isFinal: Boolean = field.hasModifier(JvmModifier.FINAL)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
