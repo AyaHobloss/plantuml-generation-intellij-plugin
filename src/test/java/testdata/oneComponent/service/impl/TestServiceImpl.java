@@ -8,6 +8,8 @@ import testdata.oneComponent.service.TestDataService;
 
 public class TestServiceImpl implements TestDataService {
 
+    public final String finalConstant = "[1]";
+
     @Autowired
     public TestManager manager;
 

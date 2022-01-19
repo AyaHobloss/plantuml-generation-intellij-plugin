@@ -128,6 +128,7 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
     fun testCardinality() {
         diagram = classDiagram(TestFacadeImpl::class)
 
+        assertClassField(TestServiceImpl::finalConstant, cardinalityMandatory()) // final
         assertClassField(TestServiceImpl::manager, cardinalityMandatory()) // @Autowired
         assertClassField(TestServiceImpl::mapper, cardinalityOptional()) // @Autowired with required = false
         assertClassField(TestManagerImpl::dao, cardinalityOptional()) // no @Autowired
@@ -222,8 +223,8 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
     @Test
     fun testNoTypesOnMethodsShown() {
         diagram = classDiagram(TestServiceImpl::class) {
-            details.showMethodParameterTypes = true
-            details.showMethodParameterNames = true
+            details.showMethodParameterTypes = false
+            details.showMethodParameterNames = false
             details.showMethodReturnType = false
         }
 

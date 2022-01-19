@@ -112,26 +112,35 @@ abstract class AbstractGeneratorTest : LightJavaCodeInsightFixtureTestCase() {
     private fun edgesSection() = diagram!!.substringAfter("'edges")
 
     private fun String.node(id: String): String? {
-        val matcher = "[^\\S]$id\\[[\\S\\s]*];".toRegex()
-        return matcher.find(this)?.value
+        return when {
+            contains(" $id[") -> id+"["+substringAfter(" $id[").substringBefore("];\n")+"];"
+            contains("\n$id[") -> id+"["+substringAfter("\n$id[").substringBefore("];\n")+"];"
+            else -> null
+        }
     }
 
     private fun String.assertRow(content: String, needsMatch: Boolean): String {
-        val matchPattern = "<TD[\\s\\S]*$content[\\s\\S]*</TD>"
-        val all = matchPattern.toRegex().findAll(this)
-        val match = all.count() == 1
+        val rows = this.substringAfter("<TR>").substringBeforeLast("</TABLE>").split("\n")
+        val matchPattern = "<TD[\\s\\S]*$content[\\s\\S]*/TD>"
 
-        if(match != needsMatch){
+        val matchingRows = rows.filter { row ->
+            val all = matchPattern.toRegex().findAll(row)
+            val match = all.count() == 1
+
+            match
+        }
+
+        if((matchingRows.size == 1) != needsMatch){
             val expectation = (if(needsMatch) "row " else "no row ") + " content '$content' expected"
             assertFalse("$expectation\n\n actual:\n$this", true)
         }
 
-        return all.firstOrNull()?.value ?: ""
+        return matchingRows.firstOrNull() ?: ""
     }
 
     fun assertClassField(field: KProperty<*>, vararg keywords: String){
         assertNode(field.psiClass().diagramId(), true)
-            .assertRow(field.name, true)
+            .assertRow(field.name+":", true)
             .let { row ->
                 keywords.forEach {
                     row.assertRow(it, true)
