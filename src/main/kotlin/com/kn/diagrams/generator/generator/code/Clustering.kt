@@ -8,6 +8,8 @@ import com.kn.diagrams.generator.builder.*
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.escapeHTML
 import com.kn.diagrams.generator.generator.*
+import com.kn.diagrams.generator.generator.vcs.Layer
+import com.kn.diagrams.generator.generator.vcs.staticColor
 import com.kn.diagrams.generator.graph.*
 import com.kn.diagrams.generator.notReachable
 import java.util.*
@@ -212,14 +214,28 @@ open class ClusterDiagramContext(actionContext: ActionContext, init: ClusterDiag
 
     fun loadPackageClusters(): ClusterDefinition {
         val clusters = baseEdges
-                .flatMap { listOf(it.from()!! to it, it.to()!! to it) }
-                .map { (node, edge) -> node.aggregate() to edge }
-                .groupBy { (node, _) -> node.containingClass().diagramPath(visualConfig) }
-                .flatMap { (cluster, links) ->
-                    links.map { (node, _) ->
-                        node.nameInCluster() to cluster
-                    }
-                }.toMap()
+            .flatMap { listOf(it.from()!! to it, it.to()!! to it) }
+            .map { (node, edge) -> node.aggregate() to edge }
+            .groupBy { (node, _) -> node.containingClass().diagramPath(visualConfig) }
+            .flatMap { (cluster, links) ->
+                links.map { (node, _) ->
+                    node.nameInCluster() to cluster
+                }
+            }.toMap()
+
+        return ClusterDefinition(clusters)
+    }
+
+    fun loadLayerClusters(): ClusterDefinition {
+        val clusters = baseEdges
+            .flatMap { listOf(it.from()!! to it, it.to()!! to it) }
+            .map { (node, edge) -> node.aggregate() to edge }
+            .groupBy { (node, _) -> node.containingClass().layer(config.projectClassification).name }
+            .flatMap { (cluster, links) ->
+                links.map { (node, _) ->
+                    node.nameInCluster() to cluster
+                }
+            }.toMap()
 
         return ClusterDefinition(clusters)
     }

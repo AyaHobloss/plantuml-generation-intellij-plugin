@@ -16,7 +16,7 @@ class ClusterConfiguration(var projectClassification: ProjectClassification,
 }
 
 
-enum class ClusterSource{ Package, Leiden, None }
+enum class ClusterSource{ Layer, Package, Leiden, None }
 
 
 class NodeSelection(

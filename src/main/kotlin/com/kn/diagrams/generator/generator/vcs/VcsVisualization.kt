@@ -84,7 +84,7 @@ class VcsVisualization(val context: VcsAnalysis) {
 
     fun Aggregate.weightOrStructureBasedColor(): String? {
         return when (detailsConfig.nodeColorCoding) {
-            NodeColorCoding.Layer -> layer()?.staticColor()?.toHex("#")
+            NodeColorCoding.Layer -> customLayerColor() ?: layer()?.staticColor()?.toHex("#")
             NodeColorCoding.Component -> component()?.staticColor()?.toHex("#")
             NodeColorCoding.WeightDistribution -> {
                 val red = (255.0 * detailsConfig.coloredNodeFactor * weight() / visibleGraph.sumWeight).toInt().clamp(0, 255)
@@ -93,6 +93,10 @@ class VcsVisualization(val context: VcsAnalysis) {
             NodeColorCoding.None -> null
         }
     }
+
+    private fun Aggregate.customLayerColor() = context.config
+        .projectClassification
+        .customLayers[layer()]?.color?.takeIf { it != "" }
 
     private fun aggregation(): ClassReference.() -> Aggregate {
         return when (detailsConfig.nodeAggregation) {

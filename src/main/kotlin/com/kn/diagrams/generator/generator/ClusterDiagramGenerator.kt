@@ -14,10 +14,12 @@ fun createClusterDiagramUmlContent(actionContext: ActionContext): List<Pair<Stri
     return actionContext.createClusterContext{
                 searchEdgesBySelectedNodes()
                 clustering { algorithm -> when(algorithm){
+                    ClusterSource.Layer -> loadLayerClusters()
                     ClusterSource.Package -> loadPackageClusters()
                     ClusterSource.Leiden -> loadLeidenClusters()
                     ClusterSource.None -> clusterRootNodes.clusterTo("cluster_0") // leave empty?
                 } }
+        // TODO visualization Node does not work with Layer/Package clustering
             }.buildNodeBasedDiagram {
                 if(config.details.visualization == ClusterVisualization.Nodes){
                     nodes.forEach { node ->
