@@ -35,13 +35,12 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
 
         assertClassField(ComponentTestData::componentText)
 
-        assertFieldEdge(TestData::subObject, SubTestData::class)
+        assertFieldEdge(TestData::subObject, SubTestData::class, aggregationArrowHead())
         assertNode("String", false)
 
-        assertFieldEdge(SubTestData::subBackReference, TestData::class)
-        assertFieldEdge(SubTestData::subComponentData, ComponentTestData::class)
+        assertFieldEdge(SubTestData::subBackReference, TestData::class, aggregationArrowHead())
+        assertFieldEdge(SubTestData::subComponentData, ComponentTestData::class, aggregationArrowHead())
     }
-
 
     @Test
     fun testZeroDepth() {
@@ -122,6 +121,8 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
         assertClassField(OtherImplementationTestData::otherData)
         assertClassField(OtherImplementationTestData::otherTest)
 
+        assertClassEdge(AbstractInheritanceTestData::class, ImplementationTestData::class, inheritanceArrowHead())
+        assertClassEdge(AbstractInheritanceTestData::class, OtherImplementationTestData::class, inheritanceArrowHead())
     }
 
     @Test
@@ -233,7 +234,16 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
 
         assertClassField(TestServiceImpl::manager, returnType(TestManager::class))
         assertClassField(TestServiceImpl::mapper, returnType(TestDataMapper::class))
+    }
 
+    @Test
+    fun testAggregatedEdges() {
+        diagram = classDiagram(TestServiceImpl::class) {
+            graphTraversal.hideInterfaceCalls = true
+        }
+
+        assertClassEdge(TestServiceImpl::class, TestManagerImpl::class, noArrowHeads())
+        assertNoClassEdge(TestServiceImpl::class, TestManager::class)
     }
 
 }

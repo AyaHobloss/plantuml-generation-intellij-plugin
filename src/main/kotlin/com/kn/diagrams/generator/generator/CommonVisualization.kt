@@ -28,12 +28,14 @@ fun DotDiagramBuilder.addDirectLink(edge: SquashedGraphEdge, config: DiagramVisu
     val hasMoreEdges = edge.edges().size > 1
     val relevantEdge = if (edge.direction == Direction.Forward) edge.edges().last() else edge.edges().first()
 
-    relevantEdge.perContext { context ->
+    relevantEdge.perContext { context, hasMoreSiblingEdges ->
+        // TODO to merge same/bi-directional edges, it needs a Set(from, to)
         val (from, to) = fromAndTo(context, edge)
 
         if (from == to && edge.edges().flatMap { it.context }.any { it is InheritanceType }) {
             return@perContext
         }
+        if(context is ClassAssociation && (from == to || hasMoreSiblingEdges)) return@perContext
 
         addLink(from, to) {
             when (context) {
@@ -46,6 +48,11 @@ fun DotDiagramBuilder.addDirectLink(edge: SquashedGraphEdge, config: DiagramVisu
                 is AnalyzeCall -> {
                     label = context.sequence.toString().takeIf { it != "-1" }.takeIf { config.showCallOrder }
                 }
+
+                // structure diagram related edges
+                is ClassAssociation -> {
+                    label = context.reference
+                }
                 is FieldWithTargetType -> {
                     label = context.field.name + "\n" + context.field.cardinality()
                 }
@@ -54,6 +61,12 @@ fun DotDiagramBuilder.addDirectLink(edge: SquashedGraphEdge, config: DiagramVisu
                     arrowHead = "none"
                     arrowTail = "empty"
                 }
+            }
+
+            if(hasMoreEdges && context !is MethodClassUsage && context !is AnalyzeCall)  {
+                arrowHead = "none"
+                arrowTail = null
+                dir = null
             }
         }
     }
@@ -153,7 +166,7 @@ fun Variable?.cardinality(): String {
 
     val isMandatory = isPrimitive
             || castSafelyTo<AnalyzeField>()?.isEnumInstance == true
-            || castSafelyTo<AnalyzeField>()?.isFinal == true
+            || castSafelyTo<AnalyzeField>()?.isFinal == true // TODO config to treat final fields as mandatory?!
             || hasMandatoryAnnotation()
 
     return when {
@@ -239,8 +252,8 @@ val groupColorLevel = listOf(
     Color(136, 136, 136)
 )
 
-fun GraphDirectedEdge.perContext(mapping: GraphDirectedEdge.(EdgeContext) -> Unit) {
+fun GraphDirectedEdge.perContext(mapping: GraphDirectedEdge.(EdgeContext, Boolean) -> Unit) {
     context.forEach {
-        mapping(this, it)
+        mapping(this, it, context.size > 1)
     }
 }

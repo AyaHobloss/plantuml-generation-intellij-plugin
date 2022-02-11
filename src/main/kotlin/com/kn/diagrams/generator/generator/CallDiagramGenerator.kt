@@ -47,6 +47,7 @@ class CallDiagramGenerator {
 
 private fun CallConfiguration.perPublicMethod(project: Project, creator: (PsiMethod) -> String): List<Pair<String, String>> {
     val requestedMethod = rootMethod
+    val diagramExtension = diagramExtension(project)
 
     val diagramsPerMethod =
         inReadAction {
@@ -58,7 +59,7 @@ private fun CallConfiguration.perPublicMethod(project: Project, creator: (PsiMet
                 val plainDiagram = creator(rootMethod)
                 val diagramText = plainDiagram.attacheMetaData(this)
 
-                "${i}_${inReadAction { rootMethod.name }}_calls" to diagramText
+                "${i}_${inReadAction { rootMethod.name }}_calls" to diagramExtension(diagramText)
             }
 
     if (diagramsPerMethod.isEmpty()) {

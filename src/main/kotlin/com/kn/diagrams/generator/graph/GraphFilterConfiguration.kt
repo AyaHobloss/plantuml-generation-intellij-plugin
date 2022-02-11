@@ -18,7 +18,9 @@ class GraphTraversal(
         @CommentWithValue("indirection: implementation -> interface (is hidden) -> implementation")
         var hideInterfaceCalls: Boolean = true,
         @CommentWithValue("root node is included")
-        var onlyShowApplicationEntryPoints: Boolean = false
+        var onlyShowApplicationEntryPoints: Boolean = false,
+        @CommentWithEnumValues
+        var useMethodCallsForStructureDiagram: CallsFromStructure = CallsFromStructure.ForwardOnly
 )
 
 class GraphRestriction(
@@ -44,6 +46,8 @@ class GraphRestriction(
         var cutGetterAndSetter: Boolean = true,
         var cutConstructors: Boolean = true
 )
+
+enum class CallsFromStructure{ ForwardOnly, BothDirections, No }
 
 enum class SearchMode {
     OpenProject, AllProjects

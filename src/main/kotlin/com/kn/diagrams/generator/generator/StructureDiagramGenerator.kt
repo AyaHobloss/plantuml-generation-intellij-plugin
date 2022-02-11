@@ -23,6 +23,7 @@ class StructureDiagramGenerator {
             forwardDepth = config.graphTraversal.forwardDepth
             backwardDepth = config.graphTraversal.backwardDepth
             edgeMode = EdgeMode.TypesOnly
+            useStructureCalls = config.graphTraversal.useMethodCallsForStructureDiagram
         }.flatten()
 
         val visualizationConfiguration = inReadAction { config.visualizationConfig(root) }
@@ -35,7 +36,8 @@ class StructureDiagramGenerator {
             Aggregation.None -> dot.noAggregation(edges, visualizationConfiguration)
         }
 
-        return listOf("structure" to dot.create().attacheMetaData(config))
+        val diagramExtension = config.diagramExtension(project)
+        return listOf("structure" to diagramExtension(dot.create().attacheMetaData(config)))
     }
 }
 

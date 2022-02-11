@@ -11,6 +11,7 @@ import kotlin.reflect.full.memberProperties
 
 val serializer: Gson = GsonBuilder().setVersion(1.2)
         .setPrettyPrinting()
+        .serializeNulls()
         .create()
 
 fun toJsonWithComments(config: Any) = addComments(serializer.toJson(config), config)
