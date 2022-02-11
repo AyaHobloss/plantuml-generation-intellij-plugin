@@ -54,7 +54,7 @@ fun DotDiagramBuilder.addDirectLink(edge: SquashedGraphEdge, config: DiagramVisu
                     label = context.reference
                 }
                 is FieldWithTargetType -> {
-                    label = context.field.name + "\n" + context.field.cardinality()
+                    label = context.field.name + "\n" + context.field.cardinality(config.projectClassification.treatFinalFieldsAsMandatory)
                 }
                 is InheritanceType -> {
                     dir = "both"
@@ -161,12 +161,12 @@ private fun Variable.hasMandatoryAnnotation(): Boolean {
     }
 }
 
-fun Variable?.cardinality(): String {
+fun Variable?.cardinality(treatFinalFieldsAsMandatory: Boolean): String {
     if (this == null) return ""
 
     val isMandatory = isPrimitive
             || castSafelyTo<AnalyzeField>()?.isEnumInstance == true
-            || castSafelyTo<AnalyzeField>()?.isFinal == true // TODO config to treat final fields as mandatory?!
+            || (treatFinalFieldsAsMandatory && castSafelyTo<AnalyzeField>()?.isFinal == true)
             || hasMandatoryAnnotation()
 
     return when {
@@ -221,7 +221,7 @@ fun AnalyzeClass.createHTMLShape(config: DiagramVisualizationConfiguration) = Do
         fields.sortedWith(compareBy({ !it.isEnumInstance }, { it.name }))
             .forEach { field ->
                 row {
-                    cell(field.visibility.symbol() + "  " + field.name + ": " + field.typeDisplay + " " + field.cardinality())
+                    cell(field.visibility.symbol() + "  " + field.name + ": " + field.typeDisplay + " " + field.cardinality(config.projectClassification.treatFinalFieldsAsMandatory))
                 }
             }
 

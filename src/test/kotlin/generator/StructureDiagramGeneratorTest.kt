@@ -1,5 +1,6 @@
 package generator
 
+import com.kn.diagrams.generator.graph.CallsFromStructure
 import org.junit.Test
 import testdata.inheritenceComponent.entity.AbstractInheritanceTestData
 import testdata.inheritenceComponent.entity.AbstractionInterfaceTestData
@@ -15,7 +16,9 @@ import testdata.oneComponent.entity.mapper.TestDataMapper
 import testdata.oneComponent.richclient.impl.TestDataDtoMapper
 import testdata.oneComponent.richclient.impl.TestFacadeImpl
 import testdata.oneComponent.service.TestDataService
+import testdata.oneComponent.service.impl.TestBackwardUtil
 import testdata.oneComponent.service.impl.TestServiceImpl
+import testdata.oneComponent.service.impl.TestUtil
 import testdata.someComponent.someFocusArea.entity.CardinalityTestData
 import testdata.someComponent.someFocusArea.entity.ComponentTestData
 
@@ -35,11 +38,11 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
 
         assertClassField(ComponentTestData::componentText)
 
-        assertFieldEdge(TestData::subObject, SubTestData::class, aggregationArrowHead())
+        assertFieldEdge(TestData::subObject, SubTestData::class)
         assertNode("String", false)
 
-        assertFieldEdge(SubTestData::subBackReference, TestData::class, aggregationArrowHead())
-        assertFieldEdge(SubTestData::subComponentData, ComponentTestData::class, aggregationArrowHead())
+        assertFieldEdge(SubTestData::subBackReference, TestData::class)
+        assertFieldEdge(SubTestData::subComponentData, ComponentTestData::class)
     }
 
     @Test
@@ -127,15 +130,26 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
 
     @Test
     fun testCardinality() {
-        diagram = classDiagram(TestFacadeImpl::class)
+        diagram = classDiagram(TestFacadeImpl::class){
+            projectClassification.treatFinalFieldsAsMandatory = true
+        }
 
         assertClassField(TestServiceImpl::finalConstant, cardinalityMandatory()) // final
+        assertClassField(TestServiceImpl::noneFinalConstant, cardinalityOptional()) // not final
         assertClassField(TestServiceImpl::manager, cardinalityMandatory()) // @Autowired
         assertClassField(TestServiceImpl::mapper, cardinalityOptional()) // @Autowired with required = false
         assertClassField(TestManagerImpl::dao, cardinalityOptional()) // no @Autowired
         assertClassField(TestFacadeImpl::service, cardinalityMandatory()) // @NotNull
         assertClassField(TestFacadeImpl::mapper, cardinalityOptional()) // no @NotNull
+    }
 
+    @Test
+    fun testFinalCardinalityButNotEnabled() {
+        diagram = classDiagram(TestFacadeImpl::class){
+            projectClassification.treatFinalFieldsAsMandatory = false
+        }
+
+        assertClassField(TestServiceImpl::finalConstant, cardinalityOptional()) // final
     }
 
     @Test
@@ -244,6 +258,34 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
 
         assertClassEdge(TestServiceImpl::class, TestManagerImpl::class, noArrowHeads())
         assertNoClassEdge(TestServiceImpl::class, TestManager::class)
+    }
+
+    @Test
+    fun testAssociationViaCall() {
+        diagram = classDiagram(TestServiceImpl::class) {
+            graphTraversal.useMethodCallsForStructureDiagram = CallsFromStructure.ForwardOnly
+        }
+
+        assertClassEdge(TestServiceImpl::class, TestUtil::class, "save() -> testUtilMethod()")
+    }
+
+    @Test
+    fun testNoAssociationViaCall() {
+        diagram = classDiagram(TestServiceImpl::class) {
+            graphTraversal.useMethodCallsForStructureDiagram = CallsFromStructure.No
+        }
+
+        assertNoClassEdge(TestServiceImpl::class, TestUtil::class)
+    }
+
+    @Test
+    fun testBothAssociationViaCall() {
+        diagram = classDiagram(TestServiceImpl::class) {
+            graphTraversal.useMethodCallsForStructureDiagram = CallsFromStructure.BothDirections
+        }
+
+        assertClassEdge(TestServiceImpl::class, TestUtil::class, "save() -> testUtilMethod()")
+        assertClassEdge(TestBackwardUtil::class, TestServiceImpl::class, "testBackwardUtilMethod() -> save()")
     }
 
 }

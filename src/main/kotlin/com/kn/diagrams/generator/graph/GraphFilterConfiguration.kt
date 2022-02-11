@@ -71,8 +71,8 @@ class ProjectClassification(
         var isInterfaceStructuresPath: String = "",
         var isInterfaceStructuresName: String = "",
         var isEntryPointPath: String = "",
-        var isEntryPointName: String = ""
-
+        var isEntryPointName: String = "",
+        var treatFinalFieldsAsMandatory: Boolean = false
 ) {
 
     fun ClassReference.isEntryPoint() = isEntryPointName.regexBySemicolon().any { it.matches(name) }
