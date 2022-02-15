@@ -36,10 +36,11 @@ public class EdgeCustomization {
     }
 }
 ```
+[Source Code](https://github.com/apfau87/plantuml-generation-intellij-plugin/blob/main/src/test/java/examples/customization/EdgeCustomization.java)
 
 ### Generated Diagram
 
 The node ToDoList and the edge to ToDoItem is now changed. The cardinality is replaced with '[0..n]' and the edge is 
 an aggregation instead of an association.
 
-![](howto_extension.png)
+![](howto_extension.svg)
