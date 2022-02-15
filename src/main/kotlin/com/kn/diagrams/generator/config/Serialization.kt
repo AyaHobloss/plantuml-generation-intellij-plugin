@@ -8,6 +8,7 @@ import com.kn.diagrams.generator.inReadAction
 import java.lang.reflect.Type
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.javaField
 
 val serializer: Gson = GsonBuilder().setVersion(1.2)
         .setPrettyPrinting()
@@ -37,6 +38,12 @@ fun addComments(metadata: String, config: Any): String {
                 } else field.getAnnotation(CommentWithValue::class.java).value
                 newMetadata = newMetadata.replace("\"${field.name}.*\n".toRegex()) { match -> match.value.substringBefore("\n") + " // $comment\n" }
             }
+
+    if(config is DiagramConfiguration){
+        config::extensionCallbackMethod.javaField?.getAnnotation(CommentWithValue::class.java)?.value?.let { comment ->
+            newMetadata = newMetadata.replace("\"extensionCallbackMethod.*\n".toRegex()) { match -> match.value.substringBefore("\n") + " // $comment\n" }
+        }
+    }
 
     return newMetadata
 }

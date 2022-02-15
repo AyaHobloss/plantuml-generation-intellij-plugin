@@ -36,13 +36,13 @@ diagrams you need to filter a lot otherwise the diagram contains too many nodes.
 
 * [Configuration](howto_configuration.md)
 * [Context Menu](howto_context_menu.md)
+* [Diagram Extension](howto_extension.md)
 
 
 ## Installation Requirements
 * Java 1.8 or later
-* IntelliJ (2019.3 or newer)
+* IntelliJ (2021.1 or newer)
 * optional but recommended
-  * Graphviz for diagram rendering (https://graphviz.gitlab.io/download/)
   * PlantUML Integration plugin (https://plugins.jetbrains.com/plugin/7017-plantuml-integration/)
 
 

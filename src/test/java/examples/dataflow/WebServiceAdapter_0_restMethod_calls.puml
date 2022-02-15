@@ -21,7 +21,8 @@ config=CallConfiguration;
     "isInterfaceStructuresPath": "",
     "isInterfaceStructuresName": "",
     "isEntryPointPath": "",
-    "isEntryPointName": ""
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
   },
   "graphRestriction": {
     "classPackageExcludeFilter": "",
@@ -57,7 +58,8 @@ config=CallConfiguration;
     "hideDataStructures": false,
     "hidePrivateMethods": true,
     "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
-    "onlyShowApplicationEntryPoints": false // root node is included
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
   },
   "details": {
     "aggregation": "GroupByClass", // ByClass, GroupByClass, None
@@ -66,10 +68,11 @@ config=CallConfiguration;
     "showMethodReturnType": false,
     "showPackageLevels": 2,
     "showCallOrder": false,
-    "edgeMode": "TypesAndMethods", // TypesOnly, MethodsOnly, TypesAndMethods
+    "edgeMode": "TypesAndMethods", // TypesOnly, MethodsOnly, TypesAndMethods, MethodsAndDirectTypeUsage
     "showDetailedClassStructure": true
   },
-  "rootClass": "examples.dataflow.adapter.WebServiceAdapter"
+  "rootClass": "examples.dataflow.adapter.WebServiceAdapter",
+  "extensionCallbackMethod": null // qualified.class.name#methodName - signature: public static String method(String)
 }
 diagram meta data end '/
 
