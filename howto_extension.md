@@ -41,6 +41,6 @@ public class EdgeCustomization {
 ### Generated Diagram
 
 The node ToDoList and the edge to ToDoItem is now changed. The cardinality is replaced with '[0..n]' and the edge is 
-an aggregation instead of an association.
+a composition instead of an association.
 
 ![](howto_extension.svg)

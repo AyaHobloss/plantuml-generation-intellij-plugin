@@ -8,13 +8,13 @@ This Plugin allows you to create an as-is 2D diagram of your code base. You can 
 
 Display a call hierarchy as a graph and filter unnecessary methods.
 
-![Call Diagram](example_call_diagram.png)
+![Call Diagram](example_call_diagram.svg)
 
 ### Flow Diagram
 
 Instead of using a method call hierarchy the flow diagram contains actions and conditions describing the functionality on a high level.
 
-![Flow Diagram](example_flow_diagram.png)
+![Flow Diagram](example_flow_diagram.svg)
 
 [How To](howto_flow_diagram.md)
 
@@ -22,7 +22,7 @@ Instead of using a method call hierarchy the flow diagram contains actions and c
 
 Show classes, their relationships, cardinalities and group them by components.
 
-![Structure Diagram](example_structure_diagram.png)
+![Structure Diagram](example_structure_diagram.svg)
 
 ### Data Flow Diagram
 
@@ -30,7 +30,7 @@ This is a special combination between structure and call diagram. It allows you 
 to their method calls. Just change the detailed configuration of a call diagram to edgeMode = TypesAndMethods. For bigger
 diagrams you need to filter a lot otherwise the diagram contains too many nodes.
 
-![Data Flow Diagram](example_dataflow_diagram.png)
+![Data Flow Diagram](example_dataflow_diagram.svg)
 
 ## HoTo 
 
