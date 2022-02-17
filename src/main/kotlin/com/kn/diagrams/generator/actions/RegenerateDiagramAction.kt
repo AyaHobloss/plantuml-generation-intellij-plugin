@@ -58,8 +58,9 @@ open class RegenerateDiagramAction : AnAction() {
 
     }
 
-    private fun AnActionEvent.filesFromDirectoryOrSelection() = getData(CommonDataKeys.PSI_FILE)?.let { sequenceOf(it) }
-            ?: pumlFiles(getData(CommonDataKeys.PSI_ELEMENT))
+    private fun AnActionEvent.filesFromDirectoryOrSelection() = inReadAction {
+        getData(CommonDataKeys.PSI_FILE)?.let { sequenceOf(it) } ?: pumlFiles(getData(CommonDataKeys.PSI_ELEMENT))
+    }
 
     @OptIn(ExperimentalStdlibApi::class)
     fun pumlFiles(data: PsiElement?): Sequence<PsiFile> {
