@@ -1,12 +1,7 @@
 package com.kn.diagrams.generator.config
 
 import com.google.gson.*
-import com.intellij.openapi.project.ProjectManager
-import com.intellij.openapi.wm.WindowManager
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
-import com.intellij.psi.search.GlobalSearchScope
 import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.graph.simpleSignature
 import com.kn.diagrams.generator.inReadAction
@@ -14,6 +9,7 @@ import com.kn.diagrams.generator.notifications.notifyErrorClassNotFound
 import java.lang.reflect.Type
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.javaField
 
 val serializer: Gson = GsonBuilder().setVersion(1.3)
         .serializeNulls()
@@ -44,6 +40,12 @@ fun addComments(metadata: String, config: Any): String {
                 newMetadata = newMetadata.replace("\"${field.name}.*\n".toRegex()) { match -> match.value.substringBefore("\n") + " // $comment\n" }
             }
 
+    if(config is DiagramConfiguration){
+        config::extensionCallbackMethod.javaField?.getAnnotation(CommentWithValue::class.java)?.value?.let { comment ->
+            newMetadata = newMetadata.replace("\"extensionCallbackMethod.*\n".toRegex()) { match -> match.value.substringBefore("\n") + " // $comment\n" }
+        }
+    }
+
     return newMetadata
 }
 
@@ -66,6 +68,7 @@ fun typeOf(className: String) = sequenceOf(
             ClusterConfiguration::class.java,
             VcsConfiguration::class.java)
         .firstOrNull { it.simpleName == className }
+
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FIELD)

@@ -1,6 +1,8 @@
 package com.kn.diagrams.generator.graph
 
 import com.intellij.openapi.project.Project
+import com.intellij.lang.jvm.JvmModifier
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
@@ -128,6 +130,7 @@ class AnalyzeField(field: PsiField) : Variable(field.name, field.type, field.ann
     val containingClass: ClassReference? = field.containingClass?.reference()
     val visibility: MethodVisibility = field.modifierList?.visibility() ?: MethodVisibility.PACKAGE_LOCAL
     val isEnumInstance: Boolean = field is PsiEnumConstant
+    val isFinal: Boolean = field.hasModifier(JvmModifier.FINAL)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -187,6 +190,7 @@ class ClassReference: Filterable {
     }
 
     constructor(qualifiedName: String){
+        // TODO fix interface mapping!
         classType = if(qualifiedName.endsWith("Service") || qualifiedName.endsWith("Facade")) ClassType.Interface else ClassType.Class
 
         path = qualifiedName.substringBeforeLast(".")
@@ -364,6 +368,26 @@ fun AnalyzeMethod.simpleSignature() = "$name(${parameter.joinToString(",") { it.
 
 fun String.psiClassFromQualifiedName(project: Project) = JavaPsiFacade.getInstance(project)
             .findClass(this, GlobalSearchScope.allScope(project))
+
+fun String.psiClassFromQualifiedName(project: Project) = inReadAction {
+    JavaPsiFacade.getInstance(project)
+            .findClass(this, GlobalSearchScope.allScope(project))
+}
+
+fun PsiMethod.toSimpleReference() = inReadAction { containingClass?.qualifiedName + "#" + simpleSignature() }
+
+fun PsiMethod.simpleSignature() = "$name(${parameterList.parameters.joinToString(",") { it.type.presentableText }})"
+
+
+fun String.psiMethodFromSimpleReference(project: Project) = inReadAction {
+    val methodSignature = substringAfter("#")
+
+    val classOfMethod = JavaPsiFacade.getInstance(project)
+            .findClass(substringBefore("#"), GlobalSearchScope.allScope(project))
+
+    return@inReadAction classOfMethod?.methods?.firstOrNull { it.simpleSignature() == methodSignature }
+}
+
 
 fun PsiClass.reference() = ClassReference(this)
 fun PsiMethod.id() = containingClass?.qualifiedName + "#" + simpleSignature()

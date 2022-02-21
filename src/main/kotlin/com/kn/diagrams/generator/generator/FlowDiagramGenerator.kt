@@ -1,5 +1,6 @@
 package com.kn.diagrams.generator.generator
 
+import com.intellij.openapi.project.Project
 import com.kn.diagrams.generator.actions.ActionContext
 import com.kn.diagrams.generator.builder.*
 import com.kn.diagrams.generator.cast
@@ -117,6 +118,7 @@ class FlowDiagramGenerator {
     private fun ActionContext.perTerminalTaggedMethod(cache: GraphDefinition, creator: (AnalyzeMethod) -> String?): List<Pair<String, String>> {
         val config = config<FlowConfiguration>()
         var i = 0
+        val diagramExtension = diagramExtension(project)
         return rootNodeIds.mapNotNull { methodId ->
             config.brandWithRootNode(methodId)
             val method = cache.methodFor(methodId) ?: return@mapNotNull null
@@ -125,7 +127,7 @@ class FlowDiagramGenerator {
             val diagramText = plainDiagram.attacheMetaData(config)
 
 
-            plantUmlNamingPattern!!(this, method, i++) to diagramText
+            plantUmlNamingPattern!!(this, method, i++) to diagramExtension(diagramText)
         }
     }
 

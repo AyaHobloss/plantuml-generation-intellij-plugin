@@ -8,6 +8,9 @@ import testdata.oneComponent.service.TestDataService;
 
 public class TestServiceImpl implements TestDataService {
 
+    public final String finalConstant = "[1]";
+    public String noneFinalConstant = "[0..1]";
+
     @Autowired
     public TestManager manager;
 
@@ -21,6 +24,7 @@ public class TestServiceImpl implements TestDataService {
 
     @Override
     public TestDataDs save(TestDataDs data) {
+        TestUtil.testUtilMethod();
         return mapper.mapToTestDataDs(manager.save(mapper.mapToTestData(data)));
     }
 }

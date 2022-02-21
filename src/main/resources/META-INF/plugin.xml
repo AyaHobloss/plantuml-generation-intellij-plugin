@@ -1,24 +1,75 @@
 <idea-plugin>
   <id>com.kn.diagrams.generator.generator</id>
   <name>PlantUML Diagram Generator</name>
-  <version>2021.1.0</version>
+  <version>2022.2.1</version>
   <vendor>Andreas Pfau</vendor>
 
   <idea-version since-build="211"/>
 
-  <description>
-    This Plugin allows you to create an as-is 2D diagram of your code base. You can show only a specific area or specific classes of your code base by customizing the filter logic. The resulting diagram file is in text form (PlantUML) and can be included in the documentation (e.g. AsciiDoc), reviewed in a version control diff or manually adjusted.
-  </description>
+  <description><![CDATA[
+    <p>
+    This Plugin allows you to create an as-is 2D diagram of your code base. You can show only a specific area or
+    specific classes of your code base by customizing the filter logic. The resulting diagram file is in text form
+    (PlantUML) and can be included in the documentation (e.g. AsciiDoc), reviewed in a version control diff or
+    manually adjusted.
+    </p>
+    <br/>
+    <p>Features</p>
+    <ul>
+      <li>Diagrams
+        <ul>
+          <li>Call Hierarchy</li>
+          <li>Class Structure</li>
+          <li>Control Flow</li>
+          <li>Data Flow</li>
+        </ul>
+      </li>
+      <li>A lot of filter options to only show the relevant information</li>
+      <li>Re-generate single diagrams or whole directories recursively</li>
+      <li>Diagram extensions - customize a diagram via a callback</li>
+    </ul>
+    <p>Upcoming Features</p>
+    <ul>
+      <li>Better diagram layout</li>
+      <li>Clustering algorithm</li>
+      <li>VCS changes as base for the graph edges</li>
+      <li>Caching</li>
+      <li>More options to fine tune the diagram layout</li>
+      <li>Mark Git changes in diagram</li>
+    </ul>
+    ]]></description>
 
+  <change-notes><![CDATA[
+      <p>2022.2.0<p>
+      <ul>
+        <li>Some bug fixes and fixed visualization problems</li>
+        <li>Diagram extensions - callback methods to modify the diagram programmatically</li>
+        <li>Final fields can now be configured to be treated as mandatory</li>
+      </ul>
+      <p>2021.1.3<p>
+      <ul>
+        <li>Added 2021.2.* to compatibility</li>
+      </ul>
+      <p>2021.1.2<p>
+      <ul>
+        <li>Added 2021.1.* to compatibility</li>
+        <li>Fixed regeneration action for directories</li>
+      </ul>
+      <p>2021.1.1<p>
+      <ul>
+        <li>Added 2020.3.* to compatibility</li>
+      </ul>
+  ]]></change-notes>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
        on how to target different products -->
   <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.java</depends>
   <depends>com.intellij.java</depends>
+  <depends optional="true" config-file="plugin-withPlantUMLIntegration.xml">plantuml4idea</depends>
 
   <actions>
-    <group>
+    <group id="ap.diagrams.generator">
       <separator/>
       <action id="GenerateCallDiagramAction" class="com.kn.diagrams.generator.actions.GenerateCallDiagramsAction" text="Generate Call Diagrams"/>
       <action id="GenerateStructureDiagramAction" class="com.kn.diagrams.generator.actions.GenerateStructureDiagramAction" text="Generate Structure Diagram"/>
@@ -41,7 +92,7 @@
     <applicationConfigurable instance="com.kn.diagrams.generator.settings.DiagramGeneratorSettingsPage"/>
     <applicationService serviceImplementation="com.kn.diagrams.generator.settings.DiagramGenerationSettings"/>
 
-    <notificationGroup id="Diagram Generation plugin" displayType="BALLOON"/>
+    <notificationGroup id="Diagram Generation plugin" displayType="BALLOON" isLogByDefault="true"/>
   </extensions>
 
 </idea-plugin>

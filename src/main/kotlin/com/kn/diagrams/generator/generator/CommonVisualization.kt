@@ -26,12 +26,14 @@ fun DotDiagramBuilder.addDirectLink(edge: SquashedGraphEdge, config: DiagramVisu
     val hasMoreEdges = edge.edges().size > 1
     val relevantEdge = if (edge.direction == Direction.Forward) edge.edges().last() else edge.edges().first()
 
-    relevantEdge.perContext { context ->
+    relevantEdge.perContext { context, hasMoreSiblingEdges ->
+        // TODO to merge same/bi-directional edges, it needs a Set(from, to)
         val (from, to) = fromAndTo(context, edge)
 
         if (from == to && edge.edges().flatMap { it.context }.any { it is InheritanceType }) {
             return@perContext
         }
+        if(context is ClassAssociation && (from == to || hasMoreSiblingEdges)) return@perContext
 
         // TODO better strategy needed to decide which information is displayed in which cases
         addLink(from.diagramId(), to.diagramId()) {
@@ -45,8 +47,13 @@ fun DotDiagramBuilder.addDirectLink(edge: SquashedGraphEdge, config: DiagramVisu
                 is AnalyzeCall -> {
                     label = context.sequence.toString().takeIf { it != "-1" }.takeIf { config.showCallOrder }
                 }
+
+                // structure diagram related edges
+                is ClassAssociation -> {
+                    label = context.reference
+                }
                 is FieldWithTargetType -> {
-                    label = context.field.name + "\n" + context.field.cardinality()
+                    label = context.field.name + "\n" + context.field.cardinality(config.projectClassification.treatFinalFieldsAsMandatory)
                 }
                 is InheritanceType -> {
                     val hasFullInheritance = edge.edges().all { InheritanceType.Implementation in it.context || InheritanceType.SubClass in it.context }
@@ -56,6 +63,12 @@ fun DotDiagramBuilder.addDirectLink(edge: SquashedGraphEdge, config: DiagramVisu
                         arrowTail = "empty"
                     }
                 }
+
+            if(hasMoreEdges && context !is MethodClassUsage && context !is AnalyzeCall)  {
+                arrowHead = "none"
+                arrowTail = null
+                dir = null
+            }
             }
         }
     }
@@ -149,11 +162,12 @@ private fun Variable.hasMandatoryAnnotation(): Boolean {
     }
 }
 
-fun Variable?.cardinality(): String {
+fun Variable?.cardinality(treatFinalFieldsAsMandatory: Boolean): String {
     if (this == null) return ""
 
     val isMandatory = isPrimitive
             || castSafelyTo<AnalyzeField>()?.isEnumInstance == true
+            || (treatFinalFieldsAsMandatory && castSafelyTo<AnalyzeField>()?.isFinal == true)
             || hasMandatoryAnnotation()
 
     return when {
@@ -221,7 +235,7 @@ fun AnalyzeClass.createHTMLShape(config: DiagramVisualizationConfiguration) = Do
         fields.sortedWith(compareBy({ !it.isEnumInstance }, { it.name }))
             .forEach { field ->
                 row {
-                    cell(field.visibility.symbol() + "  " + field.name + ": " + field.typeDisplay.escapeHTML() + " " + field.cardinality())
+                    cell(field.visibility.symbol() + "  " + field.name + ": " + field.typeDisplay.escapeHTML() + " " + field.cardinality(config.projectClassification.treatFinalFieldsAsMandatory))
                 }
             }
 
@@ -252,8 +266,8 @@ val groupColorLevel = listOf(
     Color(136, 136, 136)
 )
 
-fun GraphDirectedEdge.perContext(mapping: GraphDirectedEdge.(EdgeContext) -> Unit) {
+fun GraphDirectedEdge.perContext(mapping: GraphDirectedEdge.(EdgeContext, Boolean) -> Unit) {
     context.forEach {
-        mapping(this, it)
+        mapping(this, it, context.size > 1)
     }
 }

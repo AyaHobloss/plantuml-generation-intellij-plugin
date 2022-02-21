@@ -1,5 +1,6 @@
 package generator
 
+import com.kn.diagrams.generator.graph.CallsFromStructure
 import org.junit.Test
 import testdata.inheritenceComponent.entity.AbstractInheritanceTestData
 import testdata.inheritenceComponent.entity.AbstractionInterfaceTestData
@@ -15,7 +16,9 @@ import testdata.oneComponent.entity.mapper.TestDataMapper
 import testdata.oneComponent.richclient.impl.TestDataDtoMapper
 import testdata.oneComponent.richclient.impl.TestFacadeImpl
 import testdata.oneComponent.service.TestDataService
+import testdata.oneComponent.service.impl.TestBackwardUtil
 import testdata.oneComponent.service.impl.TestServiceImpl
+import testdata.oneComponent.service.impl.TestUtil
 import testdata.someComponent.someFocusArea.entity.CardinalityTestData
 import testdata.someComponent.someFocusArea.entity.ComponentTestData
 
@@ -41,7 +44,6 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
         assertFieldEdge(SubTestData::subBackReference, TestData::class)
         assertFieldEdge(SubTestData::subComponentData, ComponentTestData::class)
     }
-
 
     @Test
     fun testZeroDepth() {
@@ -122,18 +124,32 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
         assertClassField(OtherImplementationTestData::otherData)
         assertClassField(OtherImplementationTestData::otherTest)
 
+        assertClassEdge(AbstractInheritanceTestData::class, ImplementationTestData::class, inheritanceArrowHead())
+        assertClassEdge(AbstractInheritanceTestData::class, OtherImplementationTestData::class, inheritanceArrowHead())
     }
 
     @Test
     fun testCardinality() {
-        diagram = classDiagram(TestFacadeImpl::class)
+        diagram = classDiagram(TestFacadeImpl::class){
+            projectClassification.treatFinalFieldsAsMandatory = true
+        }
 
+        assertClassField(TestServiceImpl::finalConstant, cardinalityMandatory()) // final
+        assertClassField(TestServiceImpl::noneFinalConstant, cardinalityOptional()) // not final
         assertClassField(TestServiceImpl::manager, cardinalityMandatory()) // @Autowired
         assertClassField(TestServiceImpl::mapper, cardinalityOptional()) // @Autowired with required = false
         assertClassField(TestManagerImpl::dao, cardinalityOptional()) // no @Autowired
         assertClassField(TestFacadeImpl::service, cardinalityMandatory()) // @NotNull
         assertClassField(TestFacadeImpl::mapper, cardinalityOptional()) // no @NotNull
+    }
 
+    @Test
+    fun testFinalCardinalityButNotEnabled() {
+        diagram = classDiagram(TestFacadeImpl::class){
+            projectClassification.treatFinalFieldsAsMandatory = false
+        }
+
+        assertClassField(TestServiceImpl::finalConstant, cardinalityOptional()) // final
     }
 
     @Test
@@ -224,8 +240,8 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
     @Test
     fun testNoTypesOnMethodsShown() {
         diagram = classDiagram(TestServiceImpl::class) {
-            details.showMethodParameterTypes = true
-            details.showMethodParameterNames = true
+            details.showMethodParameterTypes = false
+            details.showMethodParameterNames = false
             details.showMethodReturnType = false
         }
 
@@ -234,7 +250,44 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
 
         assertClassField(TestServiceImpl::manager, returnType(TestManager::class))
         assertClassField(TestServiceImpl::mapper, returnType(TestDataMapper::class))
+    }
 
+    @Test
+    fun testAggregatedEdges() {
+        diagram = classDiagram(TestServiceImpl::class) {
+            graphTraversal.hideInterfaceCalls = true
+        }
+
+        assertClassEdge(TestServiceImpl::class, TestManagerImpl::class, noArrowHeads())
+        assertNoClassEdge(TestServiceImpl::class, TestManager::class)
+    }
+
+    @Test
+    fun testAssociationViaCall() {
+        diagram = classDiagram(TestServiceImpl::class) {
+            graphTraversal.useMethodCallsForStructureDiagram = CallsFromStructure.ForwardOnly
+        }
+
+        assertClassEdge(TestServiceImpl::class, TestUtil::class, "save() -> testUtilMethod()")
+    }
+
+    @Test
+    fun testNoAssociationViaCall() {
+        diagram = classDiagram(TestServiceImpl::class) {
+            graphTraversal.useMethodCallsForStructureDiagram = CallsFromStructure.No
+        }
+
+        assertNoClassEdge(TestServiceImpl::class, TestUtil::class)
+    }
+
+    @Test
+    fun testBothAssociationViaCall() {
+        diagram = classDiagram(TestServiceImpl::class) {
+            graphTraversal.useMethodCallsForStructureDiagram = CallsFromStructure.BothDirections
+        }
+
+        assertClassEdge(TestServiceImpl::class, TestUtil::class, "save() -> testUtilMethod()")
+        assertClassEdge(TestBackwardUtil::class, TestServiceImpl::class, "testBackwardUtilMethod() -> save()")
     }
 
 }

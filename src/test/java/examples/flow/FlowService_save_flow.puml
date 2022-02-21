@@ -21,7 +21,8 @@ config=FlowConfiguration;
     "isInterfaceStructuresPath": "",
     "isInterfaceStructuresName": "",
     "isEntryPointPath": "",
-    "isEntryPointName": ""
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
   },
   "graphRestriction": {
     "classPackageExcludeFilter": "",
@@ -57,9 +58,11 @@ config=FlowConfiguration;
     "hideDataStructures": false,
     "hidePrivateMethods": false,
     "hideInterfaceCalls": false, // indirection: implementation -> interface (is hidden) -> implementation
-    "onlyShowApplicationEntryPoints": false // root node is included
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
   },
-  "rootClass": "examples.flow.FlowService"
+  "rootClass": "examples.flow.FlowService",
+  "extensionCallbackMethod": null // qualified.class.name#methodName - signature: public static String method(String)
 }
 diagram meta data end '/
 

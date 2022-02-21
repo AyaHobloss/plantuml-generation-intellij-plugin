@@ -164,10 +164,10 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
             throwExceptionIfCanceled()
 
             val forwardChains = context.forwardDepth?.takeIf { it > 0 }?.let {
-                FindContext(this, Direction.Forward, filter, it, context.edgeMode).find(root)
+                FindContext(this, Direction.Forward, filter, it, context.edgeMode, context.useStructureCalls).find(root)
             } ?: emptyList()
             val backwardChains = context.backwardDepth?.takeIf { it > 0 }?.let {
-                FindContext(this, Direction.Backward, filter, it, context.edgeMode).find(root)
+                FindContext(this, Direction.Backward, filter, it, context.edgeMode, context.useStructureCalls).find(root)
             } ?: emptyList()
 
             Streams.concat(forwardChains.stream(), backwardChains.stream())

@@ -29,7 +29,7 @@ private fun defaultConfiguration(): CallConfiguration {
 }
 
 fun CallConfiguration.visualizationConfig() = DiagramVisualizationConfiguration(
-    null,
+    null, // TODO root node?
     projectClassification,
     details.showPackageLevels,
     false,

@@ -7,10 +7,9 @@ import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiFileFactory
+import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
+import com.intellij.psi.*
 import com.kn.diagrams.generator.asyncWriteAction
 import com.kn.diagrams.generator.config.BaseDiagramConfiguration
 import com.kn.diagrams.generator.findClasses
@@ -53,8 +52,9 @@ abstract class AbstractDiagramAction<T : BaseDiagramConfiguration> : AnAction() 
     override fun update(anActionEvent: AnActionEvent) {
         val project = anActionEvent.getData(CommonDataKeys.PROJECT)
         val file = anActionEvent.getData(CommonDataKeys.PSI_FILE)
+        val indexesAreReady = project?.let { !DumbService.isDumb(it) } ?: false
 
-        anActionEvent.presentation.isVisible = project != null && file.isJava()
+        anActionEvent.presentation.isVisible = project != null && file.isJava() && indexesAreReady
     }
 
     protected abstract fun createDiagramContent(event: AnActionEvent): List<Pair<String, String>>
@@ -72,7 +72,7 @@ fun AnActionEvent.findFirstClass(): PsiClass {
     return psiClass!!
 }
 
-fun AnActionEvent.document() = PsiDocumentManager.getInstance(project!!).getDocument(file().containingFile)
+fun AnActionEvent.document(file: PsiFile) = PsiDocumentManager.getInstance(project!!).getDocument(file.containingFile)
 fun AnActionEvent.file() = getData(CommonDataKeys.PSI_FILE)!! // ensured by update()
 
 fun AnActionEvent.startBackgroundAction(title: String, action: (ProgressIndicator) -> Unit) {

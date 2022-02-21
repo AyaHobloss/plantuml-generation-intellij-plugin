@@ -1,13 +1,26 @@
 package com.kn.diagrams.generator.sidebar;
 
+import static com.kn.diagrams.generator.UtilsKt.inReadAction;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.Optional;
+
+import javax.swing.*;
+
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.kn.diagrams.generator.actions.*;
 import com.kn.diagrams.generator.config.*;
+import com.kn.diagrams.generator.generator.Aggregation;
+import com.kn.diagrams.generator.graph.CallsFromStructure;
 import com.kn.diagrams.generator.graph.EdgeMode;
 import com.kn.diagrams.generator.graph.GraphRestriction;
 import com.kn.diagrams.generator.graph.GraphTraversal;
@@ -16,10 +29,7 @@ import com.kn.diagrams.generator.settings.ConfigurationDefaults;
 import kotlin.Pair;
 import kotlin.Unit;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
 import static com.kn.diagrams.generator.UtilsKt.asyncWriteAction;
@@ -68,6 +78,7 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
     private JCheckBox traversalHideMappings;
     private JCheckBox traversalHideInterfaceCalls;
     private JCheckBox traversalOnlyShowApplicationEntryPoints;
+    private JComboBox traversalShowMethodCallsForStructureDiagram;
 
     private JButton loadTraversalDefaultsCallDiagram;
     private JButton loadTraversalDefaultsStructureDiagram;
@@ -98,6 +109,7 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
     private JCheckBox structureShowMethodParameterTypes;
     private JCheckBox structureShowMethods;
     private JCheckBox structureShowClassGenericTypes;
+    private JTextField diagramExtension;
 
     public DiagramGeneratorConfigurationToolWindow(Project project){
         this.project = project;
@@ -180,6 +192,7 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
         traversalHideMappings.setSelected(traversal.getHideMappings());
         traversalHidePrivateMethods.setSelected(traversal.getHidePrivateMethods());
         traversalOnlyShowApplicationEntryPoints.setSelected(traversal.getOnlyShowApplicationEntryPoints());
+        traversalShowMethodCallsForStructureDiagram.setSelectedItem(traversal.getUseMethodCallsForStructureDiagram().toString());
     }
 
     private GraphRestriction getRestrictions(){
@@ -222,6 +235,7 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
         traversal.setHideMappings(traversalHideMappings.isSelected());
         traversal.setHidePrivateMethods(traversalHidePrivateMethods.isSelected());
         traversal.setOnlyShowApplicationEntryPoints(traversalOnlyShowApplicationEntryPoints.isSelected());
+        traversal.setUseMethodCallsForStructureDiagram(CallsFromStructure.valueOf(traversalShowMethodCallsForStructureDiagram.getSelectedItem().toString()));
 
         return traversal;
     }
@@ -300,6 +314,8 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
             initRestrictionFields(flowConfiguration.getGraphRestriction());
             initTraversalFields(flowConfiguration.getGraphTraversal());
         }
+
+        diagramExtension.setText(loadedConfig.getExtensionCallbackMethod());
     }
 
     private DiagramConfiguration getDiagramConfiguration(DiagramActions actionId){
@@ -323,6 +339,8 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
                     getRestrictions(),
                     getTraversal());
         }
+
+        configuration.setExtensionCallbackMethod(diagramExtension.getText());
 
         return configuration;
     }
@@ -351,27 +369,31 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
 
     private void performAction(DiagramActions actionId) {
         FileEditor selectedEditor = FileEditorManager.getInstance(project).getSelectedEditor();
-        DataContext dataContext = DataManager.getInstance().getDataContext(selectedEditor.getComponent());
+        DataContext dataContext = DataManager.getInstance().getDataContext(selectedEditor.getComponent()) ;
 
         AnActionEvent event = new AnActionEvent(null, dataContext,
                 ActionPlaces.UNKNOWN, new Presentation(),
                 ActionManager.getInstance(), 0);
 
-        AnAction action = ActionManager.getInstance().getAction(actionId.name());
-        if(action instanceof AbstractDiagramAction){
-            ActionContext actionContext = getActionContext(actionId, event);
+        ProgressManager.getInstance().run(new Task.Backgroundable(project, "Start diagram generation") {
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                AnAction action = ActionManager.getInstance().getAction(actionId.name());
+                if(action instanceof AbstractDiagramAction){
+                    ActionContext actionContext = getActionContext(actionId, event);
+                    PsiClass rootClass = inReadAction(() -> AbstractDiagramActionKt.findFirstClass(event));
+                    DiagramConfiguration configuration = inReadAction(() -> getDiagramConfiguration(actionId, rootClass));
 
-            Pair<String, String> diagram = ((AbstractDiagramAction<BaseDiagramConfiguration>) action)
-                    .generateWith(actionContext).get(0);
+                    asyncWriteAction(() -> {
+                        writeDiagramFile(event.getData(PSI_FILE).getContainingDirectory(), diagram.component1(), diagram.component2());
 
-            asyncWriteAction(() -> {
-                writeDiagramFile(event.getData(PSI_FILE).getContainingDirectory(), diagram.component1(), diagram.component2());
-
-                return Unit.INSTANCE;
-            });
-        } else {
-            action.actionPerformed(event);
-        }
+                        return Unit.INSTANCE;
+                    });
+                } else {
+                    action.actionPerformed(event);
+                }
+            }
+        });
     }
 
 }

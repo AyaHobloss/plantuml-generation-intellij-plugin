@@ -1,7 +1,7 @@
 package com.kn.diagrams.generator.config
 
 import com.google.gson.annotations.Until
-import com.intellij.psi.PsiClass
+import com.intellij.openapi.project.Project
 import com.kn.diagrams.generator.generator.code.StructureColorCoding
 import com.kn.diagrams.generator.graph.*
 

@@ -885,6 +885,8 @@
                         <rowspec value="center:max(d;4px):noGrow"/>
                         <rowspec value="top:4dlu:noGrow"/>
                         <rowspec value="center:max(d;4px):noGrow"/>
+                        <rowspec value="top:4dlu:noGrow"/>
+                        <rowspec value="center:max(d;4px):noGrow"/>
                         <colspec value="fill:d:noGrow"/>
                         <colspec value="left:4dlu:noGrow"/>
                         <colspec value="fill:d:grow"/>
@@ -1088,6 +1090,28 @@
                               <text value=""/>
                             </properties>
                           </component>
+                          <component id="e0f09" class="javax.swing.JLabel">
+                            <constraints>
+                              <grid row="22" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                              <forms/>
+                            </constraints>
+                            <properties>
+                              <text value="Use method calls for structure diagram"/>
+                            </properties>
+                          </component>
+                          <component id="a564" class="javax.swing.JComboBox" binding="traversalShowMethodCallsForStructureDiagram">
+                            <constraints>
+                              <grid row="22" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                              <forms/>
+                            </constraints>
+                            <properties>
+                              <model>
+                                <item value="ForwardOnly"/>
+                                <item value="BothDirections"/>
+                                <item value="No"/>
+                              </model>
+                            </properties>
+                          </component>
                         </children>
                       </grid>
                       <component id="6971b" class="javax.swing.JLabel">
@@ -1146,71 +1170,108 @@
           </grid>
         </children>
       </scrollpane>
-      <grid id="9aba8" layout-manager="GridLayoutManager" row-count="4" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
+      <grid id="679a7" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints border-constraint="South"/>
         <properties/>
         <border type="none"/>
         <children>
-          <component id="dafb0" class="javax.swing.JButton" binding="loadMetadata">
-            <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <horizontalAlignment value="0"/>
-              <text value="Load configuration"/>
-            </properties>
-          </component>
-          <component id="943b9" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <font style="1"/>
-              <text value="Generate new Diagram"/>
-            </properties>
-          </component>
-          <component id="92ab8" class="javax.swing.JButton" binding="generateCallDiagram">
-            <constraints>
-              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Call Diagram"/>
-            </properties>
-          </component>
-          <component id="b186f" class="javax.swing.JButton" binding="generateStructureDiagram">
-            <constraints>
-              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Structure Diagram"/>
-            </properties>
-          </component>
-          <component id="f4e4" class="javax.swing.JButton" binding="generateFlowDiagram">
-            <constraints>
-              <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Flow Diagram"/>
-            </properties>
-          </component>
-          <component id="9bb3d" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <font style="1"/>
-              <text value="Use opened Diagram file"/>
-            </properties>
-          </component>
-          <component id="12d8f" class="javax.swing.JButton" binding="regenerate">
-            <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Regenerate"/>
-            </properties>
-          </component>
+          <grid id="9aba8" layout-manager="GridLayoutManager" row-count="4" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints border-constraint="Center"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="dafb0" class="javax.swing.JButton" binding="loadMetadata">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <horizontalAlignment value="0"/>
+                  <text value="Load configuration"/>
+                </properties>
+              </component>
+              <component id="943b9" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font style="1"/>
+                  <text value="Generate new Diagram"/>
+                </properties>
+              </component>
+              <component id="92ab8" class="javax.swing.JButton" binding="generateCallDiagram">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Call Diagram"/>
+                </properties>
+              </component>
+              <component id="b186f" class="javax.swing.JButton" binding="generateStructureDiagram">
+                <constraints>
+                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Structure Diagram"/>
+                </properties>
+              </component>
+              <component id="f4e4" class="javax.swing.JButton" binding="generateFlowDiagram">
+                <constraints>
+                  <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Flow Diagram"/>
+                </properties>
+              </component>
+              <component id="9bb3d" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font style="1"/>
+                  <text value="Use opened Diagram file"/>
+                </properties>
+              </component>
+              <component id="12d8f" class="javax.swing.JButton" binding="regenerate">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Regenerate"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="9f5dd" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints border-constraint="North"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="5744c" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font style="1"/>
+                  <text value="Diagram Extension"/>
+                </properties>
+              </component>
+              <component id="5e1a7" class="javax.swing.JTextField" binding="diagramExtension">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <columns value="0"/>
+                  <editable value="true"/>
+                  <text value=""/>
+                  <toolTipText value="qualified.class.name#methodName - signature: public static String method(String)"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
         </children>
       </grid>
     </children>

@@ -155,26 +155,44 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
     private fun edgesSection() = diagram!!.substringAfter("'edges")
 
     private fun String.node(id: String): String? {
-        val matcher = "[^\\S]$id\\[[\\S\\s]*];".toRegex()
-        return matcher.find(this)?.value
+        return when {
+            contains(" $id[") -> id+"["+substringAfter(" $id[").substringBefore("];\n")+"];"
+            contains("\n$id[") -> id+"["+substringAfter("\n$id[").substringBefore("];\n")+"];"
+            else -> null
+        }
+    }
+
+
+    private fun String.edge(fromId: String, toId: String): String? {
+        return when {
+            contains(" $toId;") -> "$fromId -> $toId" + substringAfter("$fromId -> $toId;")
+            contains(" $toId[") -> "$fromId -> $toId[" + substringAfter("$fromId -> $toId[").substringBefore("];") + "]"
+            else -> null
+        }
     }
 
     private fun String.assertRow(content: String, needsMatch: Boolean): String {
-        val matchPattern = "<TD[\\s\\S]*$content[\\s\\S]*</TD>"
-        val all = matchPattern.toRegex().findAll(this)
-        val match = all.count() == 1
+        val rows = this.substringAfter("<TR>").substringBeforeLast("</TABLE>").split("\n")
+        val matchPattern = "<TD[\\s\\S]*$content[\\s\\S]*/TD>"
 
-        if(match != needsMatch){
+        val matchingRows = rows.filter { row ->
+            val all = matchPattern.toRegex().findAll(row)
+            val match = all.count() == 1
+
+            match
+        }
+
+        if((matchingRows.size == 1) != needsMatch){
             val expectation = (if(needsMatch) "row " else "no row ") + " content '$content' expected"
             assertFalse("$expectation\n\n actual:\n$this", true)
         }
 
-        return all.firstOrNull()?.value ?: ""
+        return matchingRows.firstOrNull() ?: ""
     }
 
     fun assertClassField(field: KProperty<*>, vararg keywords: String){
         assertNode(field.psiClass().diagramId(), true)
-            .assertRow(field.name, true)
+            .assertRow(field.name+":", true)
             .let { row ->
                 keywords.forEach {
                     row.assertRow(it, true)
@@ -225,39 +243,56 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
         }
 
         keywords.forEach {
-            assertTrue("keyword '$it' expected", node!!.contains(it))
+            assertTrue("keyword '$it' expected, actual:\n$node", node!!.contains(it))
         }
 
         return node ?: ""
     }
 
-    fun assertCallEdge(fromMethod: KFunction<*>, toMethod: KFunction<*>, keyword: String? = null){
-        assertEdge(fromMethod.psiMethod().diagramId(), toMethod.psiMethod().diagramId(), true, keyword)
+    fun assertCallEdge(fromMethod: KFunction<*>, toMethod: KFunction<*>, vararg keywords: String): String{
+        return assertEdge(fromMethod.asPsiMethod().diagramId(), toMethod.asPsiMethod().diagramId(), true, *keywords)
+    }
+
+    fun assertNoCallEdge(fromMethod: KFunction<*>, toMethod: KFunction<*>): String{
+        return assertEdge(fromMethod.psiMethod().diagramId(), toMethod.psiMethod().diagramId(), false)
+    }
+
+    fun assertFieldEdge(field: KProperty<*>, targetClass: KClass<*>, vararg keywords: String): String{
+        val keys = keywords.toList().plus(field.name).toTypedArray()
+        return assertEdge(field.psiClass().diagramId(), targetClass.asPsiClass().diagramId(), true, *keys)
+    }
+
+    fun assertNoFieldEdge(field: KProperty<*>, targetClass: KClass<*>): String{
+        return assertEdge(field.psiClass().diagramId(), targetClass.asPsiClass().diagramId(), false)
     }
 
     fun assertNoCallEdge(fromMethod: KFunction<*>, toMethod: KFunction<*>){
         assertEdge(fromMethod.psiMethod().diagramId(), toMethod.psiMethod().diagramId(), false)
     }
 
-    fun assertFieldEdge(field: KProperty<*>, targetClass: KClass<*>){
-        assertEdge(field.psiClass().diagramId(), targetClass.asPsiClass().diagramId(), true, field.name)
+    fun assertClassEdge(sourceClass: KClass<*>, targetClass: KClass<*>, vararg keywords: String): String{
+       return assertEdge(sourceClass.asPsiClass().diagramId(), targetClass.asPsiClass().diagramId(), true, *keywords)
     }
 
-    fun assertNoFieldEdge(field: KProperty<*>, targetClass: KClass<*>){
-        assertEdge(field.psiClass().diagramId(), targetClass.asPsiClass().diagramId(), false, field.name)
+    fun assertNoClassEdge(sourceClass: KClass<*>, targetClass: KClass<*>): String{
+        return assertEdge(sourceClass.asPsiClass().diagramId(), targetClass.asPsiClass().diagramId(), false)
     }
 
-    fun assertEdge(fromId: String, toId: String, needsMatch: Boolean, keyword: String? = null) {
+    fun assertEdge(fromId: String, toId: String, needsMatch: Boolean, vararg keywords: String): String {
         val edgeSection = edgesSection()
 
-        val matchPattern = "[\"]?$fromId[\"]? -> [\"]?$toId[\"]?[\\s\\S]*${ keyword?.let { "$it[\\s\\S]*" } ?: "" };"
-        val match = matchPattern.toRegex().findAll(edgeSection).count() == 1
+        val edge = edgeSection.edge(fromId, toId)
 
-        if(match != needsMatch){
-            val expectation = (if(needsMatch) "association " else "no association ") + matchPattern + " expected"
+        if((edge == null) == needsMatch){
+            val expectation = (if(needsMatch) "edge " else "no edge ") + " '$fromId -> $toId' expected"
             assertFalse("$expectation\n\n actual:\n$edgeSection", true)
         }
 
+        keywords.forEach {
+            assertTrue("keyword '$it' expected, actual:\n$edge", edge!!.contains(it))
+        }
+
+        return edge ?: ""
     }
 
     private fun PsiMethod.diagramId() = containingClass?.diagramId()+"XXX"+name+parameterList.parameters.joinToString { it.type.presentableText }.hashCode().absoluteValue
@@ -300,3 +335,6 @@ fun noReturnType() = "\\)[^:]"
 fun noParameters() = "\\(\\)"
 fun returnType(clazz: KClass<*>) = ": "+clazz.simpleName!!
 fun parameters(vararg classes: KClass<*>) = classes.joinToString(", ") { it.simpleName!! }
+fun noArrowHeads() = "arrowhead=none]"
+fun aggregationArrowHead() = "arrowhead=none, arrowtail=odiamond, dir=both"
+fun inheritanceArrowHead() = "arrowhead=none, arrowtail=empty, dir=both"

@@ -1,5 +1,6 @@
 package com.kn.diagrams.generator.actions
 
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.config.StructureConfiguration

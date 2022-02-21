@@ -5,22 +5,23 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.21'
 }
 
-group 'com.kn.diagrams.generator.generator'
-version '2021.2.0'
+group 'com.kn.diagrams.generator'
+version '2022.2.1'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect:'
 
     compile group: 'com.github.s1ck', name: 'gdl', version: '0.3.6'
 
     compile group: 'nl.cwts', name: 'networkanalysis', version: '1.1.0'
 
     testImplementation 'junit:junit:4.12'
+    testImplementation 'guru.nidi:graphviz-java:0.18.1'
 }
 
 sourceCompatibility = 11
@@ -34,8 +35,9 @@ compileTestKotlin {
 }
 
 intellij {
-    version '2021.1.2'
+    version '2021.2'
     plugins = ['com.intellij.java', 'Git4Idea']
+    updateSinceUntilBuild false
 }
 
 buildSearchableOptions.enabled = false

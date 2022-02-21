@@ -21,7 +21,8 @@ config=CallConfiguration;
     "isInterfaceStructuresPath": "",
     "isInterfaceStructuresName": "",
     "isEntryPointPath": "",
-    "isEntryPointName": ""
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
   },
   "graphRestriction": {
     "classPackageExcludeFilter": "",
@@ -57,7 +58,8 @@ config=CallConfiguration;
     "hideDataStructures": false,
     "hidePrivateMethods": false,
     "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
-    "onlyShowApplicationEntryPoints": false // root node is included
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
   },
   "details": {
     "aggregation": "GroupByClass", // ByClass, GroupByClass, None
@@ -66,10 +68,11 @@ config=CallConfiguration;
     "showMethodReturnType": false,
     "showPackageLevels": 2,
     "showCallOrder": false,
-    "edgeMode": "MethodsOnly", // TypesOnly, MethodsOnly, TypesAndMethods
+    "edgeMode": "MethodsOnly", // TypesOnly, MethodsOnly, TypesAndMethods, MethodsAndDirectTypeUsage
     "showDetailedClassStructure": false
   },
-  "rootClass": "examples.call.adapter.GuiAdapter"
+  "rootClass": "examples.call.adapter.GuiAdapter",
+  "extensionCallbackMethod": null // qualified.class.name#methodName - signature: public static String method(String)
 }
 diagram meta data end '/
 
@@ -128,8 +131,8 @@ null"
 	fontcolor=red
 ];
 
-Service1871648721XXXsave1535243398[
-	label="+ save(a: Entity, b: Entity): Entity"
+Service1871648721XXXsave0[
+	label="+ save()"
 	style=filled
 	fillcolor=white
 	tooltip="Service
@@ -158,9 +161,9 @@ null"
 } 
 
 'edges    
-GuiAdapter879624892XXXsaveButton0 -> Service1871648721XXXsave1535243398;
-Service1871648721XXXsave1535243398 -> Repository1871648721XXXsave0;
-Service1871648721XXXsave1535243398 -> Service1871648721XXXnotifyChanges0;
+GuiAdapter879624892XXXsaveButton0 -> Service1871648721XXXsave0;
+Service1871648721XXXsave0 -> Repository1871648721XXXsave0;
+Service1871648721XXXsave0 -> Service1871648721XXXnotifyChanges0;
     
 }
 @enduml

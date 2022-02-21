@@ -8,6 +8,7 @@ interface EdgeContext
 
 class FieldWithTargetType(val field: AnalyzeField, val target: AnalyzeClass) : EdgeContext
 data class MethodClassUsage(val clazz: AnalyzeClass, val method: AnalyzeMethod, val reference: String) : EdgeContext
+data class ClassAssociation(val clazz: AnalyzeClass, val usedClass: AnalyzeClass, val reference: String) : EdgeContext
 enum class InheritanceType : EdgeContext { Implementation, SubClass }
 
 class GraphDirectedEdge(val from: GraphNode, val to: GraphNode, val context: List<EdgeContext>) { // also no parallel edges

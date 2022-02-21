@@ -11,6 +11,7 @@ import com.kn.diagrams.generator.config.DiagramConfiguration
 import com.kn.diagrams.generator.config.loadFromMetadata
 import com.kn.diagrams.generator.graph.psiClassFromQualifiedName
 import java.io.File
+import com.kn.diagrams.generator.graph.psiClassFromQualifiedName
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
 import kotlin.math.min

@@ -1,5 +1,7 @@
 package com.kn.diagrams.generator.graph
 
+import com.intellij.util.castSafelyTo
+import com.kn.diagrams.generator.generator.containingClass
 import com.kn.diagrams.generator.toSingleList
 import java.util.*
 
@@ -10,7 +12,8 @@ class FindContext(private val graph: GraphDefinition,
                   private val direction: Direction,
                   private val filter: TraversalFilter,
                   private val depth: Int,
-                  private val edgeMode: EdgeMode
+                  private val edgeMode: EdgeMode,
+                  private val useStructureCalls: CallsFromStructure
 ) {
 
     fun find(root: GraphNode): List<List<SquashedGraphEdge>> {
@@ -89,8 +92,8 @@ class FindContext(private val graph: GraphDefinition,
         return graph.classes[classReference.id()]?.methods?.get(method)
     }
 
-    private fun AnalyzeMethod.calls(): Sequence<GraphDirectedEdge> {
-        if (edgeMode == EdgeMode.TypesOnly) return emptySequence()
+    private fun AnalyzeMethod.calls(always: Boolean = false): Sequence<GraphDirectedEdge> {
+        if (edgeMode == EdgeMode.TypesOnly && !always) return emptySequence()
 
         return if (direction == Direction.Forward) {
             graph.forwardCalls[id()]?.asReversed()?.asSequence()
@@ -163,9 +166,34 @@ class FindContext(private val graph: GraphDefinition,
     private fun GraphNode.navigate(): Sequence<GraphDirectedEdge> {
         return when (this) {
             is AnalyzeMethod -> calls() + classUsages()
-            is AnalyzeClass -> fieldEdges() + superTypeEdges() + subTypeEdges()
+            is AnalyzeClass -> fieldEdges() + superTypeEdges() + subTypeEdges() + structureCallEdges()
             else -> emptySequence()
         }.ensureUniqueDirectedEdge()
+    }
+    private fun AnalyzeClass.structureCallEdges(): Sequence<GraphDirectedEdge> {
+        if(useStructureCalls == CallsFromStructure.No
+            || (useStructureCalls == CallsFromStructure.ForwardOnly && direction == Direction.Backward)) return emptySequence()
+
+        return methods.values.flatMap { method ->
+
+            // TODO diagram grows similar to the data flow diagram - way to stop the recursion?
+            // TODO show only limited classes for ClassAssociation from a call and break navigation
+            // TODO enrich tests with a check for arrow symbols
+            method.calls(always = true).map { edge ->
+                GraphDirectedEdge(
+                    edge.from.containingClass().resolve()!!,
+                    edge.to.containingClass().resolve()!!,
+                    edge.context.mapNotNull { edgeContext ->
+                        edgeContext.castSafelyTo<AnalyzeCall>()?.let { call ->
+                            ClassAssociation(
+                                edge.from.containingClass().resolve()!!,
+                                edge.to.containingClass().resolve()!!,
+                                call.source.resolve()!!.name + "() -> " + call.target.resolve()!!.name + "()"
+                            )
+                        }
+                    })
+            }
+        }.asSequence()
     }
 
     // non-unique / parallel edges destroy the graph traversal
@@ -253,6 +281,7 @@ class SearchContext {
     var forwardDepth: Int? = null
     var backwardDepth: Int? = null
     var edgeMode: EdgeMode = EdgeMode.TypesAndMethods
+    var useStructureCalls: CallsFromStructure = CallsFromStructure.No
     lateinit var roots: List<GraphNode>
 }
 
