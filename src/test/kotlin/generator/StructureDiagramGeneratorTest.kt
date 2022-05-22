@@ -125,7 +125,8 @@ class StructureDiagramGeneratorTest : AbstractStructureDiagramGeneratorTest() {
         assertClassField(OtherImplementationTestData::otherTest)
 
         assertClassEdge(AbstractInheritanceTestData::class, ImplementationTestData::class, inheritanceArrowHead())
-        assertClassEdge(AbstractInheritanceTestData::class, OtherImplementationTestData::class, inheritanceArrowHead())
+        assertClassEdge(AbstractionInterfaceTestData::class, ImplementationTestData::class, inheritanceArrowHead())
+        assertClassEdge(AbstractionInterfaceTestData::class, OtherImplementationTestData::class, inheritanceArrowHead())
     }
 
     @Test

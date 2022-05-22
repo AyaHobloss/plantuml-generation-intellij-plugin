@@ -5,7 +5,6 @@ import com.kn.diagrams.generator.graph.AnalyzeMethod
 import com.kn.diagrams.generator.graph.includedAndNotExcluded
 import org.junit.Test
 import testdata.oneComponent.service.impl.TestServiceImpl
-import kotlin.reflect.KFunction
 
 class MethodFilteringTest : AbstractPsiContextTest(){
 

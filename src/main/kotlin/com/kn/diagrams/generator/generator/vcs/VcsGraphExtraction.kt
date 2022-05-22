@@ -1,16 +1,15 @@
-package com.kn.diagrams.generator.generator
+package com.kn.diagrams.generator.generator.vcs
 
 import com.kn.diagrams.generator.config.EdgeAggregation
-import com.kn.diagrams.generator.config.VcsNodeAggregation
 import com.kn.diagrams.generator.generator.code.layer
-import com.kn.diagrams.generator.generator.vcs.UndirectedEdge
-import com.kn.diagrams.generator.generator.vcs.VcsCommit
-import com.kn.diagrams.generator.generator.vcs.VcsVisualization
+import com.kn.diagrams.generator.generator.diagramPath
 import com.kn.diagrams.generator.graph.ClassReference
 import com.kn.diagrams.generator.graph.included
-import java.net.URL
 import java.util.stream.Stream
-import kotlin.math.*
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.pow
+import kotlin.math.roundToLong
 import kotlin.streams.toList
 
 

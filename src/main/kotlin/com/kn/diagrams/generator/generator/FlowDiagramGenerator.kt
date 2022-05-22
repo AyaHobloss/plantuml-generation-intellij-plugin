@@ -1,13 +1,11 @@
 package com.kn.diagrams.generator.generator
 
-import com.intellij.openapi.project.Project
 import com.kn.diagrams.generator.actions.ActionContext
 import com.kn.diagrams.generator.builder.*
 import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.config.FlowConfiguration
 import com.kn.diagrams.generator.config.attacheMetaData
 import com.kn.diagrams.generator.graph.*
-import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.settings.ConfigurationDefaults
 import com.kn.diagrams.generator.toSingleList
 
@@ -118,7 +116,7 @@ class FlowDiagramGenerator {
     private fun ActionContext.perTerminalTaggedMethod(cache: GraphDefinition, creator: (AnalyzeMethod) -> String?): List<Pair<String, String>> {
         val config = config<FlowConfiguration>()
         var i = 0
-        val diagramExtension = diagramExtension(project)
+        val diagramExtension = config.diagramExtension(project)
         return rootNodeIds.mapNotNull { methodId ->
             config.brandWithRootNode(methodId)
             val method = cache.methodFor(methodId) ?: return@mapNotNull null
@@ -268,7 +266,7 @@ val relevantFlowElements = FlowElements.values().asSequence().filter { it != Flo
 
 private fun defaultConfiguration(): FlowConfiguration {
     val defaults = ConfigurationDefaults.flowDiagram()
-    return FlowConfiguration("", null,
+    return FlowConfiguration("", null,"",
             ConfigurationDefaults.classification(),
             defaults.graphRestriction,
             defaults.graphTraversal

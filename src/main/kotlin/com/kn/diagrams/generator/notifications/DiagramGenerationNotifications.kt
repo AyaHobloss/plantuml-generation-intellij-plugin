@@ -1,12 +1,7 @@
 package com.kn.diagrams.generator.notifications
 
-import com.intellij.diff.tools.util.DiffNotifications.createNotification
-import com.intellij.notification.NotificationDisplayType
-import com.intellij.notification.NotificationGroup
-import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
-import com.intellij.notification.impl.NotificationGroupEP
 import com.intellij.openapi.project.Project
 
 fun notifyError(project: Project?, text: String) {

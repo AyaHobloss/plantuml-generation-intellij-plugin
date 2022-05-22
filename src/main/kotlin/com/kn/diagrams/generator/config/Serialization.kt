@@ -1,12 +1,8 @@
 package com.kn.diagrams.generator.config
 
-import com.google.gson.*
-import com.intellij.psi.PsiMethod
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.kn.diagrams.generator.cast
-import com.kn.diagrams.generator.graph.simpleSignature
-import com.kn.diagrams.generator.inReadAction
-import com.kn.diagrams.generator.notifications.notifyErrorClassNotFound
-import java.lang.reflect.Type
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.javaField

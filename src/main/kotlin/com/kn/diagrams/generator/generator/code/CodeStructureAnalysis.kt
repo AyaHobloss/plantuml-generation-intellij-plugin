@@ -48,6 +48,7 @@ class CodeStructureAnalysis {
                     graphTraversal.forwardDepth,
                     graphTraversal.backwardDepth,
                     details.edgeMode,
+                    graphTraversal.useMethodCallsForStructureDiagram,
                     details.methodColorCoding,
                     details.classColorCoding
             )
@@ -81,6 +82,7 @@ class CodeStructureAnalysis {
                     graphTraversal.forwardDepth,
                     graphTraversal.backwardDepth,
                     EdgeMode.TypesOnly,
+                    graphTraversal.useMethodCallsForStructureDiagram,
                     details.methodColorCoding,
                     details.classColorCoding
 
@@ -128,6 +130,7 @@ class CodeDiagramConfig(
         var forwardDepth: Int? = null,
         var backwardDepth: Int? = null,
         var edgeMode: EdgeMode,
+        val useStructureCalls: CallsFromStructure,
 
         var methodColorCoding: StructureColorCoding = StructureColorCoding.None,
         var classColorCoding: StructureColorCoding = StructureColorCoding.None

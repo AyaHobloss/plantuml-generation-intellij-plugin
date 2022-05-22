@@ -5,7 +5,8 @@ import com.kn.diagrams.generator.graph.GraphRestrictionFilter
 import com.kn.diagrams.generator.graph.ProjectClassification
 
 
-class VcsConfiguration(var projectClassification: ProjectClassification,
+class VcsConfiguration(override var extensionCallbackMethod: String? = "",
+                       var projectClassification: ProjectClassification,
                        var graphRestriction: GraphRestriction,
                        var details: VcsDiagramDetails) : BaseDiagramConfiguration{
 

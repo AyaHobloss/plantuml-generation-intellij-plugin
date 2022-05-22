@@ -1,7 +1,6 @@
 package com.kn.diagrams.generator.generator
 
 import com.kn.diagrams.generator.actions.ActionContext
-import com.kn.diagrams.generator.actions.CallActionContext
 import com.kn.diagrams.generator.actions.call
 import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.config.CallConfiguration
@@ -20,7 +19,7 @@ fun createCallDiagramUmlContent(actionContext: ActionContext): List<Pair<String,
 
 private fun defaultConfiguration(): CallConfiguration {
     val defaults = ConfigurationDefaults.callDiagram()
-    return CallConfiguration("", null,
+    return CallConfiguration("", null,"",
             ConfigurationDefaults.classification(),
             defaults.graphRestriction,
             defaults.graphTraversal,

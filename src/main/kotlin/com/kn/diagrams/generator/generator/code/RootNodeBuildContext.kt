@@ -106,6 +106,7 @@ class RootNodeBuildContext(val context: CodeStructureAnalysis,
             forwardDepth = config.forwardDepth
             backwardDepth = config.backwardDepth
             edgeMode = config.edgeMode
+            useStructureCalls = config.useStructureCalls
         }.flatten()
     }
 

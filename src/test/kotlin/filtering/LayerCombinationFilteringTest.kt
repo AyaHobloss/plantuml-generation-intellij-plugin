@@ -1,7 +1,10 @@
 package filtering
 
 import AbstractPsiContextTest
-import com.kn.diagrams.generator.graph.*
+import com.kn.diagrams.generator.graph.ClassReference
+import com.kn.diagrams.generator.graph.LayerDefinition
+import com.kn.diagrams.generator.graph.ProjectClassification
+import com.kn.diagrams.generator.graph.layerIncludedAndNotExcluded
 import org.junit.Test
 import testdata.oneComponent.service.impl.TestServiceImpl
 

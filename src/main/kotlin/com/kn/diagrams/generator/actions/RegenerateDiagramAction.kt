@@ -4,7 +4,6 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.DumbService
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
@@ -14,10 +13,6 @@ import com.intellij.util.castSafelyTo
 import com.kn.diagrams.generator.asyncWriteAction
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.generator.*
-import com.kn.diagrams.generator.inReadAction
-import com.kn.diagrams.generator.generator.CallDiagramGenerator
-import com.kn.diagrams.generator.generator.FlowDiagramGenerator
-import com.kn.diagrams.generator.generator.StructureDiagramGenerator
 import com.kn.diagrams.generator.inReadAction
 import com.kn.diagrams.generator.isPlantUML
 import com.kn.diagrams.generator.notifications.notifyErrorOccurred

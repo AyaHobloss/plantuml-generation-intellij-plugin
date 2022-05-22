@@ -2,13 +2,9 @@ package com.kn.diagrams.generator.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiMethod
-import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiClass
 import com.kn.diagrams.generator.config.FlowConfiguration
 import com.kn.diagrams.generator.generator.FlowDiagramGenerator
-import com.kn.diagrams.generator.generator.relevantFlowElements
 import com.kn.diagrams.generator.graph.annotationsMapped
-import com.kn.diagrams.generator.settings.ConfigurationDefaults
 
 class GenerateFlowDiagramsAction : AbstractDiagramAction<FlowConfiguration>() {
 

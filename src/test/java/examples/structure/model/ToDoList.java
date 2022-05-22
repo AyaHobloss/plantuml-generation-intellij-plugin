@@ -1,6 +1,6 @@
 package examples.structure.model;
 
-import java.util.*;
+import java.util.List;
 
 public class ToDoList {
     private List<ToDoItem> items;

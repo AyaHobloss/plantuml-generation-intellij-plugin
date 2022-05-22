@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.util.lang.UrlClassLoader
 import com.kn.diagrams.generator.cast
-import com.kn.diagrams.generator.graph.GraphNode
 import com.kn.diagrams.generator.graph.GraphRestrictionFilter
 import com.kn.diagrams.generator.graph.TraversalFilter
 import com.kn.diagrams.generator.graph.psiClassFromQualifiedName
@@ -18,6 +17,8 @@ import java.nio.file.Paths
 
 interface BaseDiagramConfiguration {
 
+    var extensionCallbackMethod: String?
+
     fun restrictionFilter(): GraphRestrictionFilter
 
     fun brandWithRootNode(rootNodeId: String)
@@ -28,10 +29,8 @@ val identityCallback: (String) -> String = { it }
 abstract class DiagramConfiguration(
     var rootClass: String,
     @CommentWithValue("qualified.class.name#methodName - signature: public static String method(String)")
-    var extensionCallbackMethod: String? = ""
+    override var extensionCallbackMethod: String? = ""
 ): BaseDiagramConfiguration {
-
-    abstract fun restrictionFilter(project: Project): RestrictionFilter
 
     abstract fun traversalFilter(): TraversalFilter
 

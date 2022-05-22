@@ -1,9 +1,9 @@
 package examples.customization;
 
+import static examples.customization.replace.Modification.modify;
+
 import examples.customization.replace.EdgeModification;
 import examples.customization.replace.NodeModification;
-
-import static examples.customization.replace.Modification.modify;
 
 // class needs to be compiled before generating the diagram!
 public class EdgeCustomization {

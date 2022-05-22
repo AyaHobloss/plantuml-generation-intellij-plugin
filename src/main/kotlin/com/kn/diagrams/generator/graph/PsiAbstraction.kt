@@ -1,6 +1,5 @@
 package com.kn.diagrams.generator.graph
 
-import com.intellij.openapi.project.Project
 import com.intellij.lang.jvm.JvmModifier
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
@@ -369,15 +368,7 @@ fun AnalyzeMethod.simpleSignature() = "$name(${parameter.joinToString(",") { it.
 fun String.psiClassFromQualifiedName(project: Project) = JavaPsiFacade.getInstance(project)
             .findClass(this, GlobalSearchScope.allScope(project))
 
-fun String.psiClassFromQualifiedName(project: Project) = inReadAction {
-    JavaPsiFacade.getInstance(project)
-            .findClass(this, GlobalSearchScope.allScope(project))
-}
-
 fun PsiMethod.toSimpleReference() = inReadAction { containingClass?.qualifiedName + "#" + simpleSignature() }
-
-fun PsiMethod.simpleSignature() = "$name(${parameterList.parameters.joinToString(",") { it.type.presentableText }})"
-
 
 fun String.psiMethodFromSimpleReference(project: Project) = inReadAction {
     val methodSignature = substringAfter("#")

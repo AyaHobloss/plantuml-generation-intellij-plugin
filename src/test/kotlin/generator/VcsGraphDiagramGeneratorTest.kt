@@ -1,7 +1,6 @@
 package generator
 
 import com.kn.diagrams.generator.config.EdgeAggregation
-import com.kn.diagrams.generator.config.VcsNodeAggregation
 import org.junit.Test
 import testdata.oneComponent.dto.TestDataDto
 import testdata.oneComponent.entity.TestData
@@ -47,8 +46,8 @@ class VcsGraphDiagramGeneratorTest : AbstractVcsDiagramGeneratorTest() {
         }
 
         assertClassEdge(TestDataDs::class, TestDataDto::class, "label=\"2")
-        assertNoClassEdge(TestDataDs::class, TestData::class, "label=\"1")
-        assertNoClassEdge(TestDataDto::class, TestData::class, "label=\"1")
+        assertNoClassEdge(TestDataDs::class, TestData::class, ) // "label=\"1" // TODO assert that a specific label is not present?
+        assertNoClassEdge(TestDataDto::class, TestData::class, ) // "label=\"1"
     }
 
     @Test

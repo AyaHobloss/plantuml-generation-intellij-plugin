@@ -85,10 +85,9 @@ class ProjectClassification(
         var isInterfaceStructuresName: String = "",
         var isEntryPointPath: String = "",
         var isEntryPointName: String = "",
-        var isEntryPointName: String = "",
-        var treatFinalFieldsAsMandatory: Boolean = false
+        var treatFinalFieldsAsMandatory: Boolean = false,
         @CommentWithValue("first matching pattern is applied; e.g.: {\"controller\": { \"name\": \"*.controller\", \"path\": \"controller\" }}")
-        var customLayers: Map<String, LayerDefinition> = mapOf()
+        var customLayers: Map<String, LayerDefinition> = mapOf(),
 ) {
 
     fun ClassReference.isEntryPoint() = isEntryPointName.regexBySemicolon().any { it.matches(name) }

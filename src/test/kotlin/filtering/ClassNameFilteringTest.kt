@@ -1,8 +1,6 @@
 package filtering
 
 import AbstractPsiContextTest
-import com.intellij.patterns.PsiJavaPatterns.psiClass
-import com.kn.diagrams.generator.graph.AnalyzeMethod
 import com.kn.diagrams.generator.graph.ClassReference
 import com.kn.diagrams.generator.graph.includedAndNotExcluded
 import org.junit.Test

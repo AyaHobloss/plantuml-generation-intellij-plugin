@@ -4,7 +4,6 @@ import com.kn.diagrams.generator.config.CommitFilter
 import com.kn.diagrams.generator.config.EdgeAggregation
 import com.kn.diagrams.generator.config.NodeColorCoding
 import com.kn.diagrams.generator.config.VcsNodeAggregation
-import com.kn.diagrams.generator.createIfNotExists
 import org.junit.Test
 import testdata.oneComponent.dataaccess.TestDataDao
 import testdata.oneComponent.dto.TestDataDto
@@ -12,8 +11,6 @@ import testdata.oneComponent.entity.SubTestData
 import testdata.oneComponent.entity.TestData
 import testdata.oneComponent.entity.ds.TestDataDs
 import testdata.oneComponent.richclient.TestFacade
-import testdata.oneComponent.service.TestDataService
-import java.io.File
 
 // TODO UI tests for actions and Sidebar - basic generate & regenerate
 class VcsAggregationDiagramGeneratorTest : AbstractVcsDiagramGeneratorTest() {
@@ -21,23 +18,39 @@ class VcsAggregationDiagramGeneratorTest : AbstractVcsDiagramGeneratorTest() {
     @Test
     fun testSingleCommitOverMultipleLayers() {
         diagram = vcsDiagram(commits()
-                .commit(TestData::class, TestDataDs::class, TestDataDto::class, TestFacade::class)
+            .commit(TestData::class, TestDataDs::class, TestDataDto::class, TestFacade::class)
         ){
             details.nodeAggregation = VcsNodeAggregation.Layer
             details.componentEdgeAggregationMethod = EdgeAggregation.CommitCount
         }
 
-        // Data Structure has one inner change so other three edges have 25%
-        assertEdge("Entry Point", "Interface Structure", true, "label=\"1 / 25.0% / 25.0T%")
-        assertEdge("Entry Point", "Data Structure", true, "label=\"1 / 25.0% / 25.0T%")
-        assertEdge("Interface Structure", "Data Structure", true, "label=\"1 / 25.0% / 25.0T%")
+        // one edge per node and one between every node
+        assertEdge("Entry Point", "Interface Structure", true, "label=\"1 / 16.7% / 16.7%oT")
+        assertEdge("Entry Point", "Data Structure", true, "label=\"1 / 16.7% / 16.7%oT")
+        assertEdge("Interface Structure", "Data Structure", true, "label=\"1 / 16.7% / 16.7%oT")
+    }
+
+    @Test
+    fun testTwoCommitsOverMultipleLayers() {
+        diagram = vcsDiagram(commits()
+            .commit(TestData::class, TestDataDs::class, TestDataDto::class, TestFacade::class)
+            .commit(TestDataDto::class, TestFacade::class)
+        ){
+            details.nodeAggregation = VcsNodeAggregation.Layer
+            details.componentEdgeAggregationMethod = EdgeAggregation.CommitCount
+        }
+
+        // one edge per node and one between every node
+        assertEdge("Entry Point", "Interface Structure", true, "label=\"2 / 22.2% / 22.2%oT")
+        assertEdge("Entry Point", "Data Structure", true, "label=\"1 / 11.1% / 11.1%oT")
+        assertEdge("Interface Structure", "Data Structure", true, "label=\"1 / 11.1% / 11.1%oT")
     }
 
     @Test
     fun testClassRatioWithNormalizationOverLayers() {
         diagram = vcsDiagram(commits()
-                .commit(TestData::class, TestDataDs::class, TestDataDto::class,  message = "init")
-                .commit(TestDataDs::class, TestDataDto::class,  message = "change")
+            .commit(TestData::class, TestDataDs::class, TestDataDto::class,  message = "init")
+            .commit(TestDataDs::class, TestDataDto::class,  message = "change")
         ){
             details.commitContainsPattern = "init"
             details.commitFilter = CommitFilter.NotMatching
@@ -48,8 +61,9 @@ class VcsAggregationDiagramGeneratorTest : AbstractVcsDiagramGeneratorTest() {
         }
 
         // Data Structure has one inner change so other three edges have 25%
-        assertEdge("Data Structure", "Interface Structure", true, "141 / 100.0% / 100.0T%")
+        assertEdge("Data Structure", "Interface Structure", true, "200 / 41.5% / 41.5%oT")
     }
+
     @Test
     fun testClassRatioWithNormalizationInnerChange() {
         diagram = vcsDiagram(commits()

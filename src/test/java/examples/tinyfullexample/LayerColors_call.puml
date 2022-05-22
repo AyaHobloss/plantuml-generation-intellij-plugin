@@ -24,6 +24,7 @@ config=CallConfiguration;
     "isInterfaceStructuresName": "*Dts",
     "isEntryPointPath": "",
     "isEntryPointName": "*Facade*",
+    "treatFinalFieldsAsMandatory": false,
     "customLayers": {} // first matching pattern is applied; e.g.: {"controller": { "name": "*.controller", "path": "controller" }}
   },
   "graphRestriction": {
@@ -65,7 +66,8 @@ config=CallConfiguration;
     "hideMethodsInDataStructures": true,
     "hidePrivateMethods": false,
     "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
-    "onlyShowApplicationEntryPoints": false // root node is included
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
   },
   "details": {
     "nodeAggregation": "None", // None, Class
@@ -81,7 +83,8 @@ config=CallConfiguration;
     "methodColorCoding": "Layer", // None, Component, Layer
     "classColorCoding": "None" // None, Component, Layer
   },
-  "rootClass": "examples.tinyfullexample.data.client.DialogController"
+  "rootClass": "examples.tinyfullexample.data.client.DialogController",
+  "extensionCallbackMethod": "" // qualified.class.name#methodName - signature: public static String method(String)
 }
 diagram meta data end '/
 

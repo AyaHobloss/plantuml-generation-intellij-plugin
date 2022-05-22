@@ -21,7 +21,7 @@ class GenerateVcsDiagramsAction : AbstractDiagramAction<VcsConfiguration>() {
 
     private fun defaultConfiguration(): VcsConfiguration {
         val defaults = ConfigurationDefaults.clusterDiagram()
-        return VcsConfiguration(
+        return VcsConfiguration("",
                 ConfigurationDefaults.classification(),
                 defaults.graphRestriction,
                 VcsDiagramDetails()

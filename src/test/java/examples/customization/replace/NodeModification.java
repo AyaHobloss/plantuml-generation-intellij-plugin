@@ -1,15 +1,15 @@
 package examples.customization.replace;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.parse.Parser;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class NodeModification extends Modification {
 

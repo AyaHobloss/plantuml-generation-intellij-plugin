@@ -1,6 +1,5 @@
 package com.kn.diagrams.generator.actions
 
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.kn.diagrams.generator.config.CallConfiguration
 import com.kn.diagrams.generator.generator.createCallDiagramUmlContent

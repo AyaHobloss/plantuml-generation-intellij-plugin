@@ -198,7 +198,7 @@ class FindContext(private val graph: GraphDefinition,
 
     // non-unique / parallel edges destroy the graph traversal
     private fun Sequence<GraphDirectedEdge>.ensureUniqueDirectedEdge() = this
-            .groupBy { "" + it.to.hashCode() + "_" + it.from.hashCode() }.values
+            .groupBy { "" + it.to.id() + "_" + it.from.id() }.values
             .map { edges ->
                 val first = edges.first()
                 if (edges.size > 1) {

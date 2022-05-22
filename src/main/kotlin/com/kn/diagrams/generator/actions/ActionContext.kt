@@ -3,12 +3,13 @@ package com.kn.diagrams.generator.actions
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiMethod
 import com.kn.diagrams.generator.cast
-import com.kn.diagrams.generator.config.*
+import com.kn.diagrams.generator.config.BaseDiagramConfiguration
+import com.kn.diagrams.generator.config.DiagramConfiguration
+import com.kn.diagrams.generator.config.loadFromMetadata
 import com.kn.diagrams.generator.findClasses
 import com.kn.diagrams.generator.graph.*
 import com.kn.diagrams.generator.inReadAction

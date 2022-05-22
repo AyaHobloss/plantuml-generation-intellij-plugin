@@ -1,15 +1,17 @@
 package com.kn.diagrams.generator.settings;
 
 
-import com.intellij.openapi.options.Configurable;
-import com.kn.diagrams.generator.graph.ProjectClassification;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.Nullable;
+import static com.kn.diagrams.generator.config.SerializationKt.getSerializer;
+import static com.kn.diagrams.generator.config.SerializationKt.toJsonWithComments;
 
 import javax.swing.*;
 
-import static com.kn.diagrams.generator.config.SerializationKt.getSerializer;
-import static com.kn.diagrams.generator.config.SerializationKt.toJsonWithComments;
+import com.intellij.openapi.options.Configurable;
+
+import com.kn.diagrams.generator.graph.ProjectClassification;
+
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.Nullable;
 
 public class DiagramGeneratorSettingsPage implements Configurable {
 

@@ -1,6 +1,5 @@
 package com.kn.diagrams.generator.generator
 
-import com.intellij.openapi.project.Project
 import com.kn.diagrams.generator.actions.ActionContext
 import com.kn.diagrams.generator.actions.structure
 import com.kn.diagrams.generator.config.StructureConfiguration
@@ -17,7 +16,7 @@ fun createStructureDiagramUmlContent(actionContext: ActionContext): List<Pair<St
 
 private fun defaultConfiguration(): StructureConfiguration {
     val defaults = ConfigurationDefaults.structureDiagram()
-    return StructureConfiguration("",
+    return StructureConfiguration("","",
             ConfigurationDefaults.classification(),
             defaults.graphRestriction,
             defaults.graphTraversal,

@@ -3,17 +3,8 @@ package manualReview
 import com.kn.diagrams.generator.config.NodeAggregation
 import com.kn.diagrams.generator.config.NodeGrouping
 import generator.AbstractCallDiagramGeneratorTest
-import org.junit.BeforeClass
 import org.junit.Test
-import testdata.oneComponent.dataaccess.impl.JpaTestDataDao
-import testdata.oneComponent.domain.impl.TestManagerImpl
-import testdata.oneComponent.entity.TestData
-import testdata.oneComponent.entity.ds.TestDataDs
-import testdata.oneComponent.entity.mapper.TestDataMapper
-import testdata.oneComponent.richclient.impl.TestDataDtoMapper
 import testdata.oneComponent.richclient.impl.TestFacadeImpl
-import testdata.oneComponent.service.impl.TestServiceImpl
-import java.io.File
 
 class ReviewCallDiagramGeneratorTest : AbstractCallDiagramGeneratorTest() {
 

@@ -1,7 +1,6 @@
 package filtering
 
 import com.kn.diagrams.generator.graph.excluded
-import com.kn.diagrams.generator.graph.included
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

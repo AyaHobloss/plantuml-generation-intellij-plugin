@@ -22,7 +22,7 @@ class GenerateClusterDiagramAction : AbstractDiagramAction<ClusterConfiguration>
 
     private fun defaultConfiguration(): ClusterConfiguration {
         val defaults = ConfigurationDefaults.clusterDiagram()
-        return ClusterConfiguration(
+        return ClusterConfiguration( "",
                 ConfigurationDefaults.classification(),
                 defaults.graphRestriction,
                 defaults.graphTraversal,

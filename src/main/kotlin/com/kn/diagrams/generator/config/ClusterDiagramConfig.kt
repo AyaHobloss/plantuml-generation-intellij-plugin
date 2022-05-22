@@ -2,7 +2,8 @@ package com.kn.diagrams.generator.config
 
 import com.kn.diagrams.generator.graph.*
 
-class ClusterConfiguration(var projectClassification: ProjectClassification,
+class ClusterConfiguration(override var extensionCallbackMethod: String? = "",
+                           var projectClassification: ProjectClassification,
                            var graphRestriction: GraphRestriction,
                            var graphTraversal: GraphTraversal,
                            var details: ClusterDiagramDetails) : BaseDiagramConfiguration {

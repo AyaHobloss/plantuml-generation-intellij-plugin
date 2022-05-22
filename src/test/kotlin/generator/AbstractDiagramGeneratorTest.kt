@@ -8,7 +8,9 @@ import com.kn.diagrams.generator.actions.call
 import com.kn.diagrams.generator.actions.structure
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.createIfNotExists
-import com.kn.diagrams.generator.generator.*
+import com.kn.diagrams.generator.generator.createCallDiagramUmlContent
+import com.kn.diagrams.generator.generator.createStructureDiagramUmlContent
+import com.kn.diagrams.generator.generator.createVcsContent
 import com.kn.diagrams.generator.generator.vcs.VcsCommit
 import com.kn.diagrams.generator.graph.*
 import java.io.File
@@ -17,10 +19,18 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 
+fun edgeSplitRegex(fromId: String, toId: String) = "([\"]?$fromId[\"]?) -> ([\"]?$toId[\"]?)([\\[]?[.\\w\\s=\"\\/%,:\\[\\]\\(\\)->]*[\\]]?);".toRegex()
+
+class TestEdge(val fromId: String, val toId: String, val tail: String?){
+    override fun toString(): String {
+        return "$fromId -> $toId"+(tail ?: "")+";"
+    }
+}
+
 abstract class AbstractVcsDiagramGeneratorTest : AbstractGeneratorTest() {
 
     fun vcsDiagram(commits: VcsCommits, config: (VcsConfiguration.() -> Unit)? = null): String {
-        val configuration = VcsConfiguration(ProjectClassification(),  GraphRestriction(), VcsDiagramDetails())
+        val configuration = VcsConfiguration("", ProjectClassification(),  GraphRestriction(), VcsDiagramDetails())
 
         defaultClassification(configuration.projectClassification)
 
@@ -65,7 +75,7 @@ abstract class AbstractCallDiagramGeneratorTest : AbstractGeneratorTest() {
 
         val configuration = CallConfiguration(
                 rootMethod.containingClass!!.qualifiedName!!,
-                rootMethod.id(),
+                rootMethod.id(), "",
                 ProjectClassification(),  GraphRestriction(), GraphTraversal(), CallDiagramDetails()
         )
 
@@ -94,7 +104,7 @@ abstract class AbstractStructureDiagramGeneratorTest : AbstractGeneratorTest() {
 
     fun classDiagram(clazz: KClass<*>, config: (StructureConfiguration.() -> Unit)? = null): String {
         val rootClass = clazz.asPsiClass()
-        val configuration = StructureConfiguration(rootClass.qualifiedName!!, ProjectClassification(),  GraphRestriction(), GraphTraversal(), StructureDiagramDetails())
+        val configuration = StructureConfiguration(rootClass.qualifiedName!!, "", ProjectClassification(),  GraphRestriction(), GraphTraversal(), StructureDiagramDetails())
 
         defaultClassification(configuration.projectClassification)
 
@@ -163,12 +173,9 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
     }
 
 
-    private fun String.edge(fromId: String, toId: String): String? {
-        return when {
-            contains(" $toId;") -> "$fromId -> $toId" + substringAfter("$fromId -> $toId;")
-            contains(" $toId[") -> "$fromId -> $toId[" + substringAfter("$fromId -> $toId[").substringBefore("];") + "]"
-            else -> null
-        }
+    private fun String.edge(fromId: String, toId: String): TestEdge? {
+        return edgeSplitRegex(fromId, toId).find(this)
+            ?.let { TestEdge(it.groupValues.getOrNull(1) ?: "", it.groupValues.getOrNull(2) ?: "", it.groupValues.getOrNull(3)) }
     }
 
     private fun String.assertRow(content: String, needsMatch: Boolean): String {
@@ -249,36 +256,32 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
         return node ?: ""
     }
 
-    fun assertCallEdge(fromMethod: KFunction<*>, toMethod: KFunction<*>, vararg keywords: String): String{
-        return assertEdge(fromMethod.asPsiMethod().diagramId(), toMethod.asPsiMethod().diagramId(), true, *keywords)
+    fun assertCallEdge(fromMethod: KFunction<*>, toMethod: KFunction<*>, vararg keywords: String): TestEdge? {
+        return assertEdge(fromMethod.psiMethod().diagramId(), toMethod.psiMethod().diagramId(), true, *keywords)
     }
 
-    fun assertNoCallEdge(fromMethod: KFunction<*>, toMethod: KFunction<*>): String{
+    fun assertNoCallEdge(fromMethod: KFunction<*>, toMethod: KFunction<*>): TestEdge? {
         return assertEdge(fromMethod.psiMethod().diagramId(), toMethod.psiMethod().diagramId(), false)
     }
 
-    fun assertFieldEdge(field: KProperty<*>, targetClass: KClass<*>, vararg keywords: String): String{
+    fun assertFieldEdge(field: KProperty<*>, targetClass: KClass<*>, vararg keywords: String): TestEdge? {
         val keys = keywords.toList().plus(field.name).toTypedArray()
         return assertEdge(field.psiClass().diagramId(), targetClass.asPsiClass().diagramId(), true, *keys)
     }
 
-    fun assertNoFieldEdge(field: KProperty<*>, targetClass: KClass<*>): String{
+    fun assertNoFieldEdge(field: KProperty<*>, targetClass: KClass<*>): TestEdge? {
         return assertEdge(field.psiClass().diagramId(), targetClass.asPsiClass().diagramId(), false)
     }
 
-    fun assertNoCallEdge(fromMethod: KFunction<*>, toMethod: KFunction<*>){
-        assertEdge(fromMethod.psiMethod().diagramId(), toMethod.psiMethod().diagramId(), false)
-    }
-
-    fun assertClassEdge(sourceClass: KClass<*>, targetClass: KClass<*>, vararg keywords: String): String{
+    fun assertClassEdge(sourceClass: KClass<*>, targetClass: KClass<*>, vararg keywords: String): TestEdge? {
        return assertEdge(sourceClass.asPsiClass().diagramId(), targetClass.asPsiClass().diagramId(), true, *keywords)
     }
 
-    fun assertNoClassEdge(sourceClass: KClass<*>, targetClass: KClass<*>): String{
+    fun assertNoClassEdge(sourceClass: KClass<*>, targetClass: KClass<*>): TestEdge? {
         return assertEdge(sourceClass.asPsiClass().diagramId(), targetClass.asPsiClass().diagramId(), false)
     }
 
-    fun assertEdge(fromId: String, toId: String, needsMatch: Boolean, vararg keywords: String): String {
+    fun assertEdge(fromId: String, toId: String, needsMatch: Boolean, vararg keywords: String): TestEdge? {
         val edgeSection = edgesSection()
 
         val edge = edgeSection.edge(fromId, toId)
@@ -289,10 +292,10 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
         }
 
         keywords.forEach {
-            assertTrue("keyword '$it' expected, actual:\n$edge", edge!!.contains(it))
+            assertTrue("keyword '$it' expected, actual:\n$edge", (edge?.tail ?: "").contains(it))
         }
 
-        return edge ?: ""
+        return edge
     }
 
     private fun PsiMethod.diagramId() = containingClass?.diagramId()+"XXX"+name+parameterList.parameters.joinToString { it.type.presentableText }.hashCode().absoluteValue
@@ -308,13 +311,6 @@ abstract class AbstractGeneratorTest : AbstractPsiContextTest() {
             val expectation = (if(needsMatch) "call " else "no call ") + matchPattern.replace(".*", " -> ") + " expected"
             assertFalse("$expectation\n\n actual:\n${diagram!!.substringAfter("'edges")}", true)
         }
-    }
-
-    fun assertClassEdge(sourceClass: KClass<*>, targetClass: KClass<*>, keyword: String? = null){
-        assertEdge(sourceClass.asPsiClass().diagramId(), targetClass.asPsiClass().diagramId(), true, keyword)
-    }
-    fun assertNoClassEdge(sourceClass: KClass<*>, targetClass: KClass<*>, keyword: String? = null){
-        assertEdge(sourceClass.asPsiClass().diagramId(), targetClass.asPsiClass().diagramId(), false, keyword)
     }
 
     fun saveDiagram(path: String){

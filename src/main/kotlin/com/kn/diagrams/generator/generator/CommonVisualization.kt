@@ -63,12 +63,13 @@ fun DotDiagramBuilder.addDirectLink(edge: SquashedGraphEdge, config: DiagramVisu
                         arrowTail = "empty"
                     }
                 }
+            }
 
+            // TODO check for other types
             if(hasMoreEdges && context !is MethodClassUsage && context !is AnalyzeCall)  {
                 arrowHead = "none"
                 arrowTail = null
                 dir = null
-            }
             }
         }
     }
@@ -250,7 +251,6 @@ fun AnalyzeClass.createHTMLShape(config: DiagramVisualizationConfiguration) = Do
 
     }
 }
-
 
 fun Color.toHex(prefix: String = "") = prefix + String.format("%02x%02x%02x", red, green, blue)
 

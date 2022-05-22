@@ -1,6 +1,5 @@
 package com.kn.diagrams.generator.generator.code
 
-import com.intellij.openapi.progress.ProgressManager
 import com.kn.diagrams.generator.config.LeidenParametersVariation
 import com.kn.diagrams.generator.config.serializer
 import com.kn.diagrams.generator.createIfNotExists

@@ -1,15 +1,15 @@
 package com.kn.diagrams.generator.config
 
 import com.google.gson.annotations.Until
-import com.intellij.openapi.project.Project
 import com.kn.diagrams.generator.generator.code.StructureColorCoding
 import com.kn.diagrams.generator.graph.*
 
 class StructureConfiguration(rootClass: String,
+                             extensionCallbackMethod: String? = "",
                              var projectClassification: ProjectClassification,
                              var graphRestriction: GraphRestriction,
                              var graphTraversal: GraphTraversal,
-                             var details: StructureDiagramDetails) : DiagramConfiguration(rootClass) {
+                             var details: StructureDiagramDetails) : DiagramConfiguration(rootClass, extensionCallbackMethod) {
 
     override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
 

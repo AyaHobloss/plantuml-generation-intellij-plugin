@@ -4,12 +4,13 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.castSafelyTo
 import com.kn.diagrams.generator.actions.ActionContext
-import com.kn.diagrams.generator.builder.*
+import com.kn.diagrams.generator.builder.DiagramDirection
+import com.kn.diagrams.generator.builder.DotDiagramBuilder
+import com.kn.diagrams.generator.builder.DotHTMLShape
+import com.kn.diagrams.generator.builder.addLink
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.escapeHTML
 import com.kn.diagrams.generator.generator.*
-import com.kn.diagrams.generator.generator.vcs.Layer
-import com.kn.diagrams.generator.generator.vcs.staticColor
 import com.kn.diagrams.generator.graph.*
 import com.kn.diagrams.generator.notReachable
 import java.util.*
@@ -167,6 +168,7 @@ open class ClusterDiagramContext(actionContext: ActionContext, init: ClusterDiag
             edgeMode = config.details.edgeMode
         }.flatten().distinct()
 
+        // TODO
 //        aggrgatedNodes += baseEdges.flatMap { it.nodes() }.map { it.nameInCluster(config.details.nodeAggregation) }.distinct()
 //        aggrgatedEdges += baseEdges.asSequence()
 //                .flatMap { sequenceOf(nodes.indexOf(it.from()!!.nameInCluster(aggregation)) to nodes.indexOf(it.to()!!.nameInCluster(aggregation)),

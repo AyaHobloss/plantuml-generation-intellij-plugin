@@ -1,10 +1,7 @@
 package com.kn.diagrams.generator.generator.code
 
 import com.kn.diagrams.generator.generator.*
-import com.kn.diagrams.generator.graph.AnalyzeCall
-import com.kn.diagrams.generator.graph.FieldWithTargetType
-import com.kn.diagrams.generator.graph.InheritanceType
-import com.kn.diagrams.generator.graph.MethodClassUsage
+import com.kn.diagrams.generator.graph.*
 import kotlin.streams.toList
 
 val callAndStructureDiagramTemplate: RootNodeBuildContext.() -> Unit = {
@@ -42,8 +39,12 @@ val callAndStructureDiagramTemplate: RootNodeBuildContext.() -> Unit = {
                 is AnalyzeCall -> {
                     label = context.sequence.toString().takeIf { it != "-1" }.takeIf { visualizationConfig.showCallOrder }
                 }
+                // structure diagram related edges
+                is ClassAssociation -> {
+                    label = context.reference
+                }
                 is FieldWithTargetType -> {
-                    label = context.field.name + "\n" + context.field.cardinality()
+                    label = context.field.name + "\n" + context.field.cardinality(visualizationConfig.projectClassification.treatFinalFieldsAsMandatory)
                 }
                 is InheritanceType -> {
                     val hasFullInheritance = edge.edges().all { InheritanceType.Implementation in it.context || InheritanceType.SubClass in it.context }
@@ -53,6 +54,13 @@ val callAndStructureDiagramTemplate: RootNodeBuildContext.() -> Unit = {
                         arrowTail = "empty"
                     }
                 }
+            }
+
+            // TODO check for other types
+            if(hasMoreEdges && context !is MethodClassUsage && context !is AnalyzeCall)  {
+                arrowHead = "none"
+                arrowTail = null
+                dir = null
             }
         }.stream()
     }.toList().let { dot.edges.addAll(it) }

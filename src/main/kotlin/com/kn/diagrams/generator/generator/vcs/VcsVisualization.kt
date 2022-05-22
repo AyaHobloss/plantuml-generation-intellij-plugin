@@ -5,14 +5,18 @@ import com.kn.diagrams.generator.builder.DotDiagramBuilder
 import com.kn.diagrams.generator.clamp
 import com.kn.diagrams.generator.config.*
 import com.kn.diagrams.generator.default
-import com.kn.diagrams.generator.generator.*
+import com.kn.diagrams.generator.generator.DiagramVisualizationConfiguration
 import com.kn.diagrams.generator.generator.code.layer
+import com.kn.diagrams.generator.generator.diagramId
+import com.kn.diagrams.generator.generator.diagramPath
+import com.kn.diagrams.generator.generator.toHex
 import com.kn.diagrams.generator.graph.ClassReference
-import com.kn.diagrams.generator.graph.ProjectClassification
-import com.kn.diagrams.generator.graph.included
 import com.kn.diagrams.generator.throwExceptionIfCanceled
 import java.awt.Color
-import kotlin.math.*
+import kotlin.math.absoluteValue
+import kotlin.math.ceil
+import kotlin.math.round
+import kotlin.math.sqrt
 
 fun VcsAnalysis.buildDiagram(actions: VcsVisualization.() -> Unit): List<Pair<String, String>> {
     ProgressBar.text = "Diagram is generated"

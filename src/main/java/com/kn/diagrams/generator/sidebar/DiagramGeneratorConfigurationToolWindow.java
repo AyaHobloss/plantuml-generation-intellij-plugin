@@ -1,6 +1,11 @@
 package com.kn.diagrams.generator.sidebar;
 
-import static com.kn.diagrams.generator.UtilsKt.inReadAction;
+import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
+import static com.kn.diagrams.generator.UtilsKt.*;
+import static com.kn.diagrams.generator.actions.ActionContextKt.classBasedContext;
+import static com.kn.diagrams.generator.actions.ActionContextKt.methodBasedContext;
+import static org.apache.commons.lang3.StringUtils.substringAfterLast;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,27 +22,23 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.kn.diagrams.generator.actions.*;
+
+import com.kn.diagrams.generator.actions.AbstractDiagramAction;
+import com.kn.diagrams.generator.actions.ActionContext;
+import com.kn.diagrams.generator.actions.DiagramActions;
+import com.kn.diagrams.generator.actions.GenerateFlowDiagramsActionKt;
 import com.kn.diagrams.generator.config.*;
-import com.kn.diagrams.generator.generator.Aggregation;
 import com.kn.diagrams.generator.graph.CallsFromStructure;
 import com.kn.diagrams.generator.graph.EdgeMode;
 import com.kn.diagrams.generator.graph.GraphRestriction;
 import com.kn.diagrams.generator.graph.GraphTraversal;
 import com.kn.diagrams.generator.settings.CallConfigurationDefaults;
 import com.kn.diagrams.generator.settings.ConfigurationDefaults;
-import kotlin.Pair;
-import kotlin.Unit;
 
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
-import static com.kn.diagrams.generator.UtilsKt.asyncWriteAction;
-import static com.kn.diagrams.generator.UtilsKt.writeDiagramFile;
-import static com.kn.diagrams.generator.actions.ActionContextKt.classBasedContext;
-import static com.kn.diagrams.generator.actions.ActionContextKt.methodBasedContext;
-import static org.apache.commons.lang3.StringUtils.substringAfterLast;
-import static org.apache.commons.lang3.StringUtils.substringBefore;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 public class DiagramGeneratorConfigurationToolWindow extends JPanel{
 
@@ -322,19 +323,19 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
         DiagramConfiguration configuration = null;
 
         if(actionId == DiagramActions.GenerateCallDiagramAction){
-            configuration = new CallConfiguration("", null,
+            configuration = new CallConfiguration("", null,"",
                     ConfigurationDefaults.Companion.classification(),
                     getRestrictions(),
                     getTraversal(),
                     getCallDetails());
         } else if(actionId == DiagramActions.GenerateStructureDiagramAction){
-            configuration = new StructureConfiguration("",
+            configuration = new StructureConfiguration("","",
                     ConfigurationDefaults.Companion.classification(),
                     getRestrictions(),
                     getTraversal(),
                     getStructureDetails());
         } else if(actionId == DiagramActions.GenerateFlowDiagramAction){
-            configuration = new FlowConfiguration("", null,
+            configuration = new FlowConfiguration("", null,"",
                     ConfigurationDefaults.Companion.classification(),
                     getRestrictions(),
                     getTraversal());
@@ -379,14 +380,17 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 AnAction action = ActionManager.getInstance().getAction(actionId.name());
+
                 if(action instanceof AbstractDiagramAction){
                     ActionContext actionContext = getActionContext(actionId, event);
-                    PsiClass rootClass = inReadAction(() -> AbstractDiagramActionKt.findFirstClass(event));
-                    DiagramConfiguration configuration = inReadAction(() -> getDiagramConfiguration(actionId, rootClass));
+                    DiagramConfiguration configuration = inReadAction(() -> getDiagramConfiguration(actionId));
+                    Function1<String, String> diagramExtension = configuration.diagramExtension(project);
 
                     asyncWriteAction(() -> {
-                        writeDiagramFile(event.getData(PSI_FILE).getContainingDirectory(), diagram.component1(), diagram.component2());
-
+                        ((AbstractDiagramAction<?>) action).generateWith(actionContext).forEach(result ->
+                            // TODO do extension here?
+                            writeDiagramFile(event.getData(PSI_FILE).getContainingDirectory(), result.component1(), diagramExtension.invoke(result.component2()))
+                        );
                         return Unit.INSTANCE;
                     });
                 } else {

@@ -1,8 +1,8 @@
 package backward_compatibility
 
+import AbstractPsiContextTest
 import com.kn.diagrams.generator.config.DiagramConfiguration
 import com.kn.diagrams.generator.config.loadFromMetadata
-import AbstractPsiContextTest
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertNotNull
