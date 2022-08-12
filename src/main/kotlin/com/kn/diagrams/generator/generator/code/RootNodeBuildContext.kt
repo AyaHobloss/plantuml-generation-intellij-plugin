@@ -22,6 +22,7 @@ class RootNodeBuildContext(val context: CodeStructureAnalysis,
 
     var methodNodes: Set<AnalyzeMethod>
     var classNodes: Set<AnalyzeClass>
+    var fieldNodes: Set<AnalyzeField>
     var edges = mutableListOf<SquashedGraphEdge>()
 
     private val groupHierarchyCluster = DotHierarchicalGroupCluster { _, packageCluster, color, isLast ->
@@ -48,6 +49,7 @@ class RootNodeBuildContext(val context: CodeStructureAnalysis,
 
         classNodes = types[AnalyzeClass::class.java.cast()]?.toSet().cast<Set<AnalyzeClass>>() ?: emptySet()
         methodNodes = types[AnalyzeMethod::class.java.cast()]?.toSet().cast<Set<AnalyzeMethod>>() ?: emptySet()
+        fieldNodes = types[AnalyzeField::class.java.cast()]?.toSet().cast<Set<AnalyzeField>>() ?: emptySet()
     }
 
     fun buildDiagram(actions: RootNodeBuildContext.() -> Unit): String {

@@ -6,13 +6,14 @@ import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.config.CallConfiguration
 import com.kn.diagrams.generator.generator.code.CodeStructureAnalysis
 import com.kn.diagrams.generator.generator.code.callAndStructureDiagramTemplate
+import com.kn.diagrams.generator.graph.AnalyzeField
 import com.kn.diagrams.generator.graph.AnalyzeMethod
 import com.kn.diagrams.generator.settings.ConfigurationDefaults
 
 fun createCallDiagramUmlContent(actionContext: ActionContext): List<Pair<String, String>> {
     return CodeStructureAnalysis(actionContext
             .defaultConfig{ defaultConfiguration() }
-            .plantUmlNamingPattern { node, i -> "${fileName}_${i}_${ node.cast<AnalyzeMethod>()?.name }_calls.puml" }
+            .plantUmlNamingPattern { node, i -> "${fileName}_${i}_${ node.cast<AnalyzeMethod>()?.name ?: node.cast<AnalyzeField>()?.name }_calls.puml" }
             .call())
             .buildDiagrams(callAndStructureDiagramTemplate)
 }

@@ -54,7 +54,7 @@ class CodeStructureAnalysis {
             )
         }
 
-        rootNodes = actionContext.rootNodeIds.mapNotNull { cache.methodFor(it) }
+        rootNodes = actionContext.rootNodeIds.mapNotNull { cache.methodFor(it) } + actionContext.rootNodeIds.mapNotNull { cache.fieldFor(it) }
 
         if (rootNodes.isEmpty()) {
             notifyErrorMissingPublicMethod(project)

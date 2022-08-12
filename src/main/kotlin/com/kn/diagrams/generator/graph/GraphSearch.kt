@@ -1,6 +1,7 @@
 package com.kn.diagrams.generator.graph
 
 import com.intellij.util.castSafelyTo
+import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.generator.containingClass
 import com.kn.diagrams.generator.toSingleList
 import java.util.*
@@ -167,9 +168,19 @@ class FindContext(private val graph: GraphDefinition,
         return when (this) {
             is AnalyzeMethod -> calls() + classUsages()
             is AnalyzeClass -> fieldEdges() + superTypeEdges() + subTypeEdges() + structureCallEdges()
+            is AnalyzeField -> {
+                """
+                    Entity.test -> Dto.test -> mapTracing..() - Dto.test -> mapper call -> Dto.test = "sadasd"
+                """.trimIndent()
+                traceCache()[this]?.asSequence() ?: emptySequence()
+            }
+            is TraceNode -> {
+                traceCache()[this]?.asSequence() ?: emptySequence()
+            }
             else -> emptySequence()
         }.ensureUniqueDirectedEdge()
     }
+
     private fun AnalyzeClass.structureCallEdges(): Sequence<GraphDirectedEdge> {
         if(useStructureCalls == CallsFromStructure.No
             || (useStructureCalls == CallsFromStructure.ForwardOnly && direction == Direction.Backward)) return emptySequence()

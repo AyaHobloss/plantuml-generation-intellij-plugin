@@ -70,6 +70,8 @@ class GraphTraversalFilter(val global: ProjectClassification, private val traver
     override fun accept(node: GraphNode) = when (node) {
         is AnalyzeClass -> node.reference.accept()
         is AnalyzeMethod -> node.accept() && node.containingClass.accept()
+        is AnalyzeField -> true
+        is TraceNode -> true
         else -> notReachable()
     }
 

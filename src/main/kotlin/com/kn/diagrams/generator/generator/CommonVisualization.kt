@@ -47,6 +47,9 @@ fun DotDiagramBuilder.addDirectLink(edge: SquashedGraphEdge, config: DiagramVisu
                 is AnalyzeCall -> {
                     label = context.sequence.toString().takeIf { it != "-1" }.takeIf { config.showCallOrder }
                 }
+                is TraceContext -> {
+                    label = context.text
+                }
 
                 // structure diagram related edges
                 is ClassAssociation -> {
@@ -104,12 +107,16 @@ fun ClassReference.diagramId() = name + path.hashCode().absoluteValue
 fun GraphNode.diagramId() = when (this) {
     is AnalyzeMethod -> containingClass.diagramId() + "XXX" + name + parameter.joinToString { it.typeDisplay }.hashCode().absoluteValue
     is AnalyzeClass -> reference.diagramId()
+    is AnalyzeField -> containingClass?.diagramId() + "XXX"+name
+    is TraceNode -> id
     else -> notReachable()
 }
 
 fun Any.containingClass() = when (this) {
     is AnalyzeClass -> reference
     is AnalyzeMethod -> containingClass
+    is AnalyzeField -> containingClass!!
+    is TraceNode -> ClassReference(id)
     is ClassReference -> this
     else -> notReachable()
 }
@@ -233,7 +240,7 @@ fun AnalyzeClass.createHTMLShape(config: DiagramVisualizationConfiguration) = Do
         }
 
         if (fields.isNotEmpty()) horizontalSeparator()
-        fields.sortedWith(compareBy({ !it.isEnumInstance }, { it.name }))
+        fields.values.sortedWith(compareBy({ !it.isEnumInstance }, { it.name }))
             .forEach { field ->
                 row {
                     cell(field.visibility.symbol() + "  " + field.name + ": " + field.typeDisplay.escapeHTML() + " " + field.cardinality(config.projectClassification.treatFinalFieldsAsMandatory))

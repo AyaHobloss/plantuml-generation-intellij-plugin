@@ -1,5 +1,10 @@
 package com.kn.diagrams.generator.generator.code
 
+import com.kn.diagrams.generator.builder.DotLink
+import com.kn.diagrams.generator.builder.DotShape
+import com.kn.diagrams.generator.builder.Oval
+import com.kn.diagrams.generator.builder.Rectangle
+import com.kn.diagrams.generator.cast
 import com.kn.diagrams.generator.generator.*
 import com.kn.diagrams.generator.graph.*
 import kotlin.streams.toList
@@ -19,12 +24,34 @@ val callAndStructureDiagramTemplate: RootNodeBuildContext.() -> Unit = {
         clazz.grouping().addNode {
             if (visualizationConfig.showDetailedClass) {
                 clazz.createHTMLShape(visualizationConfig)
-                        .apply { config.fillColor = clazz.structureBasedColor() }
+                    .apply { config.fillColor = clazz.structureBasedColor() }
             } else {
                 clazz.createBoxShape()
-                        .apply { config.fillColor = clazz.structureBasedColor() }
+                    .apply { config.fillColor = clazz.structureBasedColor() }
             }
         }
+    }
+
+    fieldNodes.forEach { field ->
+        dot.nodes.add(DotShape(field.containingClass?.name+"."+field.name, field.diagramId()).with {
+            shape = Rectangle
+            style = "filled"
+        })
+    }
+
+    traceNodes.forEach {
+        if (it is TraceNode){
+            dot.nodes.add(DotShape(it.text, it.diagramId()).with {
+                shape = Oval
+                style = "filled"
+            })
+        }
+    }
+
+    traceEdges.forEach { edge ->
+        dot.edges.add(DotLink(edge.from.diagramId(), edge.to.diagramId()).with {
+            label = edge.context.firstOrNull()?.cast<TraceContext>()?.text
+        })
     }
 
     edges.parallelStream().flatMap { edge ->
@@ -38,6 +65,9 @@ val callAndStructureDiagramTemplate: RootNodeBuildContext.() -> Unit = {
                 }
                 is AnalyzeCall -> {
                     label = context.sequence.toString().takeIf { it != "-1" }.takeIf { visualizationConfig.showCallOrder }
+                }
+                is TraceContext -> {
+                    label = context.text
                 }
                 // structure diagram related edges
                 is ClassAssociation -> {

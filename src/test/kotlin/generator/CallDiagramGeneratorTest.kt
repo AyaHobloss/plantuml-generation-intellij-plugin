@@ -1,5 +1,7 @@
 package generator
 
+import com.kn.diagrams.generator.graph.traceEdges
+import com.kn.diagrams.generator.graph.traceNodes
 import org.junit.Test
 import testdata.oneComponent.dataaccess.impl.JpaTestDataDao
 import testdata.oneComponent.domain.impl.TestManagerImpl
@@ -11,6 +13,15 @@ import testdata.oneComponent.richclient.impl.TestFacadeImpl
 import testdata.oneComponent.service.impl.TestServiceImpl
 
 class CallDiagramGeneratorTest : AbstractCallDiagramGeneratorTest() {
+
+    @Test
+    fun testTrace() {
+        diagram = traceDiagram(TestData::text)
+
+        traceNodes.toString()
+        traceEdges.toString()
+        saveDiagram("./tracing.puml")
+    }
 
     @Test
     fun testStandardConfig() {

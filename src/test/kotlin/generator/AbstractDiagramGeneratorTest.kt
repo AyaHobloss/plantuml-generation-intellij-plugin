@@ -70,6 +70,33 @@ abstract class AbstractVcsDiagramGeneratorTest : AbstractGeneratorTest() {
 
 abstract class AbstractCallDiagramGeneratorTest : AbstractGeneratorTest() {
 
+    fun traceDiagram(field: KProperty<*>, config: (CallConfiguration.() -> Unit)? = null): String {
+        val rootField = field.psiField()
+
+        val configuration = CallConfiguration(
+            rootField.containingClass!!.qualifiedName!!,
+            rootField.id(), "",
+            ProjectClassification(),  GraphRestriction(), GraphTraversal(), CallDiagramDetails()
+        )
+
+        defaultClassification(configuration.projectClassification)
+
+        configuration.graphRestriction.cutTests = false
+
+        with(configuration){
+            graphRestriction.cutDataStructures = false
+            graphTraversal.forwardDepth = 9
+            graphTraversal.backwardDepth = 9
+        }
+
+        config?.invoke(configuration)
+
+        val actionContext = ActionContext(project, mutableListOf(rootField.id()), configuration, null, null)
+
+        return createCallDiagramUmlContent(actionContext.call())
+            .first().second
+    }
+
     fun callDiagram(method: KFunction<*>, config: (CallConfiguration.() -> Unit)? = null): String {
         val rootMethod = method.psiMethod()
 

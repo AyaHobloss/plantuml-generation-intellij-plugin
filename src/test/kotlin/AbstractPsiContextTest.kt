@@ -1,4 +1,5 @@
 import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiField
 import com.intellij.psi.PsiMethod
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import com.intellij.util.io.isFile
@@ -40,6 +41,10 @@ abstract class AbstractPsiContextTest : LightJavaCodeInsightFixtureTestCase(){
 
     fun KFunction<*>.psiMethod(): PsiMethod {
         return psiClass().methods.first { it.name == name }
+    }
+
+    fun KProperty<*>.psiField(): PsiField {
+        return psiClass().fields.first { it.name == name }
     }
 
     fun KClass<*>.asPsiClass(): PsiClass {

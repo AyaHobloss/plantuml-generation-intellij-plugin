@@ -14,12 +14,39 @@ import java.util.*
 import java.util.stream.Collectors
 
 
+//class AnalyzeMethodParameter(val sourceMethod: AnalyzeMethod, val sourceParameterName: String, val propertyName: String): GraphNode {
+//    val id = sourceMethod.id + "$"+sourceParameterName+"$"+propertyName
+//
+//    override fun id() = id
+//
+//    override fun equals(other: Any?): Boolean {
+//        if (this === other) return true
+//        if (other !is AnalyzeMethodParameter) return false
+//
+//        if (id != other.id) return false
+//
+//        return true
+//    }
+//
+//    override fun hashCode(): Int {
+//        return id.hashCode()
+//    }
+//}
+
+//class AnalyzeMethodParameterUsage(val sourceMethodParameterId: String, val targetField: AnalyzeField): EdgeContext
+
+//class FieldUsage(val source: AnalyzeField, val target: AnalyzeField): EdgeContext{
+//
+//}
+
 class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, searchMode: SearchMode) {
 
     val classes: MutableMap<String, AnalyzeClass> = mutableMapOf()
     val impenitenceInverted: MutableMap<String, List<ClassReference>> = mutableMapOf()
     val forwardCalls: MutableMap<String, List<AnalyzeCall>> = mutableMapOf()
     val backwardCalls: MutableMap<String, List<AnalyzeCall>> = mutableMapOf()
+//    val forwardFieldUsage: MutableMap<String, List<FieldUsage>> = mutableMapOf()
+//    val backwardFieldUsage: MutableMap<String, List<FieldUsage>> = mutableMapOf()
     val forwardMethodClassUsage: MutableMap<String, Set<MethodClassUsage>> = mutableMapOf()
     val forwardFieldClassUsage: MutableMap<ClassReference, MutableSet<FieldWithTargetType>> = mutableMapOf()
     val backwardFieldClassUsage: MutableMap<ClassReference, MutableSet<FieldWithTargetType>> = mutableMapOf()
@@ -61,6 +88,13 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
         val classId = ClassReference(methodId.substringBefore("#")).id()
 
         return classes[classId]?.methods?.get(methodId)
+    }
+
+    fun fieldFor(fieldId: String): AnalyzeField? {
+        val classId = ClassReference(fieldId.substringBefore("#")).id()
+        val name = fieldId.substringAfter("#")
+
+        return classes[classId]?.fields?.get(name)
     }
 
     fun allInheritedClasses(root: ClassReference): List<AnalyzeClass> {
@@ -109,7 +143,6 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
     private fun optimize() {
         ProgressManager.getGlobalProgressIndicator()?.text = "Datastructures getting optimized"
 
-
         val calls = classes.flatMap { it.value.calls.values.flatten() }
                 .filter { call -> call.source.resolve() != null && call.target.resolve() != null }
         calls
@@ -141,7 +174,7 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
                     }
                 }
 
-        classes.values.flatMap { it.fields }.forEach { field ->
+        classes.values.flatMap { it.fields.values }.forEach { field ->
             field.types.asSequence()
                     .filter { it.exists() && filter.acceptClass(it) }
                     .filterNot { targetCls -> field.containingClass == targetCls }
@@ -185,7 +218,8 @@ class GraphDefinition(project: Project, val filter: GraphRestrictionFilter, sear
         return classes[classReference.id()]?.methods?.get(method)
     }
 
-    fun classFor(reference: ClassReference): AnalyzeClass? {
+    fun classFor(reference: ClassReference?): AnalyzeClass? {
+        if(reference == null) return null
         return classes[reference.id()]
     }
 
