@@ -1,0 +1,140 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../ui-text/1.1.0/ui-text-1.1.0.module",
+    "group": "org.jetbrains.compose.ui",
+    "module": "ui-text",
+    "version": "1.1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.3"
+    }
+  },
+  "variants": [
+    {
+      "name": "desktopApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.skiko",
+          "module": "skiko",
+          "version": {
+            "requires": "0.7.12"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui-graphics",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui-unit",
+          "version": {
+            "requires": "1.1.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "ui-text-desktop-1.1.0.jar",
+          "url": "ui-text-desktop-1.1.0.jar",
+          "size": 417308,
+          "sha512": "b271f5a93e63d7ba9dd3f618bfbe51bb759cdd5f692d87e6ecc9a1c9b04df52921fd3714b3fb0e0c1553953a9e7f0d2ddb7a35ff166f1fa4e02530db455c953a",
+          "sha256": "acf42ba1e3a1c697d7bfc4cfe6329b9041df7d2151d43132c6f04d8f24cf732e",
+          "sha1": "652aa25cd2a00c43f3e1903dc3e30ef9032d237d",
+          "md5": "54e255b2351cd8521b510c8bd3995506"
+        }
+      ]
+    },
+    {
+      "name": "desktopRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.skiko",
+          "module": "skiko",
+          "version": {
+            "requires": "0.7.12"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui-graphics",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui-unit",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "1.6.10"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.6.10"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.runtime",
+          "module": "runtime",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.runtime",
+          "module": "runtime-saveable",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui-util",
+          "version": {
+            "requires": "1.1.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "ui-text-desktop-1.1.0.jar",
+          "url": "ui-text-desktop-1.1.0.jar",
+          "size": 417308,
+          "sha512": "b271f5a93e63d7ba9dd3f618bfbe51bb759cdd5f692d87e6ecc9a1c9b04df52921fd3714b3fb0e0c1553953a9e7f0d2ddb7a35ff166f1fa4e02530db455c953a",
+          "sha256": "acf42ba1e3a1c697d7bfc4cfe6329b9041df7d2151d43132c6f04d8f24cf732e",
+          "sha1": "652aa25cd2a00c43f3e1903dc3e30ef9032d237d",
+          "md5": "54e255b2351cd8521b510c8bd3995506"
+        }
+      ]
+    }
+  ]
+}

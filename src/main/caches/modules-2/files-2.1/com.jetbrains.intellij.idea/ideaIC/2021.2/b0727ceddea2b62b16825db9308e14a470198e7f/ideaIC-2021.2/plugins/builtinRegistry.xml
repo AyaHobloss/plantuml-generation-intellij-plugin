@@ -1,0 +1,326 @@
+<plugins>
+  <plugin id='org.jetbrains.settingsRepository' directoryName='settings-repository'>
+    <dependencies>
+      <dependency>com.intellij.modules.xml</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.plugins.gradle.dependency.updater' directoryName='gradle-dependencyUpdater'>
+    <dependencies>
+      <dependency>com.intellij.gradle</dependency>
+      <dependency>com.intellij.externalSystem.dependencyUpdater</dependency>
+      <dependency>org.jetbrains.idea.gradle.dsl</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='Subversion' directoryName='svn4idea'>
+    <dependencies>
+      <dependency>com.intellij.modules.vcs</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='com.jetbrains.codeWithMe' directoryName='cwm-plugin'>
+    <dependencies>
+      <dependency>com.intellij.modules.platform</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='com.intellij.configurationScript' directoryName='configurationScript'>
+    <dependencies />
+  </plugin>
+  <plugin id='Git4Idea' directoryName='git4idea'>
+    <dependencies />
+  </plugin>
+  <plugin id='PerforceDirectPlugin' directoryName='PerforceIntegration'>
+    <dependencies>
+      <dependency>com.intellij.modules.lang</dependency>
+      <dependency>com.intellij.modules.vcs</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='tanvd.grazi' directoryName='grazie'>
+    <dependencies />
+  </plugin>
+  <plugin id='com.intellij.java.ide' directoryName='java-ide-customization'>
+    <dependencies>
+      <dependency>com.intellij.java</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.plugins.gradle' directoryName='gradle-java'>
+    <dependencies>
+      <dependency>com.intellij.java</dependency>
+      <dependency>com.intellij.gradle</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='com.intellij.laf.macos' directoryName='laf-macos'>
+    <dependencies>
+      <dependency>com.intellij.modules.platform</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='TestNG-J' directoryName='testng'>
+    <dependencies>
+      <dependency>com.intellij.modules.java</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='XPathView' directoryName='xpath'>
+    <dependencies>
+      <dependency>com.intellij.modules.xml</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.plugins.gradle.maven' directoryName='gradle-java-maven'>
+    <dependencies>
+      <dependency>org.intellij.groovy</dependency>
+      <dependency>org.jetbrains.idea.maven</dependency>
+      <dependency>org.jetbrains.plugins.gradle</dependency>
+      <dependency>org.jetbrains.idea.reposearch</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='ByteCodeViewer' directoryName='ByteCodeViewer'>
+    <dependencies />
+  </plugin>
+  <plugin id='com.jetbrains.space' directoryName='space'>
+    <dependencies />
+  </plugin>
+  <plugin id='XSLT-Debugger' directoryName='xslt-debugger'>
+    <dependencies>
+      <dependency>XPathView</dependency>
+      <dependency>com.intellij.modules.xml</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='com.intellij.java-i18n' directoryName='java-i18n'>
+    <dependencies>
+      <dependency>com.intellij.properties</dependency>
+      <dependency>com.intellij.modules.java</dependency>
+      <dependency>com.intellij.modules.platform</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='com.android.tools.idea.smali' directoryName='smali'>
+    <dependencies>
+      <dependency>com.intellij.modules.lang</dependency>
+      <dependency>com.intellij.modules.java-capable</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='intellij.indexing.shared.core' directoryName='indexing-shared'>
+    <dependencies>
+      <dependency>com.intellij.modules.platform</dependency>
+      <dependency>com.intellij.configurationScript</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='intellij.webp' directoryName='webp'>
+    <dependencies>
+      <dependency>com.intellij.modules.lang</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.idea.gradle.dsl' directoryName='android-gradle-dsl'>
+    <dependencies />
+  </plugin>
+  <plugin id='com.intellij.completion.ml.ranking' directoryName='completionMlRanking'>
+    <dependencies />
+  </plugin>
+  <plugin id='org.jetbrains.idea.maven' directoryName='maven'>
+    <dependencies>
+      <dependency>com.intellij.properties</dependency>
+      <dependency>com.intellij.modules.java</dependency>
+      <dependency>org.jetbrains.idea.reposearch</dependency>
+      <dependency>org.jetbrains.idea.maven.model</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.android' directoryName='android'>
+    <dependencies>
+      <dependency>com.intellij.platform.images</dependency>
+      <dependency>com.intellij.modules.java-capable</dependency>
+      <dependency>com.intellij.modules.java</dependency>
+      <dependency>org.intellij.intelliLang</dependency>
+      <dependency>org.intellij.intelliLang</dependency>
+      <dependency>JUnit</dependency>
+      <dependency>com.intellij.properties</dependency>
+      <dependency>org.jetbrains.plugins.gradle</dependency>
+      <dependency>org.intellij.groovy</dependency>
+      <dependency>com.android.tools.idea.smali</dependency>
+      <dependency>org.jetbrains.kotlin</dependency>
+      <dependency>org.jetbrains.idea.gradle.dsl</dependency>
+      <dependency>org.intellij.intelliLang</dependency>
+      <dependency>org.intellij.intelliLang</dependency>
+      <dependency>org.intellij.intelliLang</dependency>
+      <dependency>org.intellij.intelliLang</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.kotlin' directoryName='Kotlin'>
+    <dependencies>
+      <dependency>com.intellij.modules.platform</dependency>
+      <dependency>com.intellij.modules.java</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.intellij.intelliLang' directoryName='IntelliLang'>
+    <dependencies />
+  </plugin>
+  <plugin id='org.jetbrains.plugins.javaFX' directoryName='javaFX'>
+    <dependencies />
+  </plugin>
+  <plugin id='com.jetbrains.packagesearch.intellij-plugin' directoryName='packageSearch'>
+    <dependencies />
+  </plugin>
+  <plugin id='com.jetbrains.sh' directoryName='sh'>
+    <dependencies />
+  </plugin>
+  <plugin id='com.intellij.java' directoryName='java'>
+    <dependencies>
+      <dependency>com.intellij.modules.platform</dependency>
+      <dependency>com.intellij.modules.lang</dependency>
+      <dependency>com.intellij.modules.vcs</dependency>
+      <dependency>com.intellij.modules.xdebugger</dependency>
+      <dependency>com.intellij.modules.xml</dependency>
+      <dependency>com.intellij.modules.java-capable</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='AntSupport' directoryName='ant'>
+    <dependencies>
+      <dependency>com.intellij.modules.java</dependency>
+      <dependency>com.intellij.properties</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='com.intellij.externalSystem.dependencyUpdater' directoryName='externalSystem-dependencyUpdater'>
+    <dependencies />
+  </plugin>
+  <plugin id='training' directoryName='featuresTrainer'>
+    <dependencies />
+  </plugin>
+  <plugin id='com.intellij.marketplace' directoryName='marketplace'>
+    <dependencies>
+      <dependency>com.intellij.modules.lang</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.idea.eclipse' directoryName='eclipse'>
+    <dependencies>
+      <dependency>com.intellij.modules.java</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='com.intellij.properties' directoryName='properties'>
+    <dependencies />
+  </plugin>
+  <plugin id='hg4idea' directoryName='hg4idea'>
+    <dependencies>
+      <dependency>com.intellij.modules.vcs</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='JUnit' directoryName='junit'>
+    <dependencies>
+      <dependency>com.intellij.java</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='com.intellij.tasks' directoryName='tasks'>
+    <dependencies>
+      <dependency>com.intellij.modules.xml</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.plugins.terminal' directoryName='terminal'>
+    <dependencies>
+      <dependency>com.intellij.modules.platform</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.intellij.plugins.markdown' directoryName='markdown'>
+    <dependencies>
+      <dependency>com.intellij.modules.lang</dependency>
+      <dependency>com.intellij.platform.images</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.debugger.streams' directoryName='stream-debugger'>
+    <dependencies>
+      <dependency>com.intellij.java</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.intellij.groovy' directoryName='Groovy'>
+    <dependencies />
+  </plugin>
+  <plugin id='training.git' directoryName='vcs-git-featuresTrainer'>
+    <dependencies>
+      <dependency>com.intellij.modules.lang</dependency>
+      <dependency>training</dependency>
+      <dependency>Git4Idea</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.plugins.wsl.fs' directoryName='wsl-fs-helper'>
+    <dependencies />
+  </plugin>
+  <plugin id='org.jetbrains.java.decompiler' directoryName='java-decompiler'>
+    <dependencies>
+      <dependency>com.intellij.modules.java</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.idea.maven.model' directoryName='maven-model'>
+    <dependencies />
+  </plugin>
+  <plugin id='org.jetbrains.plugins.yaml' directoryName='yaml'>
+    <dependencies />
+  </plugin>
+  <plugin id='Coverage' directoryName='coverage'>
+    <dependencies>
+      <dependency>com.intellij.modules.coverage</dependency>
+      <dependency>com.intellij.modules.java</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='Lombook Plugin' directoryName='lombok'>
+    <dependencies>
+      <dependency>com.intellij.modules.lang</dependency>
+      <dependency>com.intellij.modules.platform</dependency>
+      <dependency>com.intellij.modules.java</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='DevKit' directoryName='devkit'>
+    <dependencies>
+      <dependency>com.intellij.properties</dependency>
+      <dependency>com.intellij.modules.java</dependency>
+      <dependency>com.intellij.modules.json</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.editorconfig.editorconfigjetbrains' directoryName='editorconfig'>
+    <dependencies>
+      <dependency>com.intellij.modules.lang</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.plugins.emojipicker' directoryName='emojipicker'>
+    <dependencies>
+      <dependency>com.intellij.modules.platform</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='com.jetbrains.changeReminder' directoryName='vcs-changeReminder'>
+    <dependencies>
+      <dependency>com.intellij.modules.vcs</dependency>
+      <dependency>Git4Idea</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='com.intellij.uiDesigner' directoryName='uiDesigner'>
+    <dependencies>
+      <dependency>com.intellij.java-i18n</dependency>
+      <dependency>com.intellij.properties</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='com.intellij.copyright' directoryName='copyright'>
+    <dependencies>
+      <dependency>com.intellij.modules.lang</dependency>
+      <dependency>com.intellij.modules.xml</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='com.intellij.platform.images' directoryName='platform-images'>
+    <dependencies />
+  </plugin>
+  <plugin id='com.intellij.gradle' directoryName='gradle'>
+    <dependencies>
+      <dependency>com.intellij.modules.lang</dependency>
+      <dependency>com.intellij.modules.externalSystem</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.plugins.textmate' directoryName='textmate'>
+    <dependencies>
+      <dependency>com.intellij.modules.lang</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='com.intellij.laf.win10' directoryName='laf-win10'>
+    <dependencies>
+      <dependency>com.intellij.modules.platform</dependency>
+    </dependencies>
+  </plugin>
+  <plugin id='org.jetbrains.plugins.github' directoryName='github'>
+    <dependencies />
+  </plugin>
+  <plugin id='org.jetbrains.idea.reposearch' directoryName='repository-search'>
+    <dependencies>
+      <dependency>org.jetbrains.idea.maven.model</dependency>
+    </dependencies>
+  </plugin>
+</plugins>

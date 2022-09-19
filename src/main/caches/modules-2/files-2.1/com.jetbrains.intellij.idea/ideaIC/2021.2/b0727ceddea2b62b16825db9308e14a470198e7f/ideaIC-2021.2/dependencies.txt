@@ -1,0 +1,7 @@
+jetSignBuild=42.48
+zkmVersion=15.0.2
+bundledMavenVersion=3.6.3
+jdkBuild=11_0_11b1504.13
+kotlinCompilerBuild=213-1.5.10-release-IJ734:Ideadev
+rkernelVersion=master.188
+gradleApiVersion=5.2.1

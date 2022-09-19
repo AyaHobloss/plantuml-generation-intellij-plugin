@@ -1,0 +1,82 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../ui-geometry/1.1.0/ui-geometry-1.1.0.module",
+    "group": "org.jetbrains.compose.ui",
+    "module": "ui-geometry",
+    "version": "1.1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.3"
+    }
+  },
+  "variants": [
+    {
+      "name": "desktopApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "ui-geometry-desktop-1.1.0.jar",
+          "url": "ui-geometry-desktop-1.1.0.jar",
+          "size": 37906,
+          "sha512": "c7b3850d12732ce14fd0490c122d0578d41df54dbeb9fed9274eb01ba75fdedebfe0138d844e7a509f46733c965649e57d3eddfc5e2ffb9efc2f6b44f77dd725",
+          "sha256": "aab07b8c2f776989b3f8b34be5bc0babeaee562e0f80e2a1642cb26213845732",
+          "sha1": "51cf3b7ba42e945ad258e14eeaa16e4e0a4bf182",
+          "md5": "e1e37184fc307a8e966ee489e77af59d"
+        }
+      ]
+    },
+    {
+      "name": "desktopRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.6.10"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.runtime",
+          "module": "runtime",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui-util",
+          "version": {
+            "requires": "1.1.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "ui-geometry-desktop-1.1.0.jar",
+          "url": "ui-geometry-desktop-1.1.0.jar",
+          "size": 37906,
+          "sha512": "c7b3850d12732ce14fd0490c122d0578d41df54dbeb9fed9274eb01ba75fdedebfe0138d844e7a509f46733c965649e57d3eddfc5e2ffb9efc2f6b44f77dd725",
+          "sha256": "aab07b8c2f776989b3f8b34be5bc0babeaee562e0f80e2a1642cb26213845732",
+          "sha1": "51cf3b7ba42e945ad258e14eeaa16e4e0a4bf182",
+          "md5": "e1e37184fc307a8e966ee489e77af59d"
+        }
+      ]
+    }
+  ]
+}

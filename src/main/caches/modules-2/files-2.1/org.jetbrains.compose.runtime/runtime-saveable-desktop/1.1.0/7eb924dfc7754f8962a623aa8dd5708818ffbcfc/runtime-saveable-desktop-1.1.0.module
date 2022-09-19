@@ -1,0 +1,84 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../runtime-saveable/1.1.0/runtime-saveable-1.1.0.module",
+    "group": "org.jetbrains.compose.runtime",
+    "module": "runtime-saveable",
+    "version": "1.1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.3"
+    }
+  },
+  "variants": [
+    {
+      "name": "desktopApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.compose.runtime",
+          "module": "runtime",
+          "version": {
+            "requires": "1.1.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "runtime-saveable-desktop-1.1.0.jar",
+          "url": "runtime-saveable-desktop-1.1.0.jar",
+          "size": 53208,
+          "sha512": "f4de06072423215623836ff22370c2bea618b39ee1ecc730b1a5ed809248a9c516bc93d2e35702481b26fe6ac4649841bdd2ce4fd8a19d2c03036b1a9f5c0f32",
+          "sha256": "75eb2f3ffe7e1b6b28847c4d9f5a60979bc48dafcd2f0e453b21b6102c6eecce",
+          "sha1": "e202665934e15df56d9a0b7d30dc71df4381e3c4",
+          "md5": "b753fdb6e793f3ebcb52314b207e35bd"
+        }
+      ]
+    },
+    {
+      "name": "desktopRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.compose.runtime",
+          "module": "runtime",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.6.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "runtime-saveable-desktop-1.1.0.jar",
+          "url": "runtime-saveable-desktop-1.1.0.jar",
+          "size": 53208,
+          "sha512": "f4de06072423215623836ff22370c2bea618b39ee1ecc730b1a5ed809248a9c516bc93d2e35702481b26fe6ac4649841bdd2ce4fd8a19d2c03036b1a9f5c0f32",
+          "sha256": "75eb2f3ffe7e1b6b28847c4d9f5a60979bc48dafcd2f0e453b21b6102c6eecce",
+          "sha1": "e202665934e15df56d9a0b7d30dc71df4381e3c4",
+          "md5": "b753fdb6e793f3ebcb52314b207e35bd"
+        }
+      ]
+    }
+  ]
+}

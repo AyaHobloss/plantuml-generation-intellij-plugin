@@ -1,0 +1,140 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../foundation/1.1.0/foundation-1.1.0.module",
+    "group": "org.jetbrains.compose.foundation",
+    "module": "foundation",
+    "version": "1.1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.3"
+    }
+  },
+  "variants": [
+    {
+      "name": "desktopApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.compose.animation",
+          "module": "animation",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.runtime",
+          "module": "runtime",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui",
+          "version": {
+            "requires": "1.1.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "foundation-desktop-1.1.0.jar",
+          "url": "foundation-desktop-1.1.0.jar",
+          "size": 1819490,
+          "sha512": "41e46e138724fbde9a606952e4fd7f3ddf46331fda6447db80ef44b588fd308136b0f0d0e1ea52a70f64174d0c1af14bcc5298134d424bc78f96c4c69cc03795",
+          "sha256": "08fe4e1f303d2de0372ba65ceecbd5bf3e57530af0c64f9fecea4c6085f453a2",
+          "sha1": "37301aed12391c2b359b7ae4628da760b0dae2c3",
+          "md5": "003fa28d740362f230ba3c9b35c06cd8"
+        }
+      ]
+    },
+    {
+      "name": "desktopRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.compose.animation",
+          "module": "animation",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.runtime",
+          "module": "runtime",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "1.6.10"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.6.10"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui-text",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui-util",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.foundation",
+          "module": "foundation-layout",
+          "version": {
+            "requires": "1.1.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "foundation-desktop-1.1.0.jar",
+          "url": "foundation-desktop-1.1.0.jar",
+          "size": 1819490,
+          "sha512": "41e46e138724fbde9a606952e4fd7f3ddf46331fda6447db80ef44b588fd308136b0f0d0e1ea52a70f64174d0c1af14bcc5298134d424bc78f96c4c69cc03795",
+          "sha256": "08fe4e1f303d2de0372ba65ceecbd5bf3e57530af0c64f9fecea4c6085f453a2",
+          "sha1": "37301aed12391c2b359b7ae4628da760b0dae2c3",
+          "md5": "003fa28d740362f230ba3c9b35c06cd8"
+        }
+      ]
+    }
+  ]
+}

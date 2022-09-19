@@ -1,0 +1,84 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../material-icons-core/1.1.0/material-icons-core-1.1.0.module",
+    "group": "org.jetbrains.compose.material",
+    "module": "material-icons-core",
+    "version": "1.1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.3"
+    }
+  },
+  "variants": [
+    {
+      "name": "desktopApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui",
+          "version": {
+            "requires": "1.1.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "material-icons-core-desktop-1.1.0.jar",
+          "url": "material-icons-core-desktop-1.1.0.jar",
+          "size": 710943,
+          "sha512": "9fa8472e9733e0d1f07b166fe0a4a1d6b4b768a100bca1711228f0f5144d209a4df464c0f896a64c88f880026fb7aa601f2b81149b920c5b28fb66b4f5b36568",
+          "sha256": "fbbc352abb48c7ae372e3d420d904a6a209c74a65f88af2fb64f4f4cabaf399a",
+          "sha1": "cdf1ec28bd1eb52288e8b9c6c8fb6859b06ab394",
+          "md5": "6bff1e6a5ee49361cd5742ad69695ac9"
+        }
+      ]
+    },
+    {
+      "name": "desktopRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.6.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "material-icons-core-desktop-1.1.0.jar",
+          "url": "material-icons-core-desktop-1.1.0.jar",
+          "size": 710943,
+          "sha512": "9fa8472e9733e0d1f07b166fe0a4a1d6b4b768a100bca1711228f0f5144d209a4df464c0f896a64c88f880026fb7aa601f2b81149b920c5b28fb66b4f5b36568",
+          "sha256": "fbbc352abb48c7ae372e3d420d904a6a209c74a65f88af2fb64f4f4cabaf399a",
+          "sha1": "cdf1ec28bd1eb52288e8b9c6c8fb6859b06ab394",
+          "md5": "6bff1e6a5ee49361cd5742ad69695ac9"
+        }
+      ]
+    }
+  ]
+}

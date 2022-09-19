@@ -145,6 +145,7 @@ class ClusterNode(context: ClusterBuildingContext, entry: Map.Entry<String, List
 open class ClusterDiagramContext(actionContext: ActionContext, init: ClusterDiagramContext.() -> Unit){
     val project: Project = actionContext.project
     val config = actionContext.config<ClusterConfiguration>()
+    val configGenetics = actionContext.config<GeneticsConfiguration>()
 
     val dot = DotDiagramBuilder().apply { direction = DiagramDirection.LeftToRight }
     val visualConfig = config.visualizationConfig()

@@ -2,7 +2,7 @@
 plugins {
     id 'java'
     id 'org.jetbrains.intellij' version '0.6.5'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.30'
 }
 
 group 'com.kn.diagrams.generator'
@@ -15,10 +15,13 @@ repositories {
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation 'org.jetbrains.kotlin:kotlin-reflect:'
-
+    implementation 'nl.systemsgenetics:Genotype-IO:1.0.3'
+    implementation 'io.jenetics:jenetics:6.3.0'
     compile group: 'com.github.s1ck', name: 'gdl', version: '0.3.6'
 
     compile group: 'nl.cwts', name: 'networkanalysis', version: '1.1.0'
+
+    compile group: 'io.jenetics', name: 'jenetics', version: '6.3.0'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'guru.nidi:graphviz-java:0.18.1'

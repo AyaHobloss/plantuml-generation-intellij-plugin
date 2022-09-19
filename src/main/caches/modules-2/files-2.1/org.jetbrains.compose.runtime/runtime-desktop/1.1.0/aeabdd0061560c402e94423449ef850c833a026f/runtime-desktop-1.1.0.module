@@ -1,0 +1,91 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../runtime/1.1.0/runtime-1.1.0.module",
+    "group": "org.jetbrains.compose.runtime",
+    "module": "runtime",
+    "version": "1.1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.3"
+    }
+  },
+  "variants": [
+    {
+      "name": "desktopApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.5.2"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "runtime-desktop-1.1.0.jar",
+          "url": "runtime-desktop-1.1.0.jar",
+          "size": 889806,
+          "sha512": "380f13966d3d25c310c19fbc7f6d9449e7edc5a5c7d8fd9b64079336f174aa7c05b02dbfcd28295bc9af69e352073ab5f3de67d9bf5061a16d7b729d3058b177",
+          "sha256": "c027cda0bef6d2bd446504f6de7154ef1429db3703b2e060262e65cde84fadc4",
+          "sha1": "c27d7023bd5de69a0aa3410335302121f8aa60d8",
+          "md5": "becf684892300f33217981f5c0809daa"
+        }
+      ]
+    },
+    {
+      "name": "desktopRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.5.2"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "1.6.10"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.6.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "runtime-desktop-1.1.0.jar",
+          "url": "runtime-desktop-1.1.0.jar",
+          "size": 889806,
+          "sha512": "380f13966d3d25c310c19fbc7f6d9449e7edc5a5c7d8fd9b64079336f174aa7c05b02dbfcd28295bc9af69e352073ab5f3de67d9bf5061a16d7b729d3058b177",
+          "sha256": "c027cda0bef6d2bd446504f6de7154ef1429db3703b2e060262e65cde84fadc4",
+          "sha1": "c27d7023bd5de69a0aa3410335302121f8aa60d8",
+          "md5": "becf684892300f33217981f5c0809daa"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+  <info organisation="com.jetbrains" module="ideaIC" revision="2021.2" publication="20220912122331"/>
+  <configurations>
+    <conf name="default" visibility="public"/>
+    <conf name="compile" visibility="public"/>
+    <conf name="sources" visibility="public"/>
+  </configurations>
+  <publications>
+    <artifact name="lib/3rd-party" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/asm-7.1" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/asm-analysis-7.1" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/asm-commons-7.1" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/asm-tree-7.1" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/asm-util-7.1" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/async-profiler-2.1-ea-2" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/bootstrap" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/byte-buddy-agent-1.10.1" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/coverage-common" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/dbus-java-3.2.1" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/dexlib2" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/dom-impl" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/dom-openapi" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/duplicates-analysis" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/error_prone_annotations-2.3.1" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/external-system-rt" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/find-action-model-0.0.3" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/forms_rt" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/grazie-spellchecker-0.1.9" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/groovy-2.5.14" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/groovy-json-2.5.14" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/groovy-jsr223-2.5.14" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/groovy-templates-2.5.14" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/groovy-xml-2.5.14" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/grpc-netty-shaded-1.34.1" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/idea" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/idea_rt" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/intellij-coverage-agent-1.0.589" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/intellij-test-discovery-agent-1.0.589" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/isorelax-20030108" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/java-string-similarity-2.0.0" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/java-utils-1.0.6" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jdkAnnotations" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jffi-1.2.19-native" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jffi-1.2.19" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jing-20030619" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jna-platform" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jna" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jnr-a64asm-1.0.0" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jnr-constants-0.9.12" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jnr-enxio-0.21" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jnr-ffi-2.1.10" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jnr-posix-3.0.50" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jnr-unixsocket-0.23" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jnr-x86asm-1.0.2" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jps-model" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jshell-frontend" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/jsp-base-openapi" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/junit4" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/kotlin-gradle-plugin-model-1.4.32" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/kotlin-reflect-1.5.10-release-896" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/kotlin-test" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/kotlinx-coroutines-debug-1.5.0" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/kotlinx-coroutines-jdk8" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/kotlinx-serialization-core-jvm-1.1.0" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/kotlinx-serialization-json-jvm-1.1.0" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/platform-api" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/platform-impl" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/platform-objectSerializer-annotations" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/platform-statistics-devkit" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/protobuf-java-3.15.8" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/pty4j" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/rd-core-0.212.307" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/rd-framework-0.212.307" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/rd-swing-0.212.307" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/rngom-20051226-patched" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/slf4j" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/sqlite-jdbc-3.34.0" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/stats" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/structuralsearch" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/testFramework-java" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/testFramework.core" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/testFramework" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/tests_bootstrap" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/tips-intellij-idea-community-212.23" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/trang-core" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/uast-tests" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/util" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/winp-1.28" type="jar" ext="jar" conf="compile"/>
+    <artifact name="lib/xmlbeans-4.0.0" type="jar" ext="jar" conf="compile"/>
+    <artifact name="ideaIC" type="sources" ext="jar" conf="sources" m:classifier="sources"/>
+  </publications>
+</ivy-module>

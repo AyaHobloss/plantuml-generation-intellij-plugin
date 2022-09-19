@@ -29,7 +29,7 @@ open class RegenerateDiagramAction : AnAction() {
         val project = event.project!!
 
         event.filesFromDirectoryOrSelection().forEach { file ->
-            event.startBackgroundAction("Regenerate Diagram") {
+            event.startBackgroundAction("Regenerate Diagram ") {
                 val actionContext = file.fileBasedContext()
 
                 val newDiagramText = when(actionContext.config<BaseDiagramConfiguration>()) {

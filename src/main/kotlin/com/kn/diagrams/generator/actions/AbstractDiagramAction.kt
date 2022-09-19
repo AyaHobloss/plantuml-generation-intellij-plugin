@@ -26,7 +26,7 @@ abstract class AbstractDiagramAction<T : BaseDiagramConfiguration> : AnAction() 
     }
 
     override fun actionPerformed(event: AnActionEvent) {
-        event.startBackgroundAction("Generate Diagrams") { progressIndicator ->
+        event.startBackgroundAction("Generate Diagrams ") { progressIndicator ->
             val diagrams: MutableMap<String, String> = mutableMapOf()
 
             val plantUMLDiagrams = createDiagramContent(event)

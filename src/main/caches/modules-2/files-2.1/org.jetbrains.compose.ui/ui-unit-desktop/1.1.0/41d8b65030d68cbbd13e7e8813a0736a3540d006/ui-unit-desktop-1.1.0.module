@@ -1,0 +1,98 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../ui-unit/1.1.0/ui-unit-1.1.0.module",
+    "group": "org.jetbrains.compose.ui",
+    "module": "ui-unit",
+    "version": "1.1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.3"
+    }
+  },
+  "variants": [
+    {
+      "name": "desktopApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui-geometry",
+          "version": {
+            "requires": "1.1.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "ui-unit-desktop-1.1.0.jar",
+          "url": "ui-unit-desktop-1.1.0.jar",
+          "size": 66923,
+          "sha512": "19fcfd3da2fef5f33846c93f55e72eca8b48424d7619c2b97fc9c81f89e3e209c3260f0adaaac5532b8892988a9b96cfd3529a8f20fac1da15de6ebe2ded4772",
+          "sha256": "7c3a56b661c83e32292ba6039c55a66df4da7e16b8ccadfa34323c1adddbd5a7",
+          "sha1": "14026c6ac45573662068c721c4b79853dd0fa6ed",
+          "md5": "4ca199ff81734ba9808b68d1c7ee9293"
+        }
+      ]
+    },
+    {
+      "name": "desktopRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui-geometry",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.6.10"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.runtime",
+          "module": "runtime",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.compose.ui",
+          "module": "ui-util",
+          "version": {
+            "requires": "1.1.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "ui-unit-desktop-1.1.0.jar",
+          "url": "ui-unit-desktop-1.1.0.jar",
+          "size": 66923,
+          "sha512": "19fcfd3da2fef5f33846c93f55e72eca8b48424d7619c2b97fc9c81f89e3e209c3260f0adaaac5532b8892988a9b96cfd3529a8f20fac1da15de6ebe2ded4772",
+          "sha256": "7c3a56b661c83e32292ba6039c55a66df4da7e16b8ccadfa34323c1adddbd5a7",
+          "sha1": "14026c6ac45573662068c721c4b79853dd0fa6ed",
+          "md5": "4ca199ff81734ba9808b68d1c7ee9293"
+        }
+      ]
+    }
+  ]
+}

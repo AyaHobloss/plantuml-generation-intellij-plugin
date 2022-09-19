@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>English</string>
+    <key>CFBundleDocumentTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+          <string>ipr</string>
+        </array>
+        <key>CFBundleTypeIconFile</key>
+        <string>idea.icns</string>
+        <key>CFBundleTypeName</key>
+        <string>IntelliJ IDEA Project File</string>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+      </dict>
+      <dict>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+          <string>java</string>
+        </array>
+        <key>CFBundleTypeIconFile</key>
+        <string>idea.icns</string>        
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+      </dict>
+      <dict>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+          <string>groovy</string>
+        </array>
+        <key>CFBundleTypeIconFile</key>
+        <string>idea.icns</string>        
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+      </dict>
+      <dict>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+          <string>kt</string>
+        </array>
+        <key>CFBundleTypeIconFile</key>
+        <string>idea.icns</string>        
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+      </dict>
+      <dict>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+          <string>kts</string>
+        </array>
+        <key>CFBundleTypeIconFile</key>
+        <string>idea.icns</string>        
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+      </dict>
+      <dict>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+          <string>*</string>
+        </array>
+        <key>CFBundleTypeName</key>
+        <string>All documents</string>
+        <key>CFBundleTypeOSTypes</key>
+        <array>
+          <string>****</string>
+        </array>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>LSTypeIsPackage</key>
+        <false/>
+      </dict>
+    </array>
+    <key>CFBundleExecutable</key>
+    <string>idea</string>
+    <key>CFBundleIconFile</key>
+    <string>idea.icns</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>IntelliJ IDEA</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.jetbrains.intellij.ce</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleGetInfoString</key>
+    <string>IntelliJ IDEA 2021.2, build IC-212.4746.92. Copyright JetBrains s.r.o., (c) 2000-2021</string>
+    <key>CFBundleShortVersionString</key>
+    <string>2021.2</string>
+    <key>CFBundleVersion</key>
+    <string>IC-212.4746.92</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLName</key>
+        <string>Stacktrace</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>idea</string>
+        </array>
+      </dict>
+    </array>
+
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.developer-tools</string>
+    <key>LSArchitecturePriority</key>
+    <array>
+      <string>arm64</string>
+      <string>x86_64</string>
+    </array>
+    <key>LSRequiresNativeExecution</key>
+    <string>YES</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>10.8</string>
+
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSSupportsAutomaticGraphicsSwitching</key>
+    <true/>
+
+    <key>JVMOptions</key>
+    <dict>
+      <key>ClassPath</key>
+      <string>$APP_PACKAGE/Contents/lib/bootstrap.jar:$APP_PACKAGE/Contents/lib/util.jar:$APP_PACKAGE/Contents/lib/jna.jar</string>
+      <key>JVMVersion</key>
+      <string>1.8*,1.8+</string>
+      <key>MainClass</key>
+      <string>com.intellij.idea.Main</string>
+      <key>Properties</key>
+      <dict>
+        <key>java.system.class.loader</key>
+        <string>com.intellij.util.lang.PathClassLoader</string>
+        <key>idea.vendor.name</key>
+        <string>JetBrains</string>
+        <key>idea.paths.selector</key>
+        <string>IdeaIC2021.2</string>
+        <key>idea.platform.prefix</key>
+        <string>Idea</string>
+        <key>idea.jre.check</key>
+        <string>true</string>
+        <key>idea.executable</key>
+        <string>idea</string>
+        <key>idea.home.path</key>
+        <string>$APP_PACKAGE/Contents</string>
+      </dict>
+    </dict>
+
+    <key>NSCameraUsageDescription</key>
+    <string>An application in IntelliJ IDEA requests access to the device's camera.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>An application in IntelliJ IDEA requests access to the device's microphone.</string>
+    <key>NSLocationUsageDescription</key>
+    <string>An application in IntelliJ IDEA requests access to the user's location information.</string>
+    <key>NSDesktopFolderUsageDescription</key>
+    <string>An application in IntelliJ IDEA requests access to the user's Desktop folder.</string>
+    <key>NSDocumentsFolderUsageDescription</key>
+    <string>An application in IntelliJ IDEA requests access to the user's Documents folder.</string>
+    <key>NSDownloadsFolderUsageDescription</key>
+    <string>An application in IntelliJ IDEA requests access to the user's Downloads folder.</string>
+    <key>NSNetworkVolumesUsageDescription</key>
+    <string>An application in IntelliJ IDEA requests access to files on a network volume.</string>
+    <key>NSRemovableVolumesUsageDescription</key>
+    <string>An application in IntelliJ IDEA requests access to files on a removable volume.</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>An application in IntelliJ IDEA requests access to Bluetooth.</string>
+  </dict>
+</plist>

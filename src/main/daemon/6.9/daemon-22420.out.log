@@ -1,0 +1,427 @@
+2022-09-14T14:41:38.034+0200 [DEBUG] [org.gradle.launcher.daemon.bootstrap.DaemonMain] Assuming the daemon was started with following jvm opts: [-XX:MaxMetaspaceSize=256m, -XX:+HeapDumpOnOutOfMemoryError, -agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=127.0.0.1:54624, --add-opens, java.base/java.util=ALL-UNNAMED, --add-opens, java.base/java.lang=ALL-UNNAMED, --add-opens, java.base/java.lang.invoke=ALL-UNNAMED, --add-opens, java.prefs/java.util.prefs=ALL-UNNAMED, -Xms256m, -Xmx512m, -Dfile.encoding=windows-1252, -Duser.country=US, -Duser.language=en, -Duser.variant]
+2022-09-14T14:41:38.149+0200 [DEBUG] [org.gradle.internal.nativeintegration.services.NativeServices] Native-platform posix files integration is not available. Continuing with fallback.
+2022-09-14T14:41:38.171+0200 [INFO] [org.gradle.launcher.daemon.server.Daemon] start() called on daemon - DefaultDaemonContext[uid=bef9d038-a413-4d58-b85f-c7abf671b630,javaHome=C:\Users\ahobloss\.jdks\corretto-15.0.2,daemonRegistryDir=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\daemon,pid=22420,idleTimeout=10800000,priority=NORMAL,daemonOpts=-XX:MaxMetaspaceSize=256m,-XX:+HeapDumpOnOutOfMemoryError,-agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=127.0.0.1:54624,--add-opens,java.base/java.util=ALL-UNNAMED,--add-opens,java.base/java.lang=ALL-UNNAMED,--add-opens,java.base/java.lang.invoke=ALL-UNNAMED,--add-opens,java.prefs/java.util.prefs=ALL-UNNAMED,-Xms256m,-Xmx512m,-Dfile.encoding=windows-1252,-Duser.country=US,-Duser.language=en,-Duser.variant]
+2022-09-14T14:41:38.282+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Software Loopback Interface 1
+2022-09-14T14:41:38.284+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? true
+2022-09-14T14:41:38.284+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding loopback address /127.0.0.1
+2022-09-14T14:41:38.285+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding loopback address /0:0:0:0:0:0:0:1
+2022-09-14T14:41:38.287+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (SSTP)
+2022-09-14T14:41:38.290+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.290+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft 6to4 Adapter
+2022-09-14T14:41:38.292+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.292+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (PPPOE)
+2022-09-14T14:41:38.295+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.295+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (IPv6)
+2022-09-14T14:41:38.298+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.298+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (PPTP)
+2022-09-14T14:41:38.300+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.300+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft IP-HTTPS Platform Adapter
+2022-09-14T14:41:38.302+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.303+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (IKEv2)
+2022-09-14T14:41:38.305+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.305+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Bluetooth Device (Personal Area Network)
+2022-09-14T14:41:38.307+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.307+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding remote address /fe80:0:0:0:78fc:7934:ddb1:3ef9%eth1
+2022-09-14T14:41:38.307+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Juniper Networks Virtual Adapter
+2022-09-14T14:41:38.309+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.310+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Juniper Networks Virtual Adapter #2
+2022-09-14T14:41:38.312+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.312+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (IP)
+2022-09-14T14:41:38.315+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.315+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Wi-Fi Direct Virtual Adapter #2
+2022-09-14T14:41:38.317+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.317+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding remote address /fe80:0:0:0:e469:d794:84e4:3aff%wlan0
+2022-09-14T14:41:38.317+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Lenovo USB-C to Ethernet Adapter
+2022-09-14T14:41:38.320+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.320+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Cisco AnyConnect Secure Mobility Client Virtual Miniport Adapter for Windows x64
+2022-09-14T14:41:38.322+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.322+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding remote address /10.44.254.103
+2022-09-14T14:41:38.322+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding remote address /fe80:0:0:0:6438:2239:46df:5a7d%eth6
+2022-09-14T14:41:38.322+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding remote address /fe80:0:0:0:7447:71a0:f648:47e9%eth6
+2022-09-14T14:41:38.323+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Teredo Tunneling Adapter
+2022-09-14T14:41:38.325+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.325+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (L2TP)
+2022-09-14T14:41:38.327+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.327+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Citrix Virtual Adapter
+2022-09-14T14:41:38.329+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.329+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Intel(R) Wi-Fi 6 AX201 160MHz
+2022-09-14T14:41:38.332+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.332+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding remote address /192.168.2.110
+2022-09-14T14:41:38.332+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding remote address /2003:ed:8705:a105:643e:fcf7:1642:c278
+2022-09-14T14:41:38.332+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding remote address /2003:ed:8705:a105:9da3:54f1:67f9:178
+2022-09-14T14:41:38.332+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding remote address /2003:ed:8705:a127:643e:fcf7:1642:c278
+2022-09-14T14:41:38.333+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding remote address /2003:ed:8705:a127:b103:b5d4:9ee6:ed38
+2022-09-14T14:41:38.333+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding remote address /fe80:0:0:0:643e:fcf7:1642:c278%wlan1
+2022-09-14T14:41:38.333+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Kernel Debug Network Adapter
+2022-09-14T14:41:38.335+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.335+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Wi-Fi Direct Virtual Adapter
+2022-09-14T14:41:38.337+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.337+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding remote address /fe80:0:0:0:8dac:f5e8:4056:973d%wlan2
+2022-09-14T14:41:38.337+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (Network Monitor)
+2022-09-14T14:41:38.340+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.340+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Intel(R) Wi-Fi 6 AX201 160MHz-WFP Native MAC Layer LightWeight Filter-0000
+2022-09-14T14:41:38.342+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.342+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Intel(R) Wi-Fi 6 AX201 160MHz-Virtual WiFi Filter Driver-0000
+2022-09-14T14:41:38.345+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.345+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Intel(R) Wi-Fi 6 AX201 160MHz-Native WiFi Filter Driver-0000
+2022-09-14T14:41:38.347+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.347+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Intel(R) Wi-Fi 6 AX201 160MHz-Cisco AnyConnect Network Access Manager Filter Driver-0000
+2022-09-14T14:41:38.349+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.350+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Intel(R) Wi-Fi 6 AX201 160MHz-Deterministic Network Enhancer-0000
+2022-09-14T14:41:38.352+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.352+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Intel(R) Wi-Fi 6 AX201 160MHz-QoS Packet Scheduler-0000
+2022-09-14T14:41:38.354+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.354+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Wi-Fi Direct Virtual Adapter #2-QoS Packet Scheduler-0000
+2022-09-14T14:41:38.356+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.356+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Wi-Fi Direct Virtual Adapter-WFP Native MAC Layer LightWeight Filter-0000
+2022-09-14T14:41:38.358+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.358+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Wi-Fi Direct Virtual Adapter-Native WiFi Filter Driver-0000
+2022-09-14T14:41:38.360+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.360+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (IP)-WFP Native MAC Layer LightWeight Filter-0000
+2022-09-14T14:41:38.362+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.362+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (IP)-Deterministic Network Enhancer-0000
+2022-09-14T14:41:38.364+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.364+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (IP)-QoS Packet Scheduler-0000
+2022-09-14T14:41:38.366+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.366+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (IPv6)-WFP Native MAC Layer LightWeight Filter-0000
+2022-09-14T14:41:38.368+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.368+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (IPv6)-Deterministic Network Enhancer-0000
+2022-09-14T14:41:38.370+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.370+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (IPv6)-QoS Packet Scheduler-0000
+2022-09-14T14:41:38.372+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.372+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (Network Monitor)-WFP Native MAC Layer LightWeight Filter-0000
+2022-09-14T14:41:38.374+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.374+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (Network Monitor)-QoS Packet Scheduler-0000
+2022-09-14T14:41:38.376+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.376+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Wi-Fi Direct Virtual Adapter-Deterministic Network Enhancer-0000
+2022-09-14T14:41:38.378+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.378+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Wi-Fi Direct Virtual Adapter-QoS Packet Scheduler-0000
+2022-09-14T14:41:38.380+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.380+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Wi-Fi Direct Virtual Adapter-WFP 802.3 MAC Layer LightWeight Filter-0000
+2022-09-14T14:41:38.382+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.382+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Intel(R) Wi-Fi 6 AX201 160MHz-WFP 802.3 MAC Layer LightWeight Filter-0000
+2022-09-14T14:41:38.384+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.384+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Cisco AnyConnect Secure Mobility Client Virtual Miniport Adapter for Windows x64-WFP Native MAC Layer LightWeight Filter-0000
+2022-09-14T14:41:38.386+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.386+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Cisco AnyConnect Secure Mobility Client Virtual Miniport Adapter for Windows x64-Juniper Network Service-0000
+2022-09-14T14:41:38.388+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.388+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Cisco AnyConnect Secure Mobility Client Virtual Miniport Adapter for Windows x64-Deterministic Network Enhancer-0000
+2022-09-14T14:41:38.390+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.390+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Wi-Fi Direct Virtual Adapter #2-WFP Native MAC Layer LightWeight Filter-0000
+2022-09-14T14:41:38.392+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.392+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Wi-Fi Direct Virtual Adapter #2-Native WiFi Filter Driver-0000
+2022-09-14T14:41:38.394+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.394+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Wi-Fi Direct Virtual Adapter #2-Deterministic Network Enhancer-0000
+2022-09-14T14:41:38.396+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.396+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Cisco AnyConnect Secure Mobility Client Virtual Miniport Adapter for Windows x64-QoS Packet Scheduler-0000
+2022-09-14T14:41:38.398+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.398+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Microsoft Wi-Fi Direct Virtual Adapter #2-WFP 802.3 MAC Layer LightWeight Filter-0000
+2022-09-14T14:41:38.400+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.400+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface Cisco AnyConnect Secure Mobility Client Virtual Miniport Adapter for Windows x64-WFP 802.3 MAC Layer LightWeight Filter-0000
+2022-09-14T14:41:38.402+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2022-09-14T14:41:38.409+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.TcpIncomingConnector] Listening on [85809b8b-c2d0-41bf-9681-4126acede29b port:54563, addresses:[localhost/127.0.0.1]].
+2022-09-14T14:41:38.417+0200 [DEBUG] [org.gradle.launcher.daemon.server.Daemon] Daemon starting at: Wed Sep 14 14:41:38 CEST 2022, with address: [85809b8b-c2d0-41bf-9681-4126acede29b port:54563, addresses:[localhost/127.0.0.1]]
+2022-09-14T14:41:38.417+0200 [INFO] [org.gradle.launcher.daemon.server.DaemonRegistryUpdater] Advertising the daemon address to the clients: [85809b8b-c2d0-41bf-9681-4126acede29b port:54563, addresses:[localhost/127.0.0.1]]
+2022-09-14T14:41:38.417+0200 [DEBUG] [org.gradle.launcher.daemon.server.DaemonRegistryUpdater] Advertised daemon context: DefaultDaemonContext[uid=bef9d038-a413-4d58-b85f-c7abf671b630,javaHome=C:\Users\ahobloss\.jdks\corretto-15.0.2,daemonRegistryDir=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\daemon,pid=22420,idleTimeout=10800000,priority=NORMAL,daemonOpts=-XX:MaxMetaspaceSize=256m,-XX:+HeapDumpOnOutOfMemoryError,-agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=127.0.0.1:54624,--add-opens,java.base/java.util=ALL-UNNAMED,--add-opens,java.base/java.lang=ALL-UNNAMED,--add-opens,java.base/java.lang.invoke=ALL-UNNAMED,--add-opens,java.prefs/java.util.prefs=ALL-UNNAMED,-Xms256m,-Xmx512m,-Dfile.encoding=windows-1252,-Duser.country=US,-Duser.language=en,-Duser.variant]
+2022-09-14T14:41:38.418+0200 [DEBUG] [org.gradle.launcher.daemon.registry.PersistentDaemonRegistry] Storing daemon address: [85809b8b-c2d0-41bf-9681-4126acede29b port:54563, addresses:[localhost/127.0.0.1]], context: DefaultDaemonContext[uid=bef9d038-a413-4d58-b85f-c7abf671b630,javaHome=C:\Users\ahobloss\.jdks\corretto-15.0.2,daemonRegistryDir=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\daemon,pid=22420,idleTimeout=10800000,priority=NORMAL,daemonOpts=-XX:MaxMetaspaceSize=256m,-XX:+HeapDumpOnOutOfMemoryError,-agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=127.0.0.1:54624,--add-opens,java.base/java.util=ALL-UNNAMED,--add-opens,java.base/java.lang=ALL-UNNAMED,--add-opens,java.base/java.lang.invoke=ALL-UNNAMED,--add-opens,java.prefs/java.util.prefs=ALL-UNNAMED,-Xms256m,-Xmx512m,-Dfile.encoding=windows-1252,-Duser.country=US,-Duser.language=en,-Duser.variant]
+2022-09-14T14:41:38.430+0200 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Waiting to acquire exclusive lock on daemon addresses registry.
+2022-09-14T14:41:38.433+0200 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Lock acquired on daemon addresses registry.
+2022-09-14T14:41:38.439+0200 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Releasing lock on daemon addresses registry.
+2022-09-14T14:41:38.440+0200 [LIFECYCLE] [org.gradle.launcher.daemon.server.Daemon] Daemon server started.
+2022-09-14T14:41:38.441+0200 [DEBUG] [org.gradle.launcher.daemon.bootstrap.DaemonStartupCommunication] Completed writing the daemon greeting. Closing streams...
+2022-09-14T14:41:38.446+0200 [DEBUG] [org.gradle.launcher.daemon.server.Daemon] stopOnExpiration() called on daemon
+2022-09-14T14:41:38.446+0200 [DEBUG] [org.gradle.internal.remote.internal.inet.TcpIncomingConnector] Accepted connection from /127.0.0.1:54564 to /127.0.0.1:54563.
+2022-09-14T14:41:38.447+0200 [DEBUG] [org.gradle.launcher.daemon.server.Daemon] awaitExpiration() called on daemon
+2022-09-14T14:41:38.448+0200 [DEBUG] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] daemon is running. Sleeping until state changes.
+2022-09-14T14:41:38.496+0200 [DEBUG] [org.gradle.launcher.daemon.server.SynchronizedDispatchConnection] thread 24: received class org.gradle.launcher.daemon.protocol.Build
+2022-09-14T14:41:38.497+0200 [DEBUG] [org.gradle.launcher.daemon.server.DefaultDaemonConnection] thread 24: Received non-IO message from client: Build{id=8dc06a65-8f31-4126-b835-7279837332b0, currentDir=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin}
+2022-09-14T14:41:38.497+0200 [INFO] [org.gradle.launcher.daemon.server.DefaultIncomingConnectionHandler] Received command: Build{id=8dc06a65-8f31-4126-b835-7279837332b0, currentDir=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin}.
+2022-09-14T14:41:38.497+0200 [DEBUG] [org.gradle.launcher.daemon.server.DefaultIncomingConnectionHandler] Starting executing command: Build{id=8dc06a65-8f31-4126-b835-7279837332b0, currentDir=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin} with connection: socket connection from /127.0.0.1:54563 to /127.0.0.1:54564.
+2022-09-14T14:41:38.499+0200 [ERROR] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] Command execution: started DaemonCommandExecution[command = Build{id=8dc06a65-8f31-4126-b835-7279837332b0, currentDir=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin}, connection = DefaultDaemonConnection: socket connection from /127.0.0.1:54563 to /127.0.0.1:54564] after 0.0 minutes of idle
+2022-09-14T14:41:38.500+0200 [INFO] [org.gradle.launcher.daemon.server.DaemonRegistryUpdater] Marking the daemon as busy, address: [85809b8b-c2d0-41bf-9681-4126acede29b port:54563, addresses:[localhost/127.0.0.1]]
+2022-09-14T14:41:38.500+0200 [DEBUG] [org.gradle.launcher.daemon.registry.PersistentDaemonRegistry] Marking busy by address: [85809b8b-c2d0-41bf-9681-4126acede29b port:54563, addresses:[localhost/127.0.0.1]]
+2022-09-14T14:41:38.501+0200 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Waiting to acquire exclusive lock on daemon addresses registry.
+2022-09-14T14:41:38.501+0200 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Lock acquired on daemon addresses registry.
+2022-09-14T14:41:38.502+0200 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Releasing lock on daemon addresses registry.
+2022-09-14T14:41:38.502+0200 [DEBUG] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] resetting idle timer
+2022-09-14T14:41:38.503+0200 [DEBUG] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] daemon is running. Sleeping until state changes.
+2022-09-14T14:41:38.503+0200 [INFO] [org.gradle.launcher.daemon.server.exec.StartBuildOrRespondWithBusy] Daemon is about to start building Build{id=8dc06a65-8f31-4126-b835-7279837332b0, currentDir=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin}. Dispatching build started information...
+2022-09-14T14:41:38.503+0200 [DEBUG] [org.gradle.launcher.daemon.server.SynchronizedDispatchConnection] thread 26: dispatching org.gradle.launcher.daemon.protocol.BuildStarted@53777268
+2022-09-14T14:41:38.506+0200 [DEBUG] [org.gradle.launcher.daemon.server.exec.EstablishBuildEnvironment] Configuring env variables: [USERDOMAIN_ROAMINGPROFILE, LOCALAPPDATA, PROCESSOR_LEVEL, USERDOMAIN, LOGONSERVER, FPS_BROWSER_APP_PROFILE_STRING, JAVA_HOME, SESSIONNAME, ALLUSERSPROFILE, PROCESSOR_ARCHITECTURE, PSModulePath, SystemDrive, MAVEN_OPTS, APPDATA, USERNAME, USERDNSDOMAIN, ProgramFiles(x86), CommonProgramFiles, Path, FPS_BROWSER_USER_PROFILE_STRING, PATHEXT, DriverData, OS, COMPUTERNAME, PROCESSOR_REVISION, CommonProgramW6432, ComSpec, UATDATA, ProgramData, ProgramW6432, __PSLockDownPolicy, TEMP, HOMEPATH, SystemRoot, PROCESSOR_IDENTIFIER, HOMEDRIVE, USERPROFILE, TMP, CommonProgramFiles(x86), ProgramFiles, PUBLIC, windir, NUMBER_OF_PROCESSORS, =::, IDEA_INITIAL_DIRECTORY, ZES_ENABLE_SYSMAN]
+2022-09-14T14:41:38.510+0200 [DEBUG] [org.gradle.launcher.daemon.server.exec.LogToClient] About to start relaying all logs to the client via the connection.
+2022-09-14T14:41:38.511+0200 [INFO] [org.gradle.launcher.daemon.server.exec.LogToClient] The client will now receive all logging from the daemon (pid: 22420). The daemon log file: C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\daemon\6.9\daemon-22420.out.log
+2022-09-14T14:41:38.513+0200 [INFO] [org.gradle.launcher.daemon.server.exec.LogAndCheckHealth] Starting build in new daemon [memory: 512 MiB]
+2022-09-14T14:41:38.518+0200 [DEBUG] [org.gradle.launcher.daemon.server.exec.ExecuteBuild] The daemon has started executing the build.
+2022-09-14T14:41:38.518+0200 [DEBUG] [org.gradle.launcher.daemon.server.exec.ExecuteBuild] Executing build with daemon context: DefaultDaemonContext[uid=bef9d038-a413-4d58-b85f-c7abf671b630,javaHome=C:\Users\ahobloss\.jdks\corretto-15.0.2,daemonRegistryDir=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\daemon,pid=22420,idleTimeout=10800000,priority=NORMAL,daemonOpts=-XX:MaxMetaspaceSize=256m,-XX:+HeapDumpOnOutOfMemoryError,-agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=127.0.0.1:54624,--add-opens,java.base/java.util=ALL-UNNAMED,--add-opens,java.base/java.lang=ALL-UNNAMED,--add-opens,java.base/java.lang.invoke=ALL-UNNAMED,--add-opens,java.prefs/java.util.prefs=ALL-UNNAMED,-Xms256m,-Xmx512m,-Dfile.encoding=windows-1252,-Duser.country=US,-Duser.language=en,-Duser.variant]
+Using 8 worker leases.
+Watching the file system is disabled
+Starting Build
+Compiling initialization script 'C:\Users\ahobloss\AppData\Local\Temp\ijresolvers1.gradle' using SubsetScriptTransformer.
+Compiling initialization script 'C:\Users\ahobloss\AppData\Local\Temp\ijresolvers1.gradle' using BuildScriptTransformer.
+Settings evaluated using settings file 'C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\settings.gradle'.
+Projects loaded. Root project using build file 'C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build.gradle'.
+Included projects: [root project 'plantuml-generation-intellij-plugin']
+Evaluating root project 'plantuml-generation-intellij-plugin' using build file 'C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build.gradle'.
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring plugin
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring patch plugin.xml task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring robot-server download Task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring prepareSandbox task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring prepareTestingSandbox task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring prepareUiTestingSandbox task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring run plugin verifier task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring plugin verification task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring run IDE task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring run IDE for ui tests task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring build searchable options task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring jar searchable options task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring building plugin task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring publish plugin task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring resources task
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring compile tasks
+kotlin scripting plugin: created the scripting discovery configuration: kotlinScriptDef
+kotlin scripting plugin: created the scripting discovery configuration: testKotlinScriptDef
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring tests tasks
+All projects evaluated.
+Selected primary task 'runIde' from project :
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring IDE dependency
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Using IDE from remote repository
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] IDE dependency cache directory: C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Adding IDE sources repository
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] IC-212.4746.92 is used for building
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring plugin dependencies
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring plugin com.intellij.java
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Looking for builtin com.intellij.java in C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Configuring plugin Git4Idea
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Looking for builtin Git4Idea in C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Looking for builtin java in C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin] Looking for builtin git4idea in C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2
+Tasks to be executed: [task ':compileKotlin', task ':compileJava', task ':patchPluginXml', task ':processResources', task ':classes', task ':instrumentCode', task ':postInstrumentCode', task ':inspectClassesForKotlinIC', task ':jar', task ':prepareSandbox', task ':runIde']
+Tasks that were excluded: []
+:compileKotlin (Thread[Execution worker for ':' Thread 4,5,main]) started.
+Caching disabled for task ':compileKotlin' because:
+  Build cache is disabled
+Task ':compileKotlin' is not up-to-date because:
+  Input property 'source' file C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\kotlin\com\kn\diagrams\generator\actions\AbstractDiagramAction.kt has changed.
+  Input property 'source' file C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\kotlin\com\kn\diagrams\generator\actions\RegenerateDiagramAction.kt has changed.
+Using Kotlin/JVM incremental compilation
+i: starting the daemon as: C:\Users\ahobloss\.jdks\corretto-15.0.2\bin\java -cp C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-compiler-embeddable\1.4.30\320bc62a2dfa19a24bc1613894ae0eabc909052c\kotlin-compiler-embeddable-1.4.30.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-reflect\1.4.30\a9116fbe28a0514671787df95133f28e65fdac25\kotlin-reflect-1.4.30.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib\1.4.30\d10d1e10f47006ee08162dde039e38ac487de4ac\kotlin-stdlib-1.4.30.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-script-runtime\1.4.30\b9c2a1fab9217623fc0fbadf6190e77eed6f054d\kotlin-script-runtime-1.4.30.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-daemon-embeddable\1.4.30\bc024798c5378570ded42ffe3db82ca8ac86dabc\kotlin-daemon-embeddable-1.4.30.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.intellij.deps\trove4j\1.0.20181211\216c2e14b070f334479d800987affe4054cd563f\trove4j-1.0.20181211.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib-common\1.4.30\bb9a3173350f55732416ee27956ea8f9b81f4dbb\kotlin-stdlib-common-1.4.30.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains\annotations\13.0\919f0dfe192fb4e063e7dacadee7f8bb9a2672a9\annotations-13.0.jar -Djava.awt.headless=true -Djava.rmi.server.hostname=127.0.0.1 -Xmx512m -XX:MaxMetaspaceSize=256m -Dkotlin.environment.keepalive -ea org.jetbrains.kotlin.daemon.KotlinCompileDaemon --daemon-runFilesPath C:\Users\ahobloss\AppData\Local\kotlin\daemon --daemon-autoshutdownIdleSeconds=7200 --daemon-compilerClasspath C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-compiler-embeddable\1.4.30\320bc62a2dfa19a24bc1613894ae0eabc909052c\kotlin-compiler-embeddable-1.4.30.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-reflect\1.4.30\a9116fbe28a0514671787df95133f28e65fdac25\kotlin-reflect-1.4.30.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib\1.4.30\d10d1e10f47006ee08162dde039e38ac487de4ac\kotlin-stdlib-1.4.30.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-script-runtime\1.4.30\b9c2a1fab9217623fc0fbadf6190e77eed6f054d\kotlin-script-runtime-1.4.30.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-daemon-embeddable\1.4.30\bc024798c5378570ded42ffe3db82ca8ac86dabc\kotlin-daemon-embeddable-1.4.30.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.intellij.deps\trove4j\1.0.20181211\216c2e14b070f334479d800987affe4054cd563f\trove4j-1.0.20181211.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib-common\1.4.30\bb9a3173350f55732416ee27956ea8f9b81f4dbb\kotlin-stdlib-common-1.4.30.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\org.jetbrains\annotations\13.0\919f0dfe192fb4e063e7dacadee7f8bb9a2672a9\annotations-13.0.jar
+i: Received the message signalling that the daemon is ready
+i: new daemon started, trying to find it
+i: found daemon on port 17003 (16 ms old), trying to connect
+i: connected to the daemon
+Options for KOTLIN DAEMON: IncrementalCompilationOptions(super=CompilationOptions(compilerMode=INCREMENTAL_COMPILER, targetPlatform=JVM, reportCategories=[0], reportSeverity=2, requestedCompilationResults=[0]kotlinScriptExtensions=[kt, kts, java]), areFileChangesKnown=true, modifiedFiles=[C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\kotlin\com\kn\diagrams\generator\actions\AbstractDiagramAction.kt, C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\kotlin\com\kn\diagrams\generator\actions\RegenerateDiagramAction.kt], deletedFiles=[], workingDir=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\kotlin\compileKotlin, multiModuleICSettings=MultiModuleICSettings(buildHistoryFile=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\kotlin\compileKotlin\build-history.bin, useModuleDetection=false), usePreciseJavaTracking=trueoutputFiles=[C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\classes\kotlin\main, C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\kotlin\compileKotlin])
+w: Runtime JAR files in the classpath should have the same version. These files were found in the classpath:
+    C:/Users/ahobloss/Documents/GitHub/plantuml-generation-intellij-plugin/src/main/caches/modules-2/files-2.1/com.jetbrains.intellij.idea/ideaIC/2021.2/b0727ceddea2b62b16825db9308e14a470198e7f/ideaIC-2021.2/lib/kotlin-reflect-1.5.10-release-896.jar (version 1.5)
+    C:/Users/ahobloss/Documents/GitHub/plantuml-generation-intellij-plugin/src/main/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.4.30/aeecfab2e6acbcb80fc6628e8882c98cbbd819cf/kotlin-stdlib-jdk8-1.4.30.jar (version 1.4)
+    C:/Users/ahobloss/Documents/GitHub/plantuml-generation-intellij-plugin/src/main/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.4.30/a9116fbe28a0514671787df95133f28e65fdac25/kotlin-reflect-1.4.30.jar (version 1.4)
+    C:/Users/ahobloss/Documents/GitHub/plantuml-generation-intellij-plugin/src/main/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.4.30/cd81ed90fd79e43f587bd384c2bc6d1aed0bfe31/kotlin-stdlib-jdk7-1.4.30.jar (version 1.4)
+    C:/Users/ahobloss/Documents/GitHub/plantuml-generation-intellij-plugin/src/main/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.4.30/d10d1e10f47006ee08162dde039e38ac487de4ac/kotlin-stdlib-1.4.30.jar (version 1.4)
+    C:/Users/ahobloss/Documents/GitHub/plantuml-generation-intellij-plugin/src/main/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.4.30/bb9a3173350f55732416ee27956ea8f9b81f4dbb/kotlin-stdlib-common-1.4.30.jar (version 1.4)
+w: Some runtime JAR files in the classpath have an incompatible version. Consider removing them from the classpath
+w: C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\kotlin\com\kn\diagrams\generator\actions\RegenerateDiagramAction.kt: (72, 6): This class can only be used with the compiler argument '-Xopt-in=kotlin.RequiresOptIn'
+:compileKotlin (Thread[Execution worker for ':' Thread 4,5,main]) completed. Took 6.923 secs.
+:compileJava (Thread[Execution worker for ':' Thread 4,5,main]) started.
+Custom actions are attached to task ':compileJava'.
+Caching disabled for task ':compileJava' because:
+  Build cache is disabled
+Skipping task ':compileJava' as it is up-to-date.
+:compileJava (Thread[Execution worker for ':' Thread 4,5,main]) completed. Took 0.061 secs.
+:patchPluginXml (Thread[Execution worker for ':' Thread 4,5,main]) started.
+Caching disabled for task ':patchPluginXml' because:
+  Build cache is disabled
+  Caching has not been enabled for the task
+Skipping task ':patchPluginXml' as it is up-to-date.
+:patchPluginXml (Thread[Execution worker for ':' Thread 4,5,main]) completed. Took 0.009 secs.
+:processResources (Thread[Execution worker for ':' Thread 4,5,main]) started.
+Caching disabled for task ':processResources' because:
+  Build cache is disabled
+  Caching has not been enabled for the task
+Skipping task ':processResources' as it is up-to-date.
+:processResources (Thread[Execution worker for ':' Thread 4,5,main]) completed. Took 0.016 secs.
+:classes (Thread[Execution worker for ':' Thread 4,5,main]) started.
+Skipping task ':classes' as it has no actions.
+:classes (Thread[Execution worker for ':' Thread 4,5,main]) completed. Took 0.001 secs.
+:instrumentCode (Thread[Execution worker for ':' Thread 4,5,main]) started.
+Caching disabled for task ':instrumentCode' because:
+  Build cache is disabled
+  Caching has not been enabled for the task
+Task ':instrumentCode' is not up-to-date because:
+  Input property 'originalClasses' file C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\classes\kotlin\main\com\kn\diagrams\generator\actions\AbstractDiagramAction.class has changed.
+  Input property 'originalClasses' file C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\classes\kotlin\main\com\kn\diagrams\generator\actions\RegenerateDiagramAction.class has changed.
+  Input property 'sourceDirs' file C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\kotlin\com\kn\diagrams\generator\actions\AbstractDiagramAction.kt has changed.
+Compiling forms and instrumenting code with nullability preconditions
+[ant:instrumentIdeaExtensions] Added @NotNull assertions to 1 files
+:instrumentCode (Thread[Execution worker for ':' Thread 4,5,main]) completed. Took 1.364 secs.
+:postInstrumentCode (Thread[Execution worker for ':' Thread 4,5,main]) started.
+Caching disabled for task ':postInstrumentCode' because:
+  Build cache is disabled
+Task ':postInstrumentCode' is not up-to-date because:
+  Task has not declared any outputs despite executing actions.
+:postInstrumentCode (Thread[Execution worker for ':' Thread 4,5,main]) completed. Took 0.005 secs.
+:inspectClassesForKotlinIC (Thread[Execution worker for ':' Thread 4,5,main]) started.
+Caching disabled for task ':inspectClassesForKotlinIC' because:
+  Build cache is disabled
+  Caching has not been enabled for the task
+Task ':inspectClassesForKotlinIC' is not up-to-date because:
+  Input property 'classFiles$kotlin_gradle_plugin' file C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\classes\java\main-instrumented\com\kn\diagrams\generator\actions\AbstractDiagramAction.class has changed.
+  Input property 'classFiles$kotlin_gradle_plugin' file C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\classes\java\main-instrumented\com\kn\diagrams\generator\actions\RegenerateDiagramAction.class has changed.
+  Input property 'sourceSetOutputClassesDir$kotlin_gradle_plugin' file C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\classes\java\main-instrumented\com\kn\diagrams\generator\actions\AbstractDiagramAction.class has changed.
+:inspectClassesForKotlinIC (Thread[Execution worker for ':' Thread 4,5,main]) completed. Took 0.031 secs.
+:jar (Thread[Execution worker for ':' Thread 4,5,main]) started.
+Caching disabled for task ':jar' because:
+  Build cache is disabled
+  Caching has not been enabled for the task
+Task ':jar' is not up-to-date because:
+  Input property 'rootSpec$1' file C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\classes\java\main-instrumented\com\kn\diagrams\generator\actions\AbstractDiagramAction.class has changed.
+  Input property 'rootSpec$1' file C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\classes\java\main-instrumented\com\kn\diagrams\generator\actions\RegenerateDiagramAction.class has changed.
+:jar (Thread[Execution worker for ':' Thread 4,5,main]) completed. Took 0.209 secs.
+:prepareSandbox (Thread[Execution worker for ':' Thread 4,5,main]) started.
+Caching disabled for task ':prepareSandbox' because:
+  Build cache is disabled
+  Caching has not been enabled for the task
+Task ':prepareSandbox' is not up-to-date because:
+  Input property 'pluginJar' file C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\libs\plantuml-generation-intellij-plugin-2022.2.1.jar has changed.
+  Input property 'rootSpec$1$1' file C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\libs\plantuml-generation-intellij-plugin-2022.2.1.jar has changed.
+:prepareSandbox (Thread[Execution worker for ':' Thread 4,5,main]) completed. Took 0.458 secs.
+:runIde (Thread[Execution worker for ':' Thread 4,5,main]) started.
+Download https://cache-redirector.jetbrains.com/jetbrains.bintray.com/intellij-jbr/jbr-11_0_11-windows-x64-b1504.13.tar.gz
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin:runIde] Cannot download JetBrains Java Runtime jbr-11_0_11-windows-x64-b1504.13. Run with --debug option to get more log output.
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin:runIde] Cannot resolve builtin JBR 11_0_11b1504.13. Falling local Java.
+Custom actions are attached to task ':runIde'.
+Caching disabled for task ':runIde' because:
+  Build cache is disabled
+  Caching has not been enabled for the task
+Task ':runIde' is not up-to-date because:
+  Task.upToDateWhen is false.
+Download https://cache-redirector.jetbrains.com/jetbrains.bintray.com/intellij-jbr/jbr-11_0_11-windows-x64-b1504.13.tar.gz
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin:runIde] Cannot download JetBrains Java Runtime jbr-11_0_11-windows-x64-b1504.13. Run with --debug option to get more log output.
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin:runIde] Cannot resolve builtin JBR 11_0_11b1504.13. Falling local Java.
+Download https://cache-redirector.jetbrains.com/jetbrains.bintray.com/intellij-jbr/jbr-11_0_11-windows-x64-b1504.13.tar.gz
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin:runIde] Cannot download JetBrains Java Runtime jbr-11_0_11-windows-x64-b1504.13. Run with --debug option to get more log output.
+[gradle-intellij-plugin :plantuml-generation-intellij-plugin:runIde] Cannot resolve builtin JBR 11_0_11b1504.13. Falling local Java.
+Starting process 'command 'C:\Users\ahobloss\.jdks\corretto-15.0.2\bin\java.exe''. Working directory: C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2\bin Command: C:\Users\ahobloss\.jdks\corretto-15.0.2\bin\java.exe -Didea.auto.reload.plugins=true -Didea.classpath.index.enabled=false -Didea.config.path=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\idea-sandbox\config -Didea.is.internal=true -Didea.platform.prefix=Idea -Didea.plugins.path=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\idea-sandbox\plugins -Didea.required.plugins.id=com.kn.diagrams.generator.generator -Didea.system.path=C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\build\idea-sandbox\system -agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=127.0.0.1:62955 -Xms256m -Xmx12G -Dfile.encoding=windows-1252 -Duser.country=US -Duser.language=en -Duser.variant -ea -cp C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2\lib\idea_rt.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2\lib\idea.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2\lib\bootstrap.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2\lib\extensions.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2\lib\util.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2\lib\openapi.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2\lib\trove4j.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2\lib\jdom.jar;C:\Users\ahobloss\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2\lib\log4j.jar com.intellij.idea.Main
+Successfully started process 'command 'C:\Users\ahobloss\.jdks\corretto-15.0.2\bin\java.exe''
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by com.intellij.ide.ui.laf.darcula.DarculaLaf to field javax.swing.text.html.HTMLEditorKit.DEFAULT_STYLES_KEY
+WARNING: Please consider reporting this to the maintainers of com.intellij.ide.ui.laf.darcula.DarculaLaf
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2022-09-14 14:41:58,852 [   1831]   WARN - j.internal.DebugAttachDetector - Unable to start DebugAttachDetector, please add `--add-exports java.base/jdk.internal.vm=ALL-UNNAMED` to VM options 
+2022-09-14 14:41:58,875 [   1854]   WARN - tor.impl.FontFamilyServiceImpl - Couldn't access required runtime API, will fall back to basic logic of font selection 
+2022-09-14 14:42:00,933 [   3912]   WARN - l.NotificationGroupManagerImpl - Notification group CodeWithMe is already registered (group=com.intellij.notification.NotificationGroup@3e9890bd). Plugin descriptor: PluginDescriptor(name=Code With Me, id=com.jetbrains.codeWithMe, descriptorPath=plugin.xml, path=~\Documents\GitHub\plantuml-generation-intellij-plugin\src\main\caches\modules-2\files-2.1\com.jetbrains.intellij.idea\ideaIC\2021.2\b0727ceddea2b62b16825db9308e14a470198e7f\ideaIC-2021.2\plugins\cwm-plugin, version=212.4746.92, package=null) 
+2022-09-14 14:42:01,428 [   4407]   WARN - tellij.ide.SystemHealthMonitor - issue detected: bundled.jre.version.message 
+2022-09-14 14:42:06,999 [   9978]   WARN - #com.intellij.ui.jcef.JBCefApp - JCEF runtime library is not a JBR module (Use JBR bundled with the IDE) 
+2022-09-14 14:42:10,205 [  13184]   WARN - openapi.wm.impl.ToolWindowImpl - ToolWindow icons should be 13x13. Please fix ToolWindow (ID:  Diagram Generation) or icon UrlResolver{ownerClass=com.kn.diagrams.generator.sidebar.DiagramGeneratorConfigurationToolWindowFactory, classLoader=PluginClassLoader(plugin=PluginDescriptor(name=PlantUML Diagram Generator, id=com.kn.diagrams.generator.generator, descriptorPath=plugin.xml, path=~\Documents\GitHub\plantuml-generation-intellij-plugin\build\idea-sandbox\plugins\plantuml-generation-intellij-plugin, version=2022.2.1, package=null), packagePrefix=null, instanceId=43, state=active), overriddenPath='/plantuml_generator.svg', url=file:/unresolved, useCacheOnLoad=true} 
+2022-09-14 14:42:11,833 [  14812]   WARN - ctionSystem.impl.ActionUpdater - Slow (164 ms) 'update' on action Select Run/Debug Configuration (Select Run/Debug Configuration) of class com.intellij.execution.actions.RunConfigurationsComboBoxAction. Consider speeding it up and/or implementing UpdateInBackground. 
+2022-09-14 14:42:21,292 [  24271]   WARN - gnostic.WindowsDefenderChecker - wmic Windows Defender check failed 
+com.intellij.execution.process.ProcessNotCreatedException: Cannot run program "wmic": CreateProcess error=2, The system cannot find the file specified
+	at com.intellij.execution.configurations.GeneralCommandLine.createProcess(GeneralCommandLine.java:391)
+	at com.intellij.execution.process.OSProcessHandler.startProcess(OSProcessHandler.java:100)
+	at com.intellij.execution.process.OSProcessHandler.<init>(OSProcessHandler.java:48)
+	at com.intellij.execution.process.CapturingProcessHandler.<init>(CapturingProcessHandler.java:22)
+	at com.intellij.execution.util.ExecUtil.execAndGetOutput(ExecUtil.kt:93)
+	at com.intellij.diagnostic.WindowsDefenderChecker.isWindowsDefenderActive(WindowsDefenderChecker.java:131)
+	at com.intellij.diagnostic.WindowsDefenderChecker.checkWindowsDefender(WindowsDefenderChecker.java:72)
+	at com.intellij.diagnostic.WindowsDefenderCheckerActivity.runActivity(WindowsDefenderCheckerActivity.kt:27)
+	at com.intellij.ide.startup.impl.StartupManagerImpl.runStartupActivity(StartupManagerImpl.kt:268)
+	at com.intellij.ide.startup.impl.StartupManagerImpl.access$runStartupActivity(StartupManagerImpl.kt:59)
+	at com.intellij.ide.startup.impl.StartupManagerImpl$runBackgroundPostStartupActivities$1.run(StartupManagerImpl.kt:371)
+	at com.intellij.openapi.progress.impl.CoreProgressManager.lambda$runProcess$2(CoreProgressManager.java:183)
+	at com.intellij.openapi.progress.impl.CoreProgressManager.registerIndicatorAndRun(CoreProgressManager.java:705)
+	at com.intellij.openapi.progress.impl.CoreProgressManager.executeProcessUnderProgress(CoreProgressManager.java:647)
+	at com.intellij.openapi.progress.impl.ProgressManagerImpl.executeProcessUnderProgress(ProgressManagerImpl.java:63)
+	at com.intellij.openapi.progress.impl.CoreProgressManager.runProcess(CoreProgressManager.java:170)
+	at com.intellij.openapi.progress.util.BackgroundTaskUtil.runUnderDisposeAwareIndicator(BackgroundTaskUtil.java:270)
+	at com.intellij.openapi.progress.util.BackgroundTaskUtil.runUnderDisposeAwareIndicator(BackgroundTaskUtil.java:248)
+	at com.intellij.ide.startup.impl.StartupManagerImpl.runBackgroundPostStartupActivities(StartupManagerImpl.kt:365)
+	at com.intellij.ide.startup.impl.StartupManagerImpl.access$runBackgroundPostStartupActivities(StartupManagerImpl.kt:59)
+	at com.intellij.ide.startup.impl.StartupManagerImpl$scheduleBackgroundPostStartupActivities$1.run(StartupManagerImpl.kt:349)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at com.intellij.util.concurrency.SchedulingWrapper$MyScheduledFutureTask.run(SchedulingWrapper.java:220)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+	at java.base/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:668)
+	at java.base/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:665)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:391)
+	at java.base/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:665)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+Caused by: java.io.IOException: Cannot run program "wmic": CreateProcess error=2, The system cannot find the file specified
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1142)
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1073)
+	at com.intellij.execution.configurations.GeneralCommandLine.startProcess(GeneralCommandLine.java:464)
+	at com.intellij.execution.configurations.GeneralCommandLine.createProcess(GeneralCommandLine.java:381)
+	... 30 more
+Caused by: java.io.IOException: CreateProcess error=2, The system cannot find the file specified
+	at java.base/java.lang.ProcessImpl.create(Native Method)
+	at java.base/java.lang.ProcessImpl.<init>(ProcessImpl.java:483)
+	at java.base/java.lang.ProcessImpl.start(ProcessImpl.java:158)
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1109)
+	... 33 more
+2022-09-14 14:42:25,546 [  28525]   WARN - nSystem.impl.ActionToolbarImpl - Please do not use ActionPlaces.UNKNOWN or the empty place. Any string unique enough to deduce the toolbar location will do. 
+java.lang.Throwable: toolbar creation trace
+	at com.intellij.openapi.actionSystem.impl.ActionToolbarImpl.<init>(ActionToolbarImpl.java:112)
+	at com.intellij.openapi.actionSystem.impl.ActionManagerImpl.createActionToolbar(ActionManagerImpl.java:432)
+	at com.intellij.openapi.actionSystem.impl.ActionManagerImpl.createActionToolbar(ActionManagerImpl.java:426)
+	at com.android.tools.idea.common.error.IssuePanel.createToolbar(IssuePanel.java:244)
+	at com.android.tools.idea.common.error.IssuePanel.createTitlePanel(IssuePanel.java:255)
+	at com.android.tools.idea.common.error.IssuePanel.<init>(IssuePanel.java:124)
+	at com.android.tools.idea.common.surface.DesignSurface.<init>(DesignSurface.java:328)
+	at com.android.tools.idea.uibuilder.surface.NlDesignSurface.<init>(NlDesignSurface.java:398)
+	at com.android.tools.idea.uibuilder.surface.NlDesignSurface$Builder.build(NlDesignSurface.java:327)
+	at com.android.tools.idea.uibuilder.visual.VisualizationForm.<init>(VisualizationForm.java:151)
+	at com.android.tools.idea.uibuilder.visual.VisualizationManager.createPreviewForm(VisualizationManager.java:118)
+	at com.android.tools.idea.uibuilder.visual.VisualizationManager.initToolWindow(VisualizationManager.java:125)
+	at com.android.tools.idea.uibuilder.visual.VisualizationManager$2.run(VisualizationManager.java:268)
+	at com.intellij.util.ui.update.MergingUpdateQueue.execute(MergingUpdateQueue.java:333)
+	at com.intellij.util.ui.update.MergingUpdateQueue.execute(MergingUpdateQueue.java:323)
+	at com.intellij.util.ui.update.MergingUpdateQueue.lambda$flush$1(MergingUpdateQueue.java:273)
+	at com.intellij.util.ui.EdtInvocationManager.invokeAndWaitIfNeeded(EdtInvocationManager.java:148)
+	at com.intellij.util.ui.UIUtil.invokeAndWaitIfNeeded(UIUtil.java:2199)
+	at com.intellij.util.ui.update.MergingUpdateQueue.flush(MergingUpdateQueue.java:284)
+	at com.intellij.util.ui.update.MergingUpdateQueue.run(MergingUpdateQueue.java:242)
+	at com.intellij.util.concurrency.QueueProcessor.runSafely(QueueProcessor.java:240)
+	at com.intellij.util.Alarm$Request.runSafely(Alarm.java:391)
+	at com.intellij.util.Alarm$Request.run(Alarm.java:377)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at com.intellij.util.concurrency.SchedulingWrapper$MyScheduledFutureTask.run(SchedulingWrapper.java:220)
+	at com.intellij.openapi.application.TransactionGuardImpl.runWithWritingAllowed(TransactionGuardImpl.java:214)
+	at com.intellij.openapi.application.TransactionGuardImpl.access$200(TransactionGuardImpl.java:21)
+	at com.intellij.openapi.application.TransactionGuardImpl$2.run(TransactionGuardImpl.java:196)
+	at com.intellij.openapi.application.impl.ApplicationImpl.runIntendedWriteActionOnCurrentThread(ApplicationImpl.java:794)
+	at com.intellij.openapi.application.impl.ApplicationImpl.lambda$invokeLater$4(ApplicationImpl.java:350)
+	at com.intellij.openapi.application.impl.FlushQueue.doRun(FlushQueue.java:84)
+	at com.intellij.openapi.application.impl.FlushQueue.runNextEvent(FlushQueue.java:133)
+	at com.intellij.openapi.application.impl.FlushQueue.flushNow(FlushQueue.java:46)
+	at com.intellij.openapi.application.impl.FlushQueue$FlushNow.run(FlushQueue.java:189)
+	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:316)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:770)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:721)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:715)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:391)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:740)
+	at com.intellij.ide.IdeEventQueue.defaultDispatchEvent(IdeEventQueue.java:886)
+	at com.intellij.ide.IdeEventQueue._dispatchEvent(IdeEventQueue.java:755)
+	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$7(IdeEventQueue.java:442)
+	at com.intellij.openapi.progress.impl.CoreProgressManager.computePrioritized(CoreProgressManager.java:825)
+	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$8(IdeEventQueue.java:441)
+	at com.intellij.openapi.application.impl.ApplicationImpl.runIntendedWriteActionOnCurrentThread(ApplicationImpl.java:794)
+	at com.intellij.ide.IdeEventQueue.dispatchEvent(IdeEventQueue.java:487)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+:runIde (Thread[Execution worker for ':' Thread 4,5,main]) completed. Took 51.659 secs.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.
+Use '--warning-mode all' to show the individual deprecation warnings.
+See https://docs.gradle.org/6.9/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 1m 12s
+10 actionable tasks: 7 executed, 3 up-to-date
+
+Publishing a build scan to scans.gradle.com requires accepting the Gradle Terms of Service defined at https://gradle.com/terms-of-service. Do you accept these terms? [yes, no] 
