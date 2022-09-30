@@ -14,6 +14,9 @@ class ConfigurationDefaults {
         fun structureDiagram(): StructureConfigurationDefaults = serializer.fromJson(DiagramGenerationSettings.instance.structureDiagramDefaults, StructureConfigurationDefaults::class.java)
         fun flowDiagram(): FlowConfigurationDefaults = serializer.fromJson(DiagramGenerationSettings.instance.flowDiagramDefaults, FlowConfigurationDefaults::class.java)
         fun clusterDiagram(): ClusterConfigurationDefaults = serializer.fromJson(DiagramGenerationSettings.instance.clusterDiagramDefaults, ClusterConfigurationDefaults::class.java)
+
+        fun geneticDiagram(): GeneticsConfigurationDefaults = serializer.fromJson(DiagramGenerationSettings.instance.geneticsDiagramDefaults, GeneticsConfigurationDefaults::class.java)
+
     }
 }
 
@@ -146,6 +149,37 @@ class ClusterConfigurationDefaults(
         with(details) {
             edgeMode = EdgeMode.TypesAndMethods
             clusteringAlgorithm = ClusterSource.Leiden
+        }
+        return this
+    }
+}
+class GeneticsConfigurationDefaults(
+    var graphRestriction: GraphRestriction = GraphRestriction(),
+    var graphTraversal: GraphTraversal = GraphTraversal(),
+    var details: GeneticsDiagramDetails = GeneticsDiagramDetails()) {
+
+    fun defaulted(): GeneticsConfigurationDefaults {
+        with(graphRestriction) {
+            cutConstructors = true
+            cutDataAccess = false
+            cutDataStructures = false
+            cutInterfaceStructures = false
+            cutGetterAndSetter = true
+            cutEnum = true
+            cutMappings = false
+        }
+        with(graphTraversal) {
+            backwardDepth = 1
+            forwardDepth = 1
+            hideDataStructures = false
+            hideInterfaceCalls = true
+            hideMappings = false
+            hidePrivateMethods = true
+            onlyShowApplicationEntryPoints = false
+        }
+        with(details) {
+            edgeMode = EdgeMode.TypesAndMethods
+            clusteringAlgorithm = ClusterSourceGenetics.LSSGA
         }
         return this
     }

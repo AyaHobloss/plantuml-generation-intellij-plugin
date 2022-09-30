@@ -21,9 +21,9 @@ enum class ClusterSource{ Layer, Package, Leiden, None }
 
 
 class NodeSelection(
-    var className: String = "", 
-    var classPackage: String = "", 
-    var methodName: String = "", 
+    var className: String = "",
+    var classPackage: String = "",
+    var methodName: String = "",
 )
 
 enum class ClusterVisualization{ Cluster, ClusterWithoutDetails, Nodes, NodesSimplified }
@@ -53,21 +53,21 @@ class LeidenParametersVariation(
 enum class ClusterAggregation { None, Class }
 
 class ClusterDiagramDetails(
-        @CommentWithEnumValues
-        var edgeMode: EdgeMode = EdgeMode.MethodsOnly,
-        var nodeSelection: NodeSelection = NodeSelection(),
-        @CommentWithEnumValues
-        var nodeAggregation: ClusterAggregation = ClusterAggregation.Class,
-        @CommentWithEnumValues
-        var visualization: ClusterVisualization = ClusterVisualization.Cluster,
-        @CommentWithEnumValues
-        var clusteringAlgorithm: ClusterSource = ClusterSource.Leiden,
-        var leiden: LeidenParameters = LeidenParameters(),
-        var packageLevels: Int = 1,
-        @CommentWithValue("A->B->C + A->C then A->C is removed to reduce number of edges")
-        var removedTransientDependencies: Boolean = false,
-        @CommentWithValue("Interface (componentA) -> Implementation (componentB) is shown with a red arrow: <-")
-        var showInvertedDependenciesExplicitly: Boolean = false,
-        @CommentWithValue("only visible in SVGs")
-        var showCallsInEdgeToolTips: Boolean = false,
+    @CommentWithEnumValues
+    var edgeMode: EdgeMode = EdgeMode.MethodsOnly,
+    var nodeSelection: NodeSelection = NodeSelection(),
+    @CommentWithEnumValues
+    var nodeAggregation: ClusterAggregation = ClusterAggregation.Class,
+    @CommentWithEnumValues
+    var visualization: ClusterVisualization = ClusterVisualization.Cluster,
+    @CommentWithEnumValues
+    var clusteringAlgorithm: ClusterSource = ClusterSource.Leiden,
+    var leiden: LeidenParameters = LeidenParameters(),
+    var packageLevels: Int = 1,
+    @CommentWithValue("A->B->C + A->C then A->C is removed to reduce number of edges")
+    var removedTransientDependencies: Boolean = false,
+    @CommentWithValue("Interface (componentA) -> Implementation (componentB) is shown with a red arrow: <-")
+    var showInvertedDependenciesExplicitly: Boolean = false,
+    @CommentWithValue("only visible in SVGs")
+    var showCallsInEdgeToolTips: Boolean = false,
 )

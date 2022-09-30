@@ -2,12 +2,13 @@ package com.kn.diagrams.generator.config
 
 import com.kn.diagrams.generator.graph.*
 
-class GeneticsConfiguration(override var extensionCallbackMethod: String?= "",
-                            var projectClassification: ProjectClassification,
-                            var graphRestriction: GraphRestriction,
-                            var graphTraversal: GraphTraversal,
-                            var details: GeneticsDiagramDetails
-) : BaseDiagramConfiguration{
+
+class GeneticsConfiguration(override var extensionCallbackMethod: String? = "",
+                             var projectClassification: ProjectClassification,
+                             var graphRestriction: GraphRestriction,
+                             var graphTraversal: GraphTraversal,
+                             var details: GeneticsDiagramDetails
+) : BaseDiagramConfiguration {
 
 
     override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
@@ -16,29 +17,25 @@ class GeneticsConfiguration(override var extensionCallbackMethod: String?= "",
         TODO("Not yet implemented")
     }
 
-    fun traversalFilter() = GraphTraversalFilter(projectClassification, graphTraversal)
+     fun traversalFilter() = GraphTraversalFilter(projectClassification, graphTraversal)
 }
+
 
 
 enum class ClusterSourceGenetics{ Layer, Package, LSSGA, None }
 
 
+class GeneticsNodeSelection(
+    var className: String = "",
+    var classPackage: String = "",
+    var methodName: String = "",
+)
+
+enum class GeneticsClusterVisualization{ Cluster, ClusterWithoutDetails, Nodes, NodesSimplified }
+enum class GeneticsClusterAggregation { None, Class }
+
 
 class GeneticsParameters(
-   /* @CommentWithValue("higher resolution produces smaller clusters")
-    var resolution: Double = 1.0,
-    var randomness: Double = 0.01,
-    var randomStarts: Int = 1,
-    @CommentWithValue("more iterations produce smaller clusters")
-    var iterations: Int = 10,
-    var minimumNodesPerCluster: Int = 1,
-
-    @CommentWithValue("goal: min(average cluster dependencies * standard deviation of cluster dependencies) - clusters should be encapsulated and equal sized to avoid one mega cluster")
-    var optimizeClusterDistribution: Boolean = false,
-    var leidenOptimization: LeidenParametersVariation = LeidenParametersVariation(),
-
-    */
-
     var iterations : Int=400,
     var parentSize:Int=300,
     var childSize:Int=300,
@@ -47,6 +44,8 @@ class GeneticsParameters(
 
 
 )
+
+
 /*
 class GeneticsParametersVariation(
     var resolution: List<Double> = listOf(0.8, 0.6, 0.4, 0.25, 0.20, 0.15,0.1, 0.05, 0.025, 0.0125, 0.00125, 0.000125),
@@ -57,15 +56,28 @@ class GeneticsParametersVariation(
 )
 
 */
+/*class GeneticsDiagramDetails(): DiagramDetails{
+    override var edgeMode: EdgeMode = EdgeMode.MethodsOnly
+    override var nodeSelection: NodeSelection= NodeSelection()
+    override var nodeAggregation: ClusterAggregation= ClusterAggregation.Class
+    override var visualization: ClusterVisualization = ClusterVisualization.Cluster
+    override var clusteringAlgorithm: ClusterSource=ClusterSource.LSSGA
+    var LSSGA: GeneticsParameters = GeneticsParameters()
+    override var packageLevels: Int=1
+    override var removedTransientDependencies: Boolean = false
+    override var showInvertedDependenciesExplicitly: Boolean = false
+    override var showCallsInEdgeToolTips: Boolean = false
+}
 
+ */
 class GeneticsDiagramDetails(
     @CommentWithEnumValues
     var edgeMode: EdgeMode = EdgeMode.MethodsOnly,
     var nodeSelection: NodeSelection = NodeSelection(),
     @CommentWithEnumValues
-    var nodeAggregation: ClusterAggregation = ClusterAggregation.Class,
+    var nodeAggregation: GeneticsClusterAggregation = GeneticsClusterAggregation.Class,
     @CommentWithEnumValues
-    var visualization: ClusterVisualization = ClusterVisualization.Cluster,
+    var visualization: GeneticsClusterVisualization = GeneticsClusterVisualization.Cluster,
     @CommentWithEnumValues
     var clusteringAlgorithm: ClusterSourceGenetics = ClusterSourceGenetics.LSSGA,
     var LSSGA: GeneticsParameters = GeneticsParameters(),
@@ -77,3 +89,9 @@ class GeneticsDiagramDetails(
     @CommentWithValue("only visible in SVGs")
     var showCallsInEdgeToolTips: Boolean = false,
 )
+
+
+
+
+
+

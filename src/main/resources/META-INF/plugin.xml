@@ -79,6 +79,8 @@
         <action id="GenerateFlowDiagramAction" class="com.kn.diagrams.generator.actions.GenerateFlowDiagramsAction" text="Generate Flow Diagrams"/>
         <action id="GenerateClusterDiagramAction" class="com.kn.diagrams.generator.actions.GenerateClusterDiagramAction" text="Generate Cluster Diagram"/>
         <action id="GenerateVcsDiagramsAction" class="com.kn.diagrams.generator.actions.GenerateVcsDiagramsAction" text="Generate Version Control Diagram"/>
+        <action id="GenerateGeneticsAction" class="com.kn.diagrams.generator.actions.GenerateGeneticsAction" text="Generate Genetic Diagram"/>
+
       </group>
       <separator/>
       <add-to-group group-id="EditorPopupMenu" anchor="first"/>

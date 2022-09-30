@@ -24,9 +24,9 @@ fun ActionContext.createClusterContext(init: ClusterDiagramContext.() -> Unit): 
 class NodeBuildingContext(actionContext: ActionContext, init: ClusterDiagramContext.() -> Unit): ClusterDiagramContext(actionContext, init){
 
     val nodes: List<Any> = baseEdges
-            .flatMap { it.nodes() }
-            .map { it.aggregate() }
-            .distinct()
+        .flatMap { it.nodes() }
+        .map { it.aggregate() }
+        .distinct()
     val edges get() = baseEdges
     val stats = baseEdges.groupBy { setOfNotNull(it.from()?.diagramId(), it.to()?.diagramId()) }
 
@@ -41,54 +41,54 @@ class NodeBuildingContext(actionContext: ActionContext, init: ClusterDiagramCont
 
 class ClusterBuildingContext(actionContext: ActionContext, init: ClusterDiagramContext.() -> Unit): ClusterDiagramContext(actionContext, init){
     val nodes = baseEdges.flatMap { listOf(it.from()!! to it, it.to()!! to it) }
-            .map { (node, edge) -> node.aggregate() to edge }
-            .groupBy { (node, _) -> node.cluster() }
-            .entries.map { ClusterNode(this, it) }
+        .map { (node, edge) -> node.aggregate() to edge }
+        .groupBy { (node, _) -> node.cluster() }
+        .entries.map { ClusterNode(this, it) }
     val edges: List<ClusterEdge>
 
     init {
         val clustersToEdges = baseEdges
-                .filter { it.from()!!.cluster() != it.to()!!.cluster() }
-                .groupBy { it.from()!!.cluster() + "_" + it.to()!!.cluster() }
+            .filter { it.from()!!.cluster() != it.to()!!.cluster() }
+            .groupBy { it.from()!!.cluster() + "_" + it.to()!!.cluster() }
 
         // TODO by config?!
         val eliminationMatrix = if(config.details.removedTransientDependencies) {
             // TODO mark inverted arrows separate? - config??
             val directDependencies = clustersToEdges.entries.asSequence()
-                    .filter { !it.value.all { it.isInverted(cache, visualConfig) } }
-                    .map { it.key }
-                    .map { it.split("_") }.map { (from, to) -> from to to }
-                    .groupBy { (from, _) -> from }
-                    .mapValues { it.value.map { (_, to) -> to } }
+                .filter { !it.value.all { it.isInverted(cache, visualConfig) } }
+                .map { it.key }
+                .map { it.split("_") }.map { (from, to) -> from to to }
+                .groupBy { (from, _) -> from }
+                .mapValues { it.value.map { (_, to) -> to } }
 
             directDependencies.transientEliminationMatrix()
         } else emptyMap()
 
         val allEdges = mutableListOf<ClusterEdge>()
         clustersToEdges.entries
-                .filterNot { (dependency, _) -> eliminationMatrix.isReplaced(dependency) }
-                .forEach { (dependency, calls) ->
-                    val from = calls.first().from()!!.cluster()
-                    val to = calls.first().to()!!.cluster()
+            .filterNot { (dependency, _) -> eliminationMatrix.isReplaced(dependency) }
+            .forEach { (dependency, calls) ->
+                val from = calls.first().from()!!.cluster()
+                val to = calls.first().to()!!.cluster()
 
-                    val allCalls = calls + eliminationMatrix.replacedDependenciesFor(dependency).flatMap { clustersToEdges[it] ?: emptyList()}
+                val allCalls = calls + eliminationMatrix.replacedDependenciesFor(dependency).flatMap { clustersToEdges[it] ?: emptyList()}
 
-                    val invertedDependencies = if(config.details.showInvertedDependenciesExplicitly) {
-                        calls.filter { edge ->
-                            edge.isInverted(cache, visualConfig)
-                        }.filter { it in calls }
-                    } else emptyList()
+                val invertedDependencies = if(config.details.showInvertedDependenciesExplicitly) {
+                    calls.filter { edge ->
+                        edge.isInverted(cache, visualConfig)
+                    }.filter { it in calls }
+                } else emptyList()
 
 
-                    if (invertedDependencies.isNotEmpty()) {
-                        allEdges += ClusterEdge(to, from, invertedDependencies.distinctBy { it.from() to it.to() }, true)
-                    }
-
-                    val withoutInverted = allCalls - invertedDependencies
-                    if (withoutInverted.isNotEmpty()) {
-                        allEdges += ClusterEdge(from, to, withoutInverted.distinctBy { it.from() to it.to() }, false)
-                    }
+                if (invertedDependencies.isNotEmpty()) {
+                    allEdges += ClusterEdge(to, from, invertedDependencies.distinctBy { it.from() to it.to() }, true)
                 }
+
+                val withoutInverted = allCalls - invertedDependencies
+                if (withoutInverted.isNotEmpty()) {
+                    allEdges += ClusterEdge(from, to, withoutInverted.distinctBy { it.from() to it.to() }, false)
+                }
+            }
 
         edges = allEdges.toList()
     }
@@ -132,8 +132,8 @@ class ClusterNode(context: ClusterBuildingContext, entry: Map.Entry<String, List
                 serviceClasses = links.map { it.first }.filterNot { it.containingClass().isDataStructure() }.distinct()
 
                 packageNames = dataClasses
-                        .map { it.containingClass().diagramPath(context.visualConfig) }
-                        .distinct()
+                    .map { it.containingClass().diagramPath(context.visualConfig) }
+                    .distinct()
             }
         }
     }
@@ -145,7 +145,6 @@ class ClusterNode(context: ClusterBuildingContext, entry: Map.Entry<String, List
 open class ClusterDiagramContext(actionContext: ActionContext, init: ClusterDiagramContext.() -> Unit){
     val project: Project = actionContext.project
     val config = actionContext.config<ClusterConfiguration>()
-    val configGenetics = actionContext.config<GeneticsConfiguration>()
 
     val dot = DotDiagramBuilder().apply { direction = DiagramDirection.LeftToRight }
     val visualConfig = config.visualizationConfig()
@@ -253,32 +252,32 @@ open class ClusterDiagramContext(actionContext: ActionContext, init: ClusterDiag
 
 
 fun ClusterConfiguration.visualizationConfig() = DiagramVisualizationConfiguration(
-        rootNode = null,
-        projectClassification,
-        details.packageLevels,
-        showClassGenericTypes = false,
-        showClassMethods = false,
-        showMethodParametersTypes = false,
-        showMethodParametersNames = false,
-        showMethodReturnType = false,
-        showCallOrder = false,
-        showDetailedClass = false
+    rootNode = null,
+    projectClassification,
+    details.packageLevels,
+    showClassGenericTypes = false,
+    showClassMethods = false,
+    showMethodParametersTypes = false,
+    showMethodParametersNames = false,
+    showMethodReturnType = false,
+    showCallOrder = false,
+    showDetailedClass = false
 )
 
 
 fun GraphDefinition.nodesForClustering(filter: GraphTraversalFilter, details: ClusterDiagramDetails): List<GraphNode> {
     with(filter.global){
         val validClasses = classes.values
-                .filter { it.reference.included(details.nodeSelection.className, details.nodeSelection.classPackage) }
-                .filter { filter.accept(it) }
+            .filter { it.reference.included(details.nodeSelection.className, details.nodeSelection.classPackage) }
+            .filter { filter.accept(it) }
 
         val classNodes = validClasses
             .filter { (it.reference.isDataStructure() || it.reference.isInterfaceStructure()) }
 
         val methodNodes = validClasses.flatMap { cls ->
             cls.methods.values
-                    .filter { it.name.included(details.nodeSelection.methodName) }
-                    .filter { !it.containingClass.isDataStructure() && !it.containingClass.isInterfaceStructure() && filter.accept(it) }
+                .filter { it.name.included(details.nodeSelection.methodName) }
+                .filter { !it.containingClass.isDataStructure() && !it.containingClass.isInterfaceStructure() && filter.accept(it) }
         }
 
         return methodNodes + classNodes
@@ -354,7 +353,7 @@ fun NodeBuildingContext.visualizeGroupedByClustersSimplified() {
                             cell(classes)
                         }
                     }
-            }
+                }
 
             if(sameClusterName.contains(",")){
                 dot.nodes.add(table)
@@ -384,7 +383,7 @@ fun NodeBuildingContext.visualizeGroupedByClustersSimplified() {
                             cell(method.signature(visualConfig))
                         }
                     }
-            }, Grouping(cluster ?: "missing cluster name"))
+                }, Grouping(cluster ?: "missing cluster name"))
         }
 
     edges.groupBy { edge ->
@@ -544,10 +543,10 @@ fun List<Any>.clusterElements() = this
     }
 
 fun String.breakAfter(chars: Int) = chunked(chars)
-        .joinToString("") { "$it<BR ALIGN=\"LEFT\"/>" }
+    .joinToString("") { "$it<BR ALIGN=\"LEFT\"/>" }
 
 fun List<String>.breakEvery(elements: Int) = mapIndexed { i, cls -> if (i % elements == 1) ", $cls,<BR ALIGN=\"LEFT\"/>" else cls }
-            .joinToString("") + "<BR ALIGN=\"LEFT\"/>"
+    .joinToString("") + "<BR ALIGN=\"LEFT\"/>"
 
 fun List<SquashedGraphEdge>.allCalls(hidden: Boolean = false) = this
     .map{ it.allCalls(hidden) }

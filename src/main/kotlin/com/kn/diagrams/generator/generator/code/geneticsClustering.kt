@@ -12,7 +12,7 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
                               val parentSize:Int, val childSize:Int,
                               val crossoverRate:Double, val mutationRate:Double) {
 
-    fun ClusterDiagramContext.dependencyMatrix(): Array<IntArray> {
+    fun GeneticsClusterDiagramContext.dependencyMatrix(): Array<IntArray> {
 
         val nodes = baseEdges.flatMap { it.nodes() }.map { it.nameInCluster() }.distinct()
        val edgesBesser = baseEdges.flatMap { listOf(it.from()?.cluster()!! to it.cluster(), it.to()!!.cluster()!! to it.cluster()) }
@@ -46,7 +46,7 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
 
     }
-    fun getDependencyMatrix(c:ClusterDiagramContext): Array<IntArray>{
+    fun getDependencyMatrix(c:GeneticsClusterDiagramContext): Array<IntArray>{
 
         return c.dependencyMatrix()
     }
@@ -55,24 +55,33 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
         var nodesNb = nodes.size
 
-        var dependencyMatrix = arrayOf<IntArray>()
+        var dependencyMatrix = Array(nodesNb) { IntArray(nodesNb) }
 
-        for (i in 0 until nodesNb) {
+
+        if(nodesNb==0 || nodesNb<0)
+        {
+            throw NullPointerException("$nodesNb")
+        }
+
+        for (i in 0 until  nodesNb) {
 
             for (j in 0 until nodesNb) {
 
-                if (nodes[j] == edges[i].second &&
-                    nodes[i]== edges[i].first
-                    ||
-                    nodes[i] == edges[i].second &&
-                    nodes[j] == edges[i].first
+                for (k in edges) {
 
-                )
 
-                    dependencyMatrix[i][j] = 1
-                else
+                    if (nodes[j] == k.second &&
+                        nodes[i] == k.first
+                        ||
+                        nodes[i] == k.second &&
+                        nodes[j] == k.first
 
-                    dependencyMatrix[i][j] = 0
+                    )
+                        dependencyMatrix[i][j] = 1
+                    else
+
+                        dependencyMatrix[i][j] = 0
+                }
             }
         }
 
@@ -572,16 +581,17 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
     }
 
-fun ClusterDiagramContext.loadGeneticsClusters(): ClusterDefinition {
+fun GeneticsClusterDiagramContext.loadGeneticsClusters(): ClusterDefinition {
     val nodes = baseEdges.flatMap { it.nodes() }.map { it.nameInCluster() }.distinct()
-
-    val edges = baseEdges.flatMap { listOf(it.from()?.cluster()!! to it.cluster(), it.to()!!.cluster()!! to it.cluster()) }
+    val edges = baseEdges.flatMap { listOf((it.from()?.nameInCluster()) to (it.to()?.nameInCluster()) )}
+            as List<Pair<String, String>>
 
 
     File(".\\genetics_graph_${nodes.hashCode()}.txt")
         .createIfNotExists()
         .writeText(createGeneticsEdges(nodes))
 
+    //edgesToGeneticsClusters()
 
         with(configGenetics.details.LSSGA){
             return clusterByGenetic(GeneticConfig(
@@ -590,14 +600,15 @@ fun ClusterDiagramContext.loadGeneticsClusters(): ClusterDefinition {
                 childSize,
                 crossoverRate,
                 mutationRate
-            ), nodes,edges, GeneticsClustering(nodes,edges,iterations,parentSize,childSize,crossoverRate,mutationRate)
+            ), nodes,
+                edges , GeneticsClustering(nodes,edges,iterations,parentSize,childSize,crossoverRate,mutationRate)
             )
         }
     }
 
 
 
-fun ClusterDiagramContext.createGeneticsEdges(nodes: List<String>) = baseEdges.asSequence()
+fun GeneticsClusterDiagramContext.createGeneticsEdges(nodes: List<String>) = baseEdges.asSequence()
     .flatMap { sequenceOf(nodes.indexOf(it.from()!!.nameInCluster()) to nodes.indexOf(it.to()!!.nameInCluster()),
         nodes.indexOf(it.to()!!.nameInCluster()) to nodes.indexOf(it.from()!!.nameInCluster())) }
     .groupBy { it }
@@ -607,8 +618,10 @@ fun ClusterDiagramContext.createGeneticsEdges(nodes: List<String>) = baseEdges.a
     .joinToString("\n")
 
 // TODO unify with datastructure ClusterNode; add comment in config that services/dataclasses get balanced - configure the weight?
-fun ClusterDiagramContext.edgesToGeneticsClusters(): List<GeneticsCluster> {
-    with(visualConfig.projectClassification){
+
+fun GeneticsClusterDiagramContext.edgesToGeneticsClusters(): List<GeneticsCluster> {
+
+    with(geneticsVisualConfig.projectClassification){
         return baseEdges.flatMap { listOf(it.from()!! to it, it.to()!! to it) }
             .map { (node, edge) -> node.aggregate() to edge }
             .groupBy { (node, _) -> node.cluster() }
@@ -629,7 +642,6 @@ fun ClusterDiagramContext.edgesToGeneticsClusters(): List<GeneticsCluster> {
             }
     }
 }
-
 data class GeneticsCluster(val name: String, val dependenciesToOtherClusters: List<String>, val dataClasses: List<Any>, val serviceClasses: List<Any>){
 
     val dependenciesToOtherClustersCount = dependenciesToOtherClusters.size

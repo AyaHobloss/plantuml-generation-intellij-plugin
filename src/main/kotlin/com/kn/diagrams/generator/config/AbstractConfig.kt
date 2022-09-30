@@ -6,9 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.util.lang.UrlClassLoader
 import com.kn.diagrams.generator.cast
-import com.kn.diagrams.generator.graph.GraphRestrictionFilter
-import com.kn.diagrams.generator.graph.TraversalFilter
-import com.kn.diagrams.generator.graph.psiClassFromQualifiedName
+import com.kn.diagrams.generator.graph.*
 import com.kn.diagrams.generator.notifications.notifyError
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
@@ -17,12 +15,38 @@ import java.nio.file.Paths
 
 interface BaseDiagramConfiguration {
 
+
     var extensionCallbackMethod: String?
+
 
     fun restrictionFilter(): GraphRestrictionFilter
 
     fun brandWithRootNode(rootNodeId: String)
+
 }
+
+
+interface DiagramDetails {
+    @CommentWithEnumValues
+     var edgeMode: EdgeMode
+     var nodeSelection: NodeSelection
+    @CommentWithEnumValues
+     var nodeAggregation: ClusterAggregation
+    @CommentWithEnumValues
+     var visualization: ClusterVisualization
+    @CommentWithEnumValues
+     var clusteringAlgorithm: ClusterSource
+    //var leiden: LeidenParameters = LeidenParameters(),
+     var packageLevels: Int
+    @CommentWithValue("A->B->C + A->C then A->C is removed to reduce number of edges")
+     var removedTransientDependencies: Boolean
+    @CommentWithValue("Interface (componentA) -> Implementation (componentB) is shown with a red arrow: <-")
+     var showInvertedDependenciesExplicitly: Boolean
+    @CommentWithValue("only visible in SVGs")
+     var showCallsInEdgeToolTips: Boolean
+}
+
+
 
 val identityCallback: (String) -> String = { it }
 

@@ -62,14 +62,15 @@ fun typeOf(className: String) = sequenceOf(
             StructureConfiguration::class.java,
             FlowConfiguration::class.java,
             ClusterConfiguration::class.java,
+            GeneticsConfiguration::class.java,
             VcsConfiguration::class.java)
         .firstOrNull { it.simpleName == className }
 
 
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FIELD)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 annotation class CommentWithEnumValues
 
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FIELD)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 annotation class CommentWithValue(val value: String)

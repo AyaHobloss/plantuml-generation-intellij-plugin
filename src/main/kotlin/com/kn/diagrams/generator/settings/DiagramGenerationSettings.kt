@@ -19,6 +19,7 @@ class DiagramGenerationSettings : PersistentStateComponent<DiagramGenerationSett
     var structureDiagramDefaults = ""
     var flowDiagramDefaults = ""
     var clusterDiagramDefaults = ""
+    var geneticsDiagramDefaults = ""
 
     override fun getState(): DiagramGenerationSettings? {
         return this
@@ -55,7 +56,10 @@ class DiagramGenerationSettings : PersistentStateComponent<DiagramGenerationSett
                     settings.flowDiagramDefaults = toJsonWithComments(FlowConfigurationDefaults().defaulted())
                 }
                 if (StringUtils.isBlank(settings.clusterDiagramDefaults)) {
-                    settings.clusterDiagramDefaults = toJsonWithComments(FlowConfigurationDefaults().defaulted())
+                    settings.clusterDiagramDefaults = toJsonWithComments(ClusterConfigurationDefaults().defaulted())
+                }
+                if (StringUtils.isBlank(settings.geneticsDiagramDefaults)) {
+                    settings.geneticsDiagramDefaults = toJsonWithComments(GeneticsConfigurationDefaults().defaulted())
                 }
 
                 return settings

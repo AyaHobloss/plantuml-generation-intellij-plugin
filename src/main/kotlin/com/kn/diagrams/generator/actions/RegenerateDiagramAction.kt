@@ -46,6 +46,10 @@ open class RegenerateDiagramAction : AnAction() {
                     is ClusterConfiguration -> {
                         createClusterDiagramUmlContent(actionContext).firstOrNull()?.second
                     }
+                    is GeneticsConfiguration -> {
+                        createGeneticDiagramUmlContent(actionContext).firstOrNull()?.second
+                    }
+
                     is VcsConfiguration -> {
                         createVcsContent(actionContext).firstOrNull()?.second
                     }

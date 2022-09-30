@@ -17,7 +17,9 @@ fun createClusterDiagramUmlContent(actionContext: ActionContext): List<Pair<Stri
                     ClusterSource.Layer -> loadLayerClusters()
                     ClusterSource.Package -> loadPackageClusters()
                     ClusterSource.Leiden -> loadLeidenClusters()
-                    ClusterSource.None -> clusterRootNodes.clusterTo("cluster_0") // leave empty?
+                    ClusterSource.None -> clusterRootNodes.clusterTo("cluster_0")
+                   // leave empty?
+
                 } }
         // TODO visualization Node does not work with Layer/Package clustering
             }.buildNodeBasedDiagram {

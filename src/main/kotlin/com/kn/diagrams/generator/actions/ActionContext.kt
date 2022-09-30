@@ -46,6 +46,8 @@ open class ActionContext(val project: Project) {
 
     fun <C: BaseDiagramConfiguration> config(): C = config as C
 
+
+
 }
 
 class CallActionContext(project: Project, rootNodeIds: MutableList<String>, config: BaseDiagramConfiguration?, fileName: String?, pattern: (ActionContext.(GraphNode, Int) -> String)?): ActionContext(project, rootNodeIds, config, fileName, pattern)
