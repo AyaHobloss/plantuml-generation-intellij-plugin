@@ -276,6 +276,7 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
                     }
 
                 }
+                if(nachbar.size>0)
                 individual[i] = nachbar.random()
 
 

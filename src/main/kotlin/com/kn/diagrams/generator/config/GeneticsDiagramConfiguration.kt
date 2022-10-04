@@ -36,9 +36,9 @@ enum class GeneticsClusterAggregation { None, Class }
 
 
 class GeneticsParameters(
-    var iterations : Int=400,
-    var parentSize:Int=300,
-    var childSize:Int=300,
+    var iterations : Int=1000,
+    var parentSize:Int=1000,
+    var childSize:Int=2000,
     var crossoverRate: Double=0.04,
     var mutationRate: Double= 0.05,
 
