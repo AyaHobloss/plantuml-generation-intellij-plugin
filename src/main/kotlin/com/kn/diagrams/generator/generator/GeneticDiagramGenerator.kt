@@ -4,6 +4,7 @@ import com.kn.diagrams.generator.actions.ActionContext
 import com.kn.diagrams.generator.builder.addLink
 import com.kn.diagrams.generator.config.ClusterSourceGenetics
 import com.kn.diagrams.generator.config.GeneticsClusterVisualization
+import com.kn.diagrams.generator.config.GeneticsConfiguration
 import com.kn.diagrams.generator.generator.code.*
 import com.kn.diagrams.generator.graph.AnalyzeClass
 import com.kn.diagrams.generator.graph.AnalyzeMethod
@@ -11,16 +12,19 @@ import com.kn.diagrams.generator.graph.ClassReference
 
 
 fun createGeneticDiagramUmlContent(actionContext: ActionContext): List<Pair<String, String>> {
+
     return actionContext.createGeneticsClusterContext{
-        searchEdgesBySelectedNodes()
+        searchEdgesBySelectedNodesGenetics()
         geneticsClustering { algorithm -> when(algorithm){
-            ClusterSourceGenetics.Layer -> loadLayerClusters()
-            ClusterSourceGenetics.Package -> loadPackageClusters()
-            ClusterSourceGenetics.None -> geneticsRootNodes.clusterTo("cluster_0")
-            ClusterSourceGenetics.LSSGA -> loadGeneticsClusters()// leave empty?
+            ClusterSourceGenetics.Layer -> loadLayerClustersGenetics()
+            ClusterSourceGenetics.Package -> loadPackageClustersGenetics()
+            ClusterSourceGenetics.LSSGA -> loadGeneticsClusters()
+            ClusterSourceGenetics.None ->geneticsRootNodes.clusterToGenetics("cluster_0")
+            // leave empty?
+
         } }
         // TODO visualization Node does not work with Layer/Package clustering
-    }.buildNodeBasedDiagram {
+    }.buildNodeBasedDiagramGenetics {
         if(configGenetics.details.visualization == GeneticsClusterVisualization.Nodes){
             nodes.forEach { node ->
                 when (node) {
@@ -34,17 +38,17 @@ fun createGeneticDiagramUmlContent(actionContext: ActionContext): List<Pair<Stri
             edges.forEach { dot.addDirectLink(it, geneticsVisualConfig) }
         }else{
             // TODO generify, is it used anymore?! check presentation
-            visualizeGroupedByClustersSimplified()
+            visualizeGroupedByClustersSimplifiedGenetics()
         }
     }
-        .buildClusterAggregatedDiagram {
-            forEachNode { dot.nodes.add(this.toClusterDotNode()) }
+        .buildClusterAggregatedDiagramGenetics {
+            forEachNodeGenetics { dot.nodes.add(this.toClusterDotNodeGenetics()) }
 
-            forEachEdge {
+            forEachEdgeGenetics {
                 dot.addLink(from, to) {
                     // IMPROVE: find the GraphDirectedEdge (maybe hidden) between both clusters and count the context
                     if(configGenetics.details.showCallsInEdgeToolTips){
-                        tooltip = calls.allCalls(false)
+                        tooltip = calls.allCallsGenetics(false)
                     }
                     if(inverted){
                         label = "inverted calls =    " + calls.size // counts parallel edges only once!!
@@ -57,6 +61,23 @@ fun createGeneticDiagramUmlContent(actionContext: ActionContext): List<Pair<Stri
         }
         .Geneticsbuild()
 
+
 }
+
+
+fun GeneticsConfiguration.visualizationGeneticsConfig() = DiagramVisualizationConfiguration(
+    rootNode = null,
+    projectClassification,
+    details.packageLevels,
+    showClassGenericTypes = false,
+    showClassMethods = false,
+    showMethodParametersTypes = false,
+    showMethodParametersNames = false,
+    showMethodReturnType = false,
+    showCallOrder = false,
+    showDetailedClass = false
+)
+
+
 
 

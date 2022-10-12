@@ -26,25 +26,6 @@ interface BaseDiagramConfiguration {
 }
 
 
-interface DiagramDetails {
-    @CommentWithEnumValues
-     var edgeMode: EdgeMode
-     var nodeSelection: NodeSelection
-    @CommentWithEnumValues
-     var nodeAggregation: ClusterAggregation
-    @CommentWithEnumValues
-     var visualization: ClusterVisualization
-    @CommentWithEnumValues
-     var clusteringAlgorithm: ClusterSource
-    //var leiden: LeidenParameters = LeidenParameters(),
-     var packageLevels: Int
-    @CommentWithValue("A->B->C + A->C then A->C is removed to reduce number of edges")
-     var removedTransientDependencies: Boolean
-    @CommentWithValue("Interface (componentA) -> Implementation (componentB) is shown with a red arrow: <-")
-     var showInvertedDependenciesExplicitly: Boolean
-    @CommentWithValue("only visible in SVGs")
-     var showCallsInEdgeToolTips: Boolean
-}
 
 
 
