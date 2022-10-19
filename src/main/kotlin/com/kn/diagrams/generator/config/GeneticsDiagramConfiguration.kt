@@ -10,7 +10,7 @@ class GeneticsConfiguration(override var extensionCallbackMethod: String? = "",
     override fun restrictionFilter() = GraphRestrictionFilter(projectClassification, graphRestriction)
 
     override fun brandWithRootNode(rootNodeId: String) {
-        TODO("Not yet implemented")
+
     }
 
      fun traversalFilter() = GraphTraversalFilter(projectClassification, graphTraversal)
@@ -30,9 +30,9 @@ enum class GeneticsClusterVisualization{ Cluster, ClusterWithoutDetails, Nodes, 
 
 
 class GeneticsParameters(
-    var iterations : Int=3000,
-    var parentSize:Int=3000,
-    var childSize:Int=3000,
+    var iterations : Int=100,
+    var parentSize:Int=50,
+    var childSize:Int=50,
     var crossoverRate: Double=0.04,
     var mutationRate: Double= 0.05,
 

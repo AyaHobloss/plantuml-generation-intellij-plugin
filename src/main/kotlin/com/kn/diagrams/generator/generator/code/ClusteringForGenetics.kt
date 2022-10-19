@@ -161,7 +161,7 @@ open class GeneticsClusterDiagramContext(actionContext: ActionContext, init: Gen
     val geneticsRootNodes = geneticsCache.nodesForGeneticsClustering(configGenetics.traversalFilter(), configGenetics.details)
 
     val baseEdgesGenetics: MutableList<SquashedGraphEdge> = mutableListOf()
-    val geneticsClusterDefinition = GeneticsClusterDefinition()
+    open val geneticsClusterDefinition = GeneticsClusterDefinition()
 
 
     init {
@@ -188,8 +188,8 @@ open class GeneticsClusterDiagramContext(actionContext: ActionContext, init: Gen
 
     // TODO SimplifiedNodes have a lot of missing edges
     // TODO cluster definition is empty when optimization is used?!
-    private fun GraphNode.geneticsCluster() = geneticsClusterDefinition.geneticsCluster(nameInClusterGenetics()) ?: notReachable()
-    private fun ClassReference.geneticsCluster() = geneticsClusterDefinition.geneticsCluster(this.name) ?: notReachable()
+    private fun GraphNode.geneticsCluster() = geneticsClusterDefinition.geneticsCluster_def(nameInClusterGenetics()) ?: notReachable()
+    private fun ClassReference.geneticsCluster() = geneticsClusterDefinition.geneticsCluster_def(this.name) ?: notReachable()
     fun Any.geneticsCluster() = when(this){
         is GraphNode -> geneticsCluster()
         is ClassReference -> geneticsCluster()
@@ -408,7 +408,7 @@ class GeneticsClusterDefinition(existingMapping: Map<String, String> = emptyMap(
         mappingGenetics += other.mappingGenetics
     }
 
-    fun geneticsCluster(ofClassName: String?): String? {
+    fun geneticsCluster_def(ofClassName: String?): String? {
         if (ofClassName == null) return null
 
         return mappingGenetics[ofClassName]

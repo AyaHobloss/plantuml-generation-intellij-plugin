@@ -56,10 +56,10 @@ class DiagramGenerationSettings : PersistentStateComponent<DiagramGenerationSett
                     settings.flowDiagramDefaults = toJsonWithComments(FlowConfigurationDefaults().defaulted())
                 }
                 if (StringUtils.isBlank(settings.clusterDiagramDefaults)) {
-                    settings.clusterDiagramDefaults = toJsonWithComments(ClusterConfigurationDefaults().defaulted())
+                    settings.clusterDiagramDefaults = toJsonWithComments(FlowConfigurationDefaults().defaulted())
                 }
                 if (StringUtils.isBlank(settings.geneticsDiagramDefaults)) {
-                    settings.geneticsDiagramDefaults = toJsonWithComments(GeneticsConfigurationDefaults().defaulted())
+                    settings.geneticsDiagramDefaults = toJsonWithComments(FlowConfigurationDefaults().defaulted())
                 }
 
                 return settings

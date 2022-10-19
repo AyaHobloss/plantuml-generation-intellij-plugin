@@ -23,10 +23,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 
-import com.kn.diagrams.generator.actions.AbstractDiagramAction;
-import com.kn.diagrams.generator.actions.ActionContext;
-import com.kn.diagrams.generator.actions.DiagramActions;
-import com.kn.diagrams.generator.actions.GenerateFlowDiagramsActionKt;
+import com.kn.diagrams.generator.actions.*;
 import com.kn.diagrams.generator.config.*;
 import com.kn.diagrams.generator.graph.CallsFromStructure;
 import com.kn.diagrams.generator.graph.EdgeMode;
@@ -112,6 +109,8 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
     private JCheckBox structureShowClassGenericTypes;
     private JTextField diagramExtension;
 
+
+
     public DiagramGeneratorConfigurationToolWindow(Project project){
         this.project = project;
 
@@ -121,6 +120,7 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
 
         initCallDetailFields(defaults.getDetails());
         initStructureDetailFields(ConfigurationDefaults.Companion.structureDiagram().getDetails());
+
 
         registerRestrictionActions();
         registerTraversalActions();
@@ -137,6 +137,7 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
         generateCallDiagram.addActionListener(e -> performAction(DiagramActions.GenerateCallDiagramAction));
         generateStructureDiagram.addActionListener(e -> performAction(DiagramActions.GenerateStructureDiagramAction));
         generateFlowDiagram.addActionListener(e -> performAction(DiagramActions.GenerateFlowDiagramAction));
+
     }
 
     private void registerTraversalActions() {
@@ -146,7 +147,8 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
                 initTraversalFields(ConfigurationDefaults.Companion.structureDiagram().getGraphTraversal()));
         loadTraversalDefaultsFlowDiagram.addActionListener(e ->
                 initTraversalFields(ConfigurationDefaults.Companion.flowDiagram().getGraphTraversal()));
-    }
+
+     }
 
     private void registerRestrictionActions() {
         loadRestrictionDefaultsCallDiagram.addActionListener(e ->
@@ -155,6 +157,7 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
                 initRestrictionFields(ConfigurationDefaults.Companion.structureDiagram().getGraphRestriction()));
         loadRestrictionDefaultsFlowDiagram.addActionListener(e ->
                 initRestrictionFields(ConfigurationDefaults.Companion.flowDiagram().getGraphRestriction()));
+
     }
 
     private void initCallDetailFields(CallDiagramDetails details) {
@@ -316,6 +319,7 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
             initTraversalFields(flowConfiguration.getGraphTraversal());
         }
 
+
         diagramExtension.setText(loadedConfig.getExtensionCallbackMethod());
     }
 
@@ -341,6 +345,7 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
                     getTraversal());
         }
 
+
         configuration.setExtensionCallbackMethod(diagramExtension.getText());
 
         return configuration;
@@ -356,6 +361,8 @@ public class DiagramGeneratorConfigurationToolWindow extends JPanel{
         } else if(actionId == DiagramActions.GenerateFlowDiagramAction){
             actionContext = methodBasedContext(event, GenerateFlowDiagramsActionKt::hasTerminalAnnotation);
         }
+
+
         DiagramConfiguration diagramConfiguration = getDiagramConfiguration(actionId);
         actionContext.setConfig(diagramConfiguration);
 

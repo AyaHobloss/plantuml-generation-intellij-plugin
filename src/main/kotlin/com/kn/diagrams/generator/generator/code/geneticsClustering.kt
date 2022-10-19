@@ -7,6 +7,7 @@ import com.kn.diagrams.generator.createIfNotExists
 import com.kn.diagrams.generator.generator.containingClass
 import com.kn.diagrams.generator.throwExceptionIfCanceled
 import java.io.File
+import java.util.stream.IntStream
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -19,17 +20,9 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
 
     fun dependencyMatrix(nodes:List<String>,edges: List<Pair<String, String>>): Array<IntArray>{
-
+/*
         var nodesNb = nodes.size
 
-        if(nodes.size==0)
-        {
-            throw NullPointerException("kein nodes")
-        }
-        if(edges.size==0)
-        {
-            throw NullPointerException("kein edges")
-        }
         var dependencyMatrix = Array(nodesNb) { IntArray(nodesNb) }
 
         for (i in 0 until  nodesNb) {
@@ -37,7 +30,6 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
             for (j in 0 until nodesNb) {
 
                 for (k in edges) {
-
 
                     if (nodes[j] == k.second &&
                         nodes[i] == k.first
@@ -56,7 +48,38 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
         return dependencyMatrix
 
+
+ */
+
+        var nodesNb = nodes.size
+
+
+        var dependencyMatrix = Array(nodesNb) { IntArray(nodesNb) {0} }
+
+
+
+         var e = edges.groupBy ({ it.first},{it.second})
+
+        e.forEach { (edge, list) -> list.forEach { nachbar->
+
+            if(nodes.indexOf(edge)!=nodes.indexOf(nachbar)) {
+                dependencyMatrix[nodes.indexOf(edge)][nodes.indexOf(nachbar)] = 1
+                dependencyMatrix[nodes.indexOf(nachbar)] [nodes.indexOf(edge)] = 1
+            }
+
+        } }
+
+       /* edges.forEach { edge ->
+           // if(nodes.indexOf(edge.first)>0 && nodes.indexOf(edge.second)>0)
+            if(nodes.indexOf(edge.first)!=nodes.indexOf(edge.second))
+            dependencyMatrix[nodes.indexOf(edge.first)] [nodes.indexOf(edge.second)] = 1
+        }
+
+        */
+        return dependencyMatrix
+
     }
+
 
 
     fun degree(nodeIndex: Int, dependencyMatrix: Array<IntArray>): Int {
@@ -65,13 +88,13 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
     }
 
-    fun nodesNeighbors(dependencyMatrix: Array<IntArray>, nodesNb: Int): LinkedHashMap<Int, MutableList<Int>> {
-        val nodeNeighbors = LinkedHashMap<Int, MutableList<Int>>()
+   /* fun nodesNeighbors(dependencyMatrix: Array<IntArray>, nodesNb: Int): HashMap<Int, MutableList<Int>> {
+        val nodeNeighbors = HashMap<Int, MutableList<Int>>()
 
-        for (i in 0 until nodesNb) {
-            var neighbors = mutableListOf<Int>()
-
-            for (j in 0 until nodesNb) {
+        IntStream.range(0, nodesNb).parallel()
+            .forEach { i -> var neighbors = mutableListOf<Int>()
+                IntStream.range(0, nodesNb)
+                    .forEach { j ->
                 if (i != j) {
                     if (dependencyMatrix[i][j] == 1) {
                         neighbors.add(j)
@@ -86,176 +109,161 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
     }
 
-    fun structuralSimilarityMatrix(dependencyMatrix: Array<IntArray>, nodesNb: Int): Array<DoubleArray> {
+    */
 
+    fun structuralSimilarityMatrix(dependencyMatrix: Array<IntArray>, nodesNb: Int,nodeNeighbors : HashMap<Int, MutableList<Int>>): Array<DoubleArray> {
 
-        val structuralSimilarity = Array(nodesNb) { DoubleArray(nodesNb) }
+        var structsim = Array(nodesNb) { DoubleArray(nodesNb) {0.0} }
 
-        val nodeNeighbors = nodesNeighbors(dependencyMatrix, nodesNb)
-        var commonNeighbors: MutableList<Any>
+        dependencyMatrix.forEachIndexed { row, ints ->
+            ints.forEachIndexed { col, i ->
+                if (i == 1) {
+                    var commonNeighbors = mutableListOf<Int>()
 
+                    var c =
+                        nodeNeighbors[row]?.let { nodeNeighbors[col]?.intersect(it.toSet()) }
 
-        for (i in 0 until nodesNb) {
-            for (j in 0 until nodesNb) {
-                if (dependencyMatrix[i][j] == 1) {
+                    if (c != null) {
+                        if (c.isNotEmpty()) {
+                            commonNeighbors = c.toMutableList()
+                        } else {
+                            commonNeighbors.add(row)
+                            commonNeighbors.add(col)
 
-                    commonNeighbors =
-                        nodeNeighbors[j]?.let { nodeNeighbors[i]!!.intersect(it.toSet()) }!!.toMutableList()
-
-                    //  println("common$commonNeighbors")
-                    if (commonNeighbors.size == 0) {
-                        /*structuralSimilarity[i][j] = 0.0
-                    println("i$i  j$j")
-                    println(structuralSimilarity[i][j])
-                    */
-                        commonNeighbors = mutableListOf(i, j)
+                        }
                     }
-
 
                     var numerator = sumCommonNeighborsDegree(dependencyMatrix, commonNeighbors)
 
+                    var denominator = 0.0
 
-                    var denominator =
-                        (sumReciprocalNeighborDegree(
-                            dependencyMatrix,
-                            i, nodesNb
-                        ).pow(0.5)) * (sumReciprocalNeighborDegree(dependencyMatrix, j, nodesNb).pow(0.5))
+                    if (nodeNeighbors[row] != null && nodeNeighbors[col] != null) {
+                        denominator =
+                            (sumCommonNeighborsDegree(
+                                dependencyMatrix, nodeNeighbors[row]!!.toMutableList()
+                            ).pow(0.5)) * (sumCommonNeighborsDegree(
+                                dependencyMatrix,
+                                nodeNeighbors[col]!!.toMutableList()
+                            ).pow(
+                                0.5
+                            ))
+                    }
 
+                    if (denominator != 0.0)
+                        structsim[row][col] = numerator / denominator
 
-
-                    structuralSimilarity[i][j] = numerator / denominator
-                    /*println("i$i  j$j")
-                println(structuralSimilarity[i][j])
-               */
 
                 }
-
-
-                if (dependencyMatrix[i][j] == 0) {
-                    structuralSimilarity[i][j] = 0.0
-                    /* println("i$i  j$j")
-                 println(structuralSimilarity[i][j])
-                */
-                }
-
-
-
-                if (i == j) {
-                    structuralSimilarity[i][j] = 0.0
-                    /*  println("i$i  j$j")
-                  println(structuralSimilarity[i][j])
-               */
-                }
-
-
+            }
+        }
+                return structsim
             }
 
-        }
-
-
-        return structuralSimilarity
-    }
-
-    fun sumCommonNeighborsDegree(dependencyMatrix: Array<IntArray>, commonNeighbors: MutableList<Any>): Double {
+    fun sumCommonNeighborsDegree(dependencyMatrix: Array<IntArray>,commonNeighbors: MutableList<Int>): Double {
 
         var reciprocal = DoubleArray(commonNeighbors!!.size)
-        for (i in 0 until commonNeighbors!!.size) {
+
+        commonNeighbors.forEachIndexed {neighbor,Int ->
+            reciprocal[neighbor]= degree(neighbor.toString().toInt(),dependencyMatrix).toDouble().pow(-1)
+        }
+        return reciprocal.sum()
+
+    }
+
+    /*fun sumCommonNeighborsDegree(dependencyMatrix: Array<IntArray>, commonNeighbors: MutableList<Any>): Double {
+
+        var reciprocal = DoubleArray(commonNeighbors!!.size)
+        IntStream.range(0, commonNeighbors.size!!).parallel()
+            .forEach { i ->
             reciprocal[i] = degree(commonNeighbors[i].toString().toInt(), dependencyMatrix).toDouble().pow(-1)
         }
         return reciprocal.sum()
 
     }
 
-    fun sumReciprocalNeighborDegree(dependencyMatrix: Array<IntArray>, index: Int, nodesNb: Int): Double {
+     */
 
-        var nodeNeighbors = nodesNeighbors(dependencyMatrix, nodesNb)
-        var neighbors = nodeNeighbors[index]
+  /*  fun sumReciprocalNeighborDegree(dependencyMatrix: Array<IntArray>, index: Int,nodeNeighbors : HashMap<Int, MutableList<Int>>): Double {
 
-        var reciprocal = DoubleArray(neighbors!!.size)
-        for (i in 0 until neighbors!!.size) {
 
-            reciprocal[i] = degree(neighbors[i], dependencyMatrix).toDouble().pow(-1)
 
-        }
+        var neighbors= mutableListOf<Int>()
+
+        if(nodeNeighbors[index]!=null)
+             neighbors= nodeNeighbors[index]!!
+        else
+            return 0.0
+
+            var reciprocal = DoubleArray(neighbors!!.size)!!
+
+        IntStream.range(0, neighbors!!.size).parallel()
+            .forEach { i ->
+
+                reciprocal[i] = degree(neighbors[i], dependencyMatrix).toDouble().pow(-1)
+
+            }
+
 
         return reciprocal.sum()
     }
 
-    fun sumNeighborsSimilarity(index: Int, dependencyMatrix: Array<IntArray>, nodesNb: Int): Double {
+   */
 
-        val nodeNeighbors = nodesNeighbors(dependencyMatrix, nodesNb)
-        val structuralSimilarity = structuralSimilarityMatrix(dependencyMatrix, nodesNb)
+    fun sumNeighborsSimilarity(index: Int, dependencyMatrix: Array<IntArray>, nodesNb: Int,nodeNeighbors : HashMap<Int, MutableList<Int>>,structuralSimilarity:Array<DoubleArray>): Double {
+
 
         var neighbors = nodeNeighbors[index]
-        var similarity = DoubleArray(neighbors!!.size)
 
-        for (i in 0 until neighbors!!.size) {
-            similarity[i] = structuralSimilarity[index][neighbors[i]]
-        }
+        var d=0.0
+        if(neighbors!=null)
+        neighbors.forEach {  value ->
+            d+= structuralSimilarity[index][value]}
 
-        return similarity.sum()
 
+        return d
     }
 
 
-    fun rouletteWheelSelection(dependencyMatrix: Array<IntArray>, nodesNb: Int): Array<DoubleArray> {
+    fun rouletteWheelSelection(dependencyMatrix: Array<IntArray>, nodesNb: Int,nodeNeighbors : HashMap<Int, MutableList<Int>>,structuralSimilarity:Array<DoubleArray>): Array<DoubleArray> {
 
-        val roulette = Array(nodesNb) { DoubleArray(nodesNb) }
-        val structuralSimilarity = structuralSimilarityMatrix(dependencyMatrix, nodesNb)
+        val roulette = Array(nodesNb) { DoubleArray(nodesNb) {0.0} }
 
-        for (i in 0 until nodesNb) {
-            for (j in 0 until nodesNb) {
+        structuralSimilarity.forEachIndexed { row, ints -> ints.forEachIndexed { col, i ->
 
-                if (structuralSimilarity[i][j] == 0.0)
-                    roulette[i][j] = 0.0
-                else
-                    roulette[i][j] = structuralSimilarity[i][j] / sumNeighborsSimilarity(i, dependencyMatrix, nodesNb)
+            if(i!=0.0)
+            roulette[row][col]=i/sumNeighborsSimilarity(col, dependencyMatrix, nodesNb,nodeNeighbors,structuralSimilarity)
 
-            }
-
-        }
+        }}
 
         return roulette
     }
 
 
-    fun initialPopulation(parentSize: Int, dependencyMatrix: Array<IntArray>, nodesNb: Int): HashSet<IntArray> {
+    fun initialPopulation(parentSize: Int, dependencyMatrix: Array<IntArray>, nodesNb: Int,nodeNeighbors : HashMap<Int, MutableList<Int>>,structuralSimilarity: Array<DoubleArray>): HashSet<IntArray> {
 
         val population = HashSet<IntArray>()
 
-        val roulette = rouletteWheelSelection(dependencyMatrix, nodesNb)
+        val roulette = rouletteWheelSelection(dependencyMatrix,nodesNb,nodeNeighbors,structuralSimilarity)
 
         for (k in 0 until parentSize) {
-
             var individual = IntArray(nodesNb)
-
-
-            for (i in 0 until nodesNb) {
-
-                //alle nachbarn von node i in einem array um ein random nachbar auszuwählen
+            roulette.forEachIndexed { indexI, rows ->
                 var nachbar = mutableListOf<Int>()
-
-                for (j in 0 until nodesNb) {
-
-                    if (roulette[i][j] > 0.0) {
-
-                        nachbar.add(j)
-
+                rows.forEachIndexed { indexJ, value ->
+                    if(value!=0.0){
+                        nachbar.add(indexJ)
 
                     }
+                    if(nachbar.size>0) {
 
+                        individual[indexI] = nachbar.random()
+                    }
                 }
-                if(nachbar.size>0)
-                individual[i] = nachbar.random()
-
 
             }
 
-
             population.add(individual)
-            // println(population.elementAt(i).toMutableList())
         }
-
 
         return population
 
@@ -263,40 +271,17 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
     fun modularity(individual: IntArray, dependencyMatrix: Array<IntArray>, nodesNb: Int): Double {
 
-
-        var sumOfRows = IntArray(nodesNb)
-
-        for (i in 0 until nodesNb) {
-            sumOfRows[i] = dependencyMatrix[i].sum()
+        var m =0.0
+        dependencyMatrix.forEach {  ints ->
+            m+= ints.sum().toDouble()
         }
-        // hier meinen 2*m = sum of elements of the matrix
-        val m = sumOfRows.sum()
+        var s=0.0
+        individual.forEachIndexed { index, i ->
+            s+= 1-((degree(index, dependencyMatrix)*degree(i, dependencyMatrix)).div(m))
 
-        var modularity = 0.0
-
-        var md = mutableListOf<Double>()
-
-        for (i in 0 until nodesNb) {
-            for (j in 0 until nodesNb) {
-
-                if (individual[i] == j) {
-
-                    md.add(
-                        (dependencyMatrix[i][j] -
-                                ((degree(i, dependencyMatrix) * degree(j, dependencyMatrix)).toDouble().div(m)))
-                    )
-
-
-                } else
-                    md.add(0.0)
-
-
-            }
         }
-        modularity = md.sum()
 
-
-        return ((1.0.div(m)) * modularity)
+        return ((1.0.div(m))*s)
     }
 
     fun crossover(individual1: IntArray, individual2: IntArray): IntArray {
@@ -304,7 +289,9 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
         var randomArray = IntArray(individual1.size)
         var individual3 = IntArray(individual1.size)
 
-        for (i in 0 until individual1.size) {
+        IntStream.range(0, individual1.size).parallel()
+            .forEach { i ->
+
             randomArray[i] = Math.random().roundToInt()
 
             if (randomArray[i] == 0) {
@@ -323,7 +310,7 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
 
     fun encoding(individual: IntArray):IntArray{
-        var labels =IntArray(individual.size)
+       /* var labels =IntArray(individual.size)
 
         var communities= mutableListOf<MutableList<Int>>()
         var com1 = mutableListOf<Int>()
@@ -332,11 +319,11 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
         communities.add(com1)
         var com = mutableListOf<Int>()
 
-        for(k in 0 until communities.size)
-        {
+        IntStream.range(0, communities.size).parallel()
+            .forEach { k ->
 
-            for (i in 1 until individual.size)
-            {
+                IntStream.range(1, individual.size)
+                    .forEach { i ->
                 if(communities.elementAt(k).contains(i) || communities.elementAt(k).contains(individual[i]))
                 {
                     communities.elementAt(k).add(i)
@@ -361,10 +348,10 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
         }
 
 
-        for(i in 0 until individual.size)
-        {
-            for(j in 0 until communities.size)
-            {
+        IntStream.range(0, individual.size).parallel()
+            .forEach { i ->
+                IntStream.range(0, communities.size)
+                    .forEach { j ->
                 if(communities.elementAt(j).contains(individual[i]))
 
                     labels[i]=j+1
@@ -375,24 +362,116 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
 
         return labels
+
+        */
+      /*  var labels =IntArray(individual.size)
+
+        var communities= mutableListOf<MutableList<Int>>()
+
+        individual.forEachIndexed { index, i ->
+            var c = mutableListOf<Int>()
+            c.add(index)
+            c.add(individual[index])
+            communities.add(c)
+        }
+
+        outer@while(true) {
+            for (i in 0 until communities.size) {
+                if (i + 1 < communities.size) {
+                    var inter = communities.elementAt(i).intersect(communities.elementAt(i + 1).toSet())
+                    if (inter.isNotEmpty()) {
+                        var union = communities.elementAt(i).union(communities.elementAt(i + 1)).distinct()
+                        communities.remove(communities.elementAt(i))
+                        communities.add(i, union.toMutableList())
+                        communities.remove(communities.elementAt(i + 1))
+
+                        continue@outer
+
+                    }
+
+                }
+
+            }
+            break@outer
+        }
+
+        individual.forEachIndexed{indexI,  i -> communities.forEachIndexed { indexJ,com ->
+            if(com.contains(i)) {
+                labels[indexI] = indexJ
+            }
+        } }
+        return labels
+
+       */
+        var labels =IntArray(individual.size)
+
+        var communities= mutableListOf<MutableList<Int>>()
+
+        individual.forEachIndexed { index, i ->
+            var c = mutableListOf<Int>()
+            c.add(index)
+            c.add(individual[index])
+            communities.add(c)
+        }
+
+        var inter :Set<Int>
+        var union :MutableList<Int>
+        for(i in 0 until communities.size){
+            for (j in 0 until communities.size){
+                if (j<communities.size && i<communities.size && communities.elementAt(i)!=(communities.elementAt(j)) ) {
+
+                    inter = communities.elementAt(i).intersect(communities.elementAt(j))
+
+                    println(inter)
+                    if (inter.isNotEmpty()) {
+                        union =
+                            communities.elementAt(i).union(communities.elementAt(j)).distinct().toMutableList()
+
+                        communities.remove(communities.elementAt(i))
+                        communities.add(i,union)
+                        communities.remove(communities.elementAt(j))
+                        if(j-1>0 )
+                            communities.add(j,communities.elementAt(j-1))
+
+
+
+                    }}
+            }
+        }
+
+        individual.forEachIndexed{indexI,  i -> communities.forEachIndexed { indexJ,com ->
+            if(com.contains(i)) {
+                labels[indexI] = indexJ
+            }
+        } }
+
+
+        return labels
     }
-    fun LPLSS(individual: IntArray, dependencyMatrix: Array<IntArray>): IntArray {
+    fun LPLSS(individual: IntArray, dependencyMatrix: Array<IntArray>,nodeNeighbors : HashMap<Int, MutableList<Int>>,structSim: Array<DoubleArray>): IntArray {
 
         var mutatedC = individual
-        var structSim = structuralSimilarityMatrix(dependencyMatrix, individual.size)
+       // var structSim = structuralSimilarityMatrix(dependencyMatrix, individual.size,nodeNeighbors)
         var marginalGenes = mutableListOf<Int>()
-        for (i in individual.indices) {
+        /*IntStream.range(0, individual.size).parallel()
+            .forEach { i ->
             if (!individual.contains(i)) {
                 marginalGenes.add(i)
             }
 
         }
+
+         */
+        individual.forEachIndexed { index, i ->  if(! individual.contains(index))
+            marginalGenes.add(i)}
+
         if (marginalGenes.size != 0) {
-            var neighbors = nodesNeighbors(dependencyMatrix, individual.size)
+            var neighbors = nodeNeighbors
             var labels = encoding(individual)
             var neighLabels = mutableListOf<Int>()
 
-            for (i in 0 until marginalGenes.size) {
+            IntStream.range(0, marginalGenes.size)
+                .forEach { i ->
                 var n = neighbors[marginalGenes[i]]
                 if (n != null) {
 
@@ -414,7 +493,8 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
                     }
                     if (n.size > 2) {
                         var neighLabels = IntArray(n.size)
-                        for (j in 0 until n.size) {
+                        IntStream.range(0, n.size)
+                            .forEach { j ->
                             neighLabels[j] = labels[n[j]]
                         }
 
@@ -428,7 +508,8 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
                             .map { it.first }[0]
 
                         var neigMostLabel = mutableListOf<Int>()
-                        for (j in 0 until n.size) {
+                        IntStream.range(0, n.size)
+                            .forEach { j ->
                             if (labels[n[j]] == mostLabel)
 
                                 neigMostLabel.add(n[j])
@@ -439,7 +520,8 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
                             mutatedC[marginalGenes[i]] = neigMostLabel[0]
                         else {
                             var mostStruct = 0
-                            for (j in 0 until neigMostLabel.size - 1) {
+                            IntStream.range(0, neigMostLabel!!.size-1)
+                                .forEach { j ->
                                 if (structSim[marginalGenes[i]][neigMostLabel[j]]
                                     > structSim[marginalGenes[i]][neigMostLabel[j + 1]]
                                 )
@@ -474,17 +556,29 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
     ): Map<String, String> {
 
+
         var dependencyMatrix = dependencyMatrix(nodes, edges)
-        var structuralSimilarityMatrix = structuralSimilarityMatrix(dependencyMatrix, nodes.size)
 
-        var initialPopulation = initialPopulation(parentSize, dependencyMatrix, nodes.size)
+        val nodeNeighbors = HashMap<Int, MutableList<Int>>()
+        dependencyMatrix.forEachIndexed { row, ints ->
+            var n = mutableListOf<Int>()
+            ints.forEachIndexed { col, i ->
+                if(i==1) {
+                    n.add(col)
+                    nodeNeighbors[row] = n
+                }
+
+            } }
+        var structuralSimilarity= structuralSimilarityMatrix(dependencyMatrix,nodes.size,nodeNeighbors)
+        var initialPopulation = initialPopulation(parentSize, dependencyMatrix, nodes.size, nodeNeighbors,structuralSimilarity )
 
 
 
-        for (g in 1..iterations) {
+        for(g in 0 until iterations){
             var childPopulation = HashSet<IntArray>()
 
-            for (i in 1..childSize) {
+                IntStream.range(1, childSize)
+                    .forEach { i ->
                 var chromo = IntArray(nodes.size)
 
 
@@ -498,7 +592,7 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
                 }
 
-                var C = LPLSS(chromo, dependencyMatrix)
+                var C = LPLSS(chromo, dependencyMatrix,nodeNeighbors,structuralSimilarity)
                 childPopulation.add(C)
 
             }
@@ -528,10 +622,15 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
         var nodeMLabel = mutableMapOf<String, String>()
 
-        for (i in 0 until nodes.size) {
+        labels.forEachIndexed { index, i -> nodeMLabel[nodes[index]]= "Cluster_$i" }
+
+      /*  IntStream.range(0, nodes.size).parallel()
+            .forEach { i ->
             nodeMLabel[nodes[i]] = "Cluster_${labels[i]}"
 
         }
+
+       */
 
 
         return nodeMLabel.toMap()
@@ -568,6 +667,8 @@ fun variateGenetics(variation: GeneticsParametersVariation): List<GeneticConfig>
     return configs.toList()
 }
 
+
+
     data class GeneticConfig(val iterations:Int,
                              val parentSize:Int, val childSize:Int,
                              val crossoverRate:Double, val mutationRate:Double)
@@ -579,9 +680,13 @@ fun variateGenetics(variation: GeneticsParametersVariation): List<GeneticConfig>
         genetic:GeneticsClustering
     ): GeneticsClusterDefinition {
 
-       return GeneticsClusterDefinition(genetic.LSSGA(nodes,edges,
-           config.iterations,config.parentSize,config.childSize,
-           config.crossoverRate,config.mutationRate))
+       return GeneticsClusterDefinition(
+           genetic.LSSGA(
+               nodes, edges,
+               config.iterations, config.parentSize, config.childSize,
+               config.crossoverRate, config.mutationRate
+           )
+       )
 
     }
 
