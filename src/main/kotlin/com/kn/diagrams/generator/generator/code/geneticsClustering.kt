@@ -403,7 +403,7 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
         return labels
 
        */
-        var labels =IntArray(individual.size)
+    /*    var labels =IntArray(individual.size)
 
         var communities= mutableListOf<MutableList<Int>>()
 
@@ -416,13 +416,14 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
         var inter :Set<Int>
         var union :MutableList<Int>
-        for(i in 0 until communities.size){
-            for (j in 0 until communities.size){
+        IntStream.range(0, communities.size)
+            .forEach { i ->
+                IntStream.range(0, communities.size)
+                    .forEach { j ->
                 if (j<communities.size && i<communities.size && communities.elementAt(i)!=(communities.elementAt(j)) ) {
 
                     inter = communities.elementAt(i).intersect(communities.elementAt(j))
 
-                    println(inter)
                     if (inter.isNotEmpty()) {
                         union =
                             communities.elementAt(i).union(communities.elementAt(j)).distinct().toMutableList()
@@ -445,6 +446,25 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
             }
         } }
 
+
+        return labels
+
+     */
+
+        var labels =IntArray(individual.size)
+
+
+        individual.forEachIndexed() { i,c->
+            individual.forEachIndexed { j,m->
+                if(c==m)
+                {
+                    labels[i]=i
+                    labels[j]=i
+                    labels[c]=i
+                    labels[m]=i
+                }
+            }
+        }
 
         return labels
     }
