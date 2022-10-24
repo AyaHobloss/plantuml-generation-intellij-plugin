@@ -1,17 +1,13 @@
 package com.kn.diagrams.generator.generator.code
 
 
-import com.kn.diagrams.generator.config.GeneticsParametersVariation
-import com.kn.diagrams.generator.config.serializer
+//import com.kn.diagrams.generator.config.GeneticsParametersVariation
 import com.kn.diagrams.generator.createIfNotExists
 import com.kn.diagrams.generator.generator.containingClass
-import com.kn.diagrams.generator.throwExceptionIfCanceled
 import java.io.File
 import java.util.stream.IntStream
 import kotlin.math.pow
 import kotlin.math.roundToInt
-import kotlin.math.sqrt
-import kotlin.streams.toList
 
 
 data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String, String>>,val iterations:Int,
@@ -458,10 +454,10 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
             individual.forEachIndexed { j,m->
                 if(c==m)
                 {
-                    labels[i]=i
-                    labels[j]=i
-                    labels[c]=i
-                    labels[m]=i
+                    labels[i]=nodes.size-i
+                    labels[j]=nodes.size-i
+                    labels[c]=nodes.size-i
+                    labels[m]=nodes.size-i
                 }
             }
         }
@@ -574,7 +570,7 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
         crossoverRate: Double,
         mutationRate: Double,
 
-    ): Map<String, String> {
+        ): Map<String, String> {
 
 
         var dependencyMatrix = dependencyMatrix(nodes, edges)
@@ -583,39 +579,41 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
         dependencyMatrix.forEachIndexed { row, ints ->
             var n = mutableListOf<Int>()
             ints.forEachIndexed { col, i ->
-                if(i==1) {
+                if (i == 1) {
                     n.add(col)
                     nodeNeighbors[row] = n
                 }
 
-            } }
-        var structuralSimilarity= structuralSimilarityMatrix(dependencyMatrix,nodes.size,nodeNeighbors)
-        var initialPopulation = initialPopulation(parentSize, dependencyMatrix, nodes.size, nodeNeighbors,structuralSimilarity )
+            }
+        }
+        var structuralSimilarity = structuralSimilarityMatrix(dependencyMatrix, nodes.size, nodeNeighbors)
+        var initialPopulation =
+            initialPopulation(parentSize, dependencyMatrix, nodes.size, nodeNeighbors, structuralSimilarity)
 
 
 
-        for(g in 0 until iterations){
+        for (g in 0 until iterations) {
             var childPopulation = HashSet<IntArray>()
 
-                IntStream.range(1, childSize)
-                    .forEach { i ->
-                var chromo = IntArray(nodes.size)
+            IntStream.range(1, childSize)
+                .forEach { i ->
+                    var chromo = IntArray(nodes.size)
 
 
-                var individual1 = initialPopulation.random()
-                var individual2 = initialPopulation.random()
+                    var individual1 = initialPopulation.random()
+                    var individual2 = initialPopulation.random()
 
-                if (modularity(individual1, dependencyMatrix, nodes.size) != 0.0 &&
-                    modularity(individual2, dependencyMatrix, nodes.size) != 0.0
-                ) {
-                    chromo = crossover(individual1, individual2)
+                    if (modularity(individual1, dependencyMatrix, nodes.size) != 0.0 &&
+                        modularity(individual2, dependencyMatrix, nodes.size) != 0.0
+                    ) {
+                        chromo = crossover(individual1, individual2)
+
+                    }
+
+                    var C = LPLSS(chromo, dependencyMatrix, nodeNeighbors, structuralSimilarity)
+                    childPopulation.add(C)
 
                 }
-
-                var C = LPLSS(chromo, dependencyMatrix,nodeNeighbors,structuralSimilarity)
-                childPopulation.add(C)
-
-            }
             initialPopulation.addAll(childPopulation)
 
             var rankedPopulation = initialPopulation.toList()
@@ -642,17 +640,23 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
         var nodeMLabel = mutableMapOf<String, String>()
 
-        labels.forEachIndexed { index, i -> nodeMLabel[nodes[index]]= "Cluster_$i" }
+        labels.forEachIndexed { index, i -> nodeMLabel[nodes[index]] = "Cluster_$i" }
 
-      /*  IntStream.range(0, nodes.size).parallel()
+        /*  IntStream.range(0, nodes.size).parallel()
             .forEach { i ->
             nodeMLabel[nodes[i]] = "Cluster_${labels[i]}"
 
         }
 
        */
+/* Cluster Anzahl
+var x= nodeMLabel.toList()
+        var y= nodeMLabel.values.toList()
+  var c = y.toList().groupBy { it }.mapValues { it.value.size }.toList().sortedByDescending { (_, value) -> value }
+      .toMap()
 
 
+ */
         return nodeMLabel.toMap()
 
 
@@ -660,7 +664,7 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
 
 }
-data class GeneticsConfigVariation(var iteration: List<Int>, var parentSize: List<Int>, var childSize: List<Int>, var crossoverRate: List<Double>, var mutationRate: List<Double>){
+/*data class GeneticsConfigVariation(var iteration: List<Int>, var parentSize: List<Int>, var childSize: List<Int>, var crossoverRate: List<Double>, var mutationRate: List<Double>){
     constructor() : this(emptyList(), emptyList(), emptyList(), emptyList(), emptyList())
 }
 fun variateGenetics(variation: GeneticsParametersVariation): List<GeneticConfig> {
@@ -688,6 +692,8 @@ fun variateGenetics(variation: GeneticsParametersVariation): List<GeneticConfig>
 }
 
 
+
+ */
 
     data class GeneticConfig(val iterations:Int,
                              val parentSize:Int, val childSize:Int,
@@ -721,7 +727,7 @@ fun GeneticsClusterDiagramContext.loadGeneticsClusters(): GeneticsClusterDefinit
         .createIfNotExists()
         .writeText(createGeneticsEdges(nodes))
 
-    if (configGenetics.details.LSSGA.geneticsOptimizeClusterDistribution) {
+    /* if (configGenetics.details.LSSGA.geneticsOptimizeClusterDistribution) {
         val bestClusters = variateGenetics(configGenetics.details.LSSGA.geneticsOptimization).parallelStream()
             .map {
                 throwExceptionIfCanceled()
@@ -775,6 +781,8 @@ fun GeneticsClusterDiagramContext.loadGeneticsClusters(): GeneticsClusterDefinit
     }
 }
 
+    */
+
     /*val c = configGenetics.details.LSSGA
     val gc = GeneticConfig(c.iterations,c.parentSize,c.childSize,c.crossoverRate,c.mutationRate)
     val g = GeneticsClustering(nodes, edges, c.iterations, c.parentSize, c.childSize, c.crossoverRate, c.mutationRate)
@@ -783,22 +791,22 @@ fun GeneticsClusterDiagramContext.loadGeneticsClusters(): GeneticsClusterDefinit
     return cg
 
      */
-       /* with(configGenetics.details.LSSGA) {
-            return clusterByGenetic(
-                GeneticConfig(
-                    iterations,
-                    parentSize,
-                    childSize,
-                    crossoverRate,
-                    mutationRate
-                ), nodes,
-                edges, GeneticsClustering(nodes, edges, iterations, parentSize, childSize, crossoverRate, mutationRate)
-            )
-        }
+    with(configGenetics.details.LSSGA) {
+        return clusterByGenetic(
+            GeneticConfig(
+                iterations,
+                parentSize,
+                childSize,
+                crossoverRate,
+                mutationRate
+            ), nodes,
+            edges, GeneticsClustering(nodes, edges, iterations, parentSize, childSize, crossoverRate, mutationRate)
+        )
+    }
 
-        */
+}
 
-fun scoreGenetics(clusters: List<GeneticsCluster>): Double{
+/*fun scoreGenetics(clusters: List<GeneticsCluster>): Double{
     val openClusters = clusters.filterNot { it.encapsulated() }
     val averageDependencies = openClusters.map { it.dependenciesToOtherClustersCount }.average()
     val averageDeviation = openClusters.map { it.dependenciesToOtherClustersCount }.standardDeviationGenetics()
@@ -822,8 +830,9 @@ fun List<Int>.standardDeviationGenetics(): Double {
     return sqrt(standardDeviation / size)
 }
 
+ */
 
-    fun GeneticsClusterDiagramContext.createGeneticsEdges(nodes: List<String>) = baseEdgesGenetics.asSequence()
+fun GeneticsClusterDiagramContext.createGeneticsEdges(nodes: List<String>) = baseEdgesGenetics.asSequence()
         .flatMap {
             sequenceOf(
                 nodes.indexOf(it.from()!!.nameInClusterGenetics()) to nodes.indexOf(it.to()!!.nameInClusterGenetics()),
@@ -872,10 +881,12 @@ fun List<Int>.standardDeviationGenetics(): Double {
         val serviceClasses: List<Any>
     ) {
 
-        val dependenciesToOtherClustersCount = dependenciesToOtherClusters.size
+       /* val dependenciesToOtherClustersCount = dependenciesToOtherClusters.size
 
         fun encapsulated() = dependenciesToOtherClustersCount == 0
 
+
+        */
     }
 
 

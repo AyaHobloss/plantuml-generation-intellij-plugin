@@ -30,22 +30,24 @@ enum class GeneticsClusterVisualization{ Cluster, ClusterWithoutDetails, Nodes, 
 
 
 class GeneticsParameters(
-    var iterations : Int=100,
-    var parentSize:Int=50,
-    var childSize:Int=50,
+    var iterations : Int=10,
+    var parentSize:Int=10,
+    var childSize:Int=10,
     var crossoverRate: Double=0.04,
     var mutationRate: Double= 0.05,
-
+/*
     @CommentWithValue("goal: min(average cluster dependencies * standard deviation of cluster dependencies) - clusters should be encapsulated and equal sized to avoid one mega cluster")
     var geneticsOptimizeClusterDistribution: Boolean = false,
     var geneticsOptimization: GeneticsParametersVariation = GeneticsParametersVariation(),
 
 
+ */
+
 )
 
 
 
-class GeneticsParametersVariation(
+/*class GeneticsParametersVariation(
     var iterations: List<Int> = listOf(200,300,400,1000,5000),
     var parentsize: List<Int> = listOf(1000,2000),
     var childSize: List<Int> = listOf(1000,2000),
@@ -53,13 +55,15 @@ class GeneticsParametersVariation(
     var mutationRate: List<Double> = listOf(0.01, 0.1, 0.3),
 )
 
+ */
+
 
 
 enum class GeneticsClusterAggregation { None, Class }
 
 class GeneticsDiagramDetails(
     @CommentWithEnumValues
-    var edgeMode: EdgeMode = EdgeMode.MethodsOnly,
+    var edgeMode: EdgeMode = EdgeMode.TypesAndMethods,
     var nodeSelectionG: NodeSelectionG = NodeSelectionG(),
     @CommentWithEnumValues
     var nodeAggregation: GeneticsClusterAggregation = GeneticsClusterAggregation.Class,
