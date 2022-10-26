@@ -14,6 +14,7 @@ import com.kn.diagrams.generator.generator.*
 import com.kn.diagrams.generator.graph.*
 import com.kn.diagrams.generator.notReachable
 import java.util.*
+import java.util.stream.IntStream
 import kotlin.math.min
 
 fun ActionContext.createClusterContext(init: ClusterDiagramContext.() -> Unit): ClusterDiagramContext = when(config<ClusterConfiguration>().details.visualization){
@@ -155,6 +156,9 @@ open class ClusterDiagramContext(actionContext: ActionContext, init: ClusterDiag
 
     val baseEdges: MutableList<SquashedGraphEdge> = mutableListOf()
     val clusterDefinition = ClusterDefinition()
+
+
+
 
     init {
         init(this)

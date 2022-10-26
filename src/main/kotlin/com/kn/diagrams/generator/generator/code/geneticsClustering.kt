@@ -10,10 +10,7 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 
 
-data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String, String>>,val iterations:Int,
-                              val parentSize:Int, val childSize:Int,
-                              val crossoverRate:Double, val mutationRate:Double) {
-
+ class GeneticsClustering() {
 
     fun dependencyMatrix(nodes:List<String>,edges: List<Pair<String, String>>): Array<IntArray>{
 /*
@@ -265,18 +262,28 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
     }
 
-    fun modularity(individual: IntArray, dependencyMatrix: Array<IntArray>, nodesNb: Int): Double {
+    fun modularity(individual: IntArray, dependencyMatrix: Array<IntArray>): Double {
 
         var m =0.0
         dependencyMatrix.forEach {  ints ->
             m+= ints.sum().toDouble()
         }
-        var s=0.0
+      /*  var s=0.0
         individual.forEachIndexed { index, i ->
             s+= 1-((degree(index, dependencyMatrix)*degree(i, dependencyMatrix)).div(m))
 
         }
+       */
+        var labels= encoding(individual)
+        var s=0.0
+        dependencyMatrix.forEachIndexed { i, ints -> ints.forEachIndexed { j, k ->
 
+            if(labels[i]==labels[j] && i!=j) {
+                s+=k-((degree(i, dependencyMatrix) * degree(j, dependencyMatrix)).div(m))
+            }
+
+
+        }  }
         return ((1.0.div(m))*s)
     }
 
@@ -454,10 +461,10 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
             individual.forEachIndexed { j,m->
                 if(c==m)
                 {
-                    labels[i]=nodes.size-i
-                    labels[j]=nodes.size-i
-                    labels[c]=nodes.size-i
-                    labels[m]=nodes.size-i
+                    labels[i]=individual.size-i
+                    labels[j]=individual.size-i
+                    labels[c]=individual.size-i
+                    labels[m]=individual.size-i
                 }
             }
         }
@@ -592,10 +599,11 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
 
 
-        for (g in 0 until iterations) {
+        IntStream.range(0, iterations)
+            .forEach { g ->
             var childPopulation = HashSet<IntArray>()
 
-            IntStream.range(1, childSize)
+            IntStream.range(0, childSize)
                 .forEach { i ->
                     var chromo = IntArray(nodes.size)
 
@@ -603,8 +611,8 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
                     var individual1 = initialPopulation.random()
                     var individual2 = initialPopulation.random()
 
-                    if (modularity(individual1, dependencyMatrix, nodes.size) != 0.0 &&
-                        modularity(individual2, dependencyMatrix, nodes.size) != 0.0
+                    if (modularity(individual1, dependencyMatrix) != 0.0 &&
+                        modularity(individual2, dependencyMatrix) != 0.0
                     ) {
                         chromo = crossover(individual1, individual2)
 
@@ -617,7 +625,7 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
             initialPopulation.addAll(childPopulation)
 
             var rankedPopulation = initialPopulation.toList()
-                .map { modularity(it, dependencyMatrix, nodes.size) to it }
+                .map { modularity(it, dependencyMatrix) to it }
                 .sortedByDescending { it.first }
                 .take(parentSize)
                 .map { it.second }
@@ -630,12 +638,13 @@ data class GeneticsClustering(val nodes:List<String>, val edges:List<Pair<String
 
 
         var bestIndividuals = initialPopulation.toList()
-            .map { modularity(it, dependencyMatrix, nodes.size) to it }
+            .map { modularity(it, dependencyMatrix) to it }
             .sortedByDescending { it.first }
             .take(1)
             .map { it.second }[0]
 
 
+        var algoModularity= modularity(bestIndividuals,dependencyMatrix)
         var labels = encoding(bestIndividuals)
 
         var nodeMLabel = mutableMapOf<String, String>()
@@ -800,7 +809,7 @@ fun GeneticsClusterDiagramContext.loadGeneticsClusters(): GeneticsClusterDefinit
                 crossoverRate,
                 mutationRate
             ), nodes,
-            edges, GeneticsClustering(nodes, edges, iterations, parentSize, childSize, crossoverRate, mutationRate)
+            edges, GeneticsClustering()
         )
     }
 

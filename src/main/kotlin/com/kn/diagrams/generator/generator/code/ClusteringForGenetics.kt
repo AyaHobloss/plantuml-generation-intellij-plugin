@@ -51,6 +51,7 @@ class GeneticsClusterBuildingContext(actionContext: ActionContext, init: Genetic
         .entries.map { GeneticsClusterNode(this, it) }
     val edges: List<GeneticsClusterEdge>
 
+
     init {
         val clustersToEdges: Map<String, List<SquashedGraphEdge>> = baseEdgesGenetics
             .filter { it.from()!!.geneticsCluster() != it.to()!!.geneticsCluster() }
