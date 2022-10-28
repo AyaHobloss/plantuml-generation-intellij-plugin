@@ -63,6 +63,7 @@ class ClusterDiagramDetails(
     @CommentWithEnumValues
     var clusteringAlgorithm: ClusterSource = ClusterSource.Leiden,
     var leiden: LeidenParameters = LeidenParameters(),
+    var Modularity:Double=0.0,
     var packageLevels: Int = 1,
     @CommentWithValue("A->B->C + A->C then A->C is removed to reduce number of edges")
     var removedTransientDependencies: Boolean = false,

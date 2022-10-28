@@ -1,5 +1,6 @@
 package com.kn.diagrams.generator.generator.code
 
+
 import com.kn.diagrams.generator.config.LeidenParametersVariation
 import com.kn.diagrams.generator.config.serializer
 import com.kn.diagrams.generator.createIfNotExists
@@ -44,6 +45,9 @@ fun ClusterDiagramContext.loadLeidenClusters(): ClusterDefinition {
 
         val bestConfig = bestClusters.first().first
 
+
+
+
         with(config.details.leiden){
             iterations = bestConfig.iterations
             minimumNodesPerCluster = bestConfig.minNodes
@@ -61,13 +65,17 @@ fun ClusterDiagramContext.loadLeidenClusters(): ClusterDefinition {
         ), nodes)
     } else {
         with(config.details.leiden){
-            return clusterByLeiden(LeidenConfig(
-                    resolution,
-                    randomStarts,
-                    iterations,
-                    minimumNodesPerCluster,
-                    randomness
+            val f = clusterByLeiden(LeidenConfig(
+                resolution,
+                randomStarts,
+                iterations,
+                minimumNodesPerCluster,
+                randomness
             ), nodes)
+            modularity()
+            config.details.Modularity= modularity()
+            return f
+
         }
     }
 }
@@ -84,6 +92,7 @@ fun ClusterDiagramContext.createLeidenEdges(nodes: List<String>) = baseEdges.asS
 
 // TODO unify with datastructure ClusterNode; add comment in config that services/dataclasses get balanced - configure the weight?
 fun ClusterDiagramContext.edgesToClusters(): List<LeidenCluster> {
+
     with(visualConfig.projectClassification){
         return baseEdges.flatMap { listOf(it.from()!! to it, it.to()!! to it) }
                 .map { (node, edge) -> node.aggregate() to edge }
@@ -139,6 +148,7 @@ fun variate(variation: LeidenParametersVariation): List<LeidenConfig> {
     return configs.toList()
 }
 
+var c= mapOf<String,String>()
 fun clusterByLeiden(
         config: LeidenConfig,
         nodes: List<String>
@@ -168,8 +178,41 @@ fun clusterByLeiden(
             .map { it.split("\t") }
             .map { (nodeIndex, cluster) -> nodes[nodeIndex.toInt()] to "cluster_$cluster" }
             .toMap()
+c=clusters
     return ClusterDefinition(clusters)
 }
+
+fun ClusterDiagramContext.modularity():Double {
+    val nodes = baseEdges.flatMap { it.nodes() }.map { it.nameInCluster() }.distinct()
+    val edges =baseEdges.flatMap { listOf((it.from()?.nameInCluster()) to (it.to()?.nameInCluster())) }
+            as List<Pair<String, String>>
+
+    val d= GeneticsClustering()
+    var dependencyMatrix= d.dependencyMatrix(nodes, edges)
+    var m =0.0
+
+    dependencyMatrix.forEach {  ints ->
+        m+= ints.sum().toDouble()
+    }
+
+
+    var s=0.0
+
+        dependencyMatrix.forEachIndexed { i, ints -> ints.forEachIndexed { j, k ->
+
+            if(c.getValue(nodes[i])==c.getValue(nodes[j]))
+                s+=k-((d.degree(i, dependencyMatrix) * d.degree(j, dependencyMatrix)).div(m))
+            }
+
+        }
+
+    var x=((1.0.div(m))*s)
+
+    return ((1.0.div(m))*s)
+
+}
+
+
 
 
 fun score(clusters: List<LeidenCluster>): Double{

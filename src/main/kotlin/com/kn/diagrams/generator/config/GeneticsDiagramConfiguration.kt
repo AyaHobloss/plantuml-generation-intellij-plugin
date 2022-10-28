@@ -72,6 +72,7 @@ class GeneticsDiagramDetails(
     @CommentWithEnumValues
     var clusteringAlgorithm: ClusterSourceGenetics = ClusterSourceGenetics.LSSGA,
     var LSSGA: GeneticsParameters = GeneticsParameters(),
+    var Modularity:Double=0.0,
     var packageLevels: Int = 1,
     @CommentWithValue("A->B->C + A->C then A->C is removed to reduce number of edges")
     var removedTransientDependencies: Boolean = false,

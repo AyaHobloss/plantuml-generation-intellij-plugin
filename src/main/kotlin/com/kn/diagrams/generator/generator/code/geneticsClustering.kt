@@ -566,7 +566,7 @@ import kotlin.math.roundToInt
         return mutatedC
     }
 
-
+data class Result(val nodeMLabel:Map<String,String>, val modularity:Double)
     fun LSSGA(
         nodes: List<String>,
         edges: List<Pair<String, String>>,
@@ -577,7 +577,7 @@ import kotlin.math.roundToInt
         crossoverRate: Double,
         mutationRate: Double,
 
-        ): Map<String, String> {
+        ):Result {
 
 
         var dependencyMatrix = dependencyMatrix(nodes, edges)
@@ -645,6 +645,7 @@ import kotlin.math.roundToInt
 
 
         var algoModularity= modularity(bestIndividuals,dependencyMatrix)
+
         var labels = encoding(bestIndividuals)
 
         var nodeMLabel = mutableMapOf<String, String>()
@@ -666,7 +667,7 @@ var x= nodeMLabel.toList()
 
 
  */
-        return nodeMLabel.toMap()
+        return Result(nodeMLabel.toMap(),algoModularity)
 
 
     }
@@ -720,7 +721,7 @@ fun variateGenetics(variation: GeneticsParametersVariation): List<GeneticConfig>
                nodes, edges,
                config.iterations, config.parentSize, config.childSize,
                config.crossoverRate, config.mutationRate
-           )
+           ).nodeMLabel
        )
 
     }
@@ -800,6 +801,9 @@ fun GeneticsClusterDiagramContext.loadGeneticsClusters(): GeneticsClusterDefinit
     return cg
 
      */
+    with(configGenetics.details.LSSGA) {
+        configGenetics.details.Modularity = GeneticsClustering().LSSGA(nodes, edges, iterations, parentSize, childSize, crossoverRate, mutationRate).modularity
+    }
     with(configGenetics.details.LSSGA) {
         return clusterByGenetic(
             GeneticConfig(
