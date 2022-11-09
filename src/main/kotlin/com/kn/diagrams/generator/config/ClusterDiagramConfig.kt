@@ -35,7 +35,7 @@ class LeidenParameters(
     var randomStarts: Int = 1,
     @CommentWithValue("more iterations produce smaller clusters")
     var iterations: Int = 10,
-    var minimumNodesPerCluster: Int = 1,
+    var minimumNodesPerCluster: Int = 50,
 
     @CommentWithValue("goal: min(average cluster dependencies * standard deviation of cluster dependencies) - clusters should be encapsulated and equal sized to avoid one mega cluster")
     var optimizeClusterDistribution: Boolean = false,
@@ -47,7 +47,7 @@ class LeidenParametersVariation(
     var randomness: List<Double> = listOf(0.01, 0.1, 0.3),
     var randomStarts: List<Int> = listOf(1,5),
     var iterations: List<Int> = listOf(1,2,3,4,5,8,12,14,18,25),
-    var minimumNodesPerCluster: List<Int> = listOf(5, 10, 20),
+    var minimumNodesPerCluster: List<Int> = listOf(70, 70, 70),
 )
 
 enum class ClusterAggregation { None, Class }
@@ -64,6 +64,7 @@ class ClusterDiagramDetails(
     var clusteringAlgorithm: ClusterSource = ClusterSource.Leiden,
     var leiden: LeidenParameters = LeidenParameters(),
     var Modularity:Double=0.0,
+    var clustergroesse: List<Int> = listOf(),
     var packageLevels: Int = 1,
     @CommentWithValue("A->B->C + A->C then A->C is removed to reduce number of edges")
     var removedTransientDependencies: Boolean = false,

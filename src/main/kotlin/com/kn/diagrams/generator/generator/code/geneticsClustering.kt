@@ -667,13 +667,22 @@ var x= nodeMLabel.toList()
 
 
  */
+        clusterNb( nodeMLabel)
         return Result(nodeMLabel.toMap(),algoModularity)
 
 
     }
-
+     fun clusterNb(nodeMLabel: Map<String, String>): List<Int> {
+         var clustersSizes = nodeMLabel.values.toList().groupBy { it }.mapValues { it.value.size }.toList()
+             .sortedByDescending { (_, value) -> value }
+             .toMap()
+         return clustersSizes.values.toList()
+     }
 
 }
+
+
+
 /*data class GeneticsConfigVariation(var iteration: List<Int>, var parentSize: List<Int>, var childSize: List<Int>, var crossoverRate: List<Double>, var mutationRate: List<Double>){
     constructor() : this(emptyList(), emptyList(), emptyList(), emptyList(), emptyList())
 }
@@ -803,6 +812,12 @@ fun GeneticsClusterDiagramContext.loadGeneticsClusters(): GeneticsClusterDefinit
      */
     with(configGenetics.details.LSSGA) {
         configGenetics.details.Modularity = GeneticsClustering().LSSGA(nodes, edges, iterations, parentSize, childSize, crossoverRate, mutationRate).modularity
+        configGenetics.details.clustergroesse= GeneticsClustering().clusterNb(
+
+            GeneticsClustering().LSSGA(nodes,
+                edges, iterations, parentSize,
+                childSize, crossoverRate, mutationRate).nodeMLabel
+        )
     }
     with(configGenetics.details.LSSGA) {
         return clusterByGenetic(

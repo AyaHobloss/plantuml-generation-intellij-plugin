@@ -50,7 +50,8 @@ fun ClusterDiagramContext.loadLeidenClusters(): ClusterDefinition {
 
         with(config.details.leiden){
             iterations = bestConfig.iterations
-            minimumNodesPerCluster = bestConfig.minNodes
+           minimumNodesPerCluster = bestConfig.minNodes
+
             randomStarts = bestConfig.starts
             randomness = bestConfig.randomness
             resolution = bestConfig.resolution
@@ -60,8 +61,8 @@ fun ClusterDiagramContext.loadLeidenClusters(): ClusterDefinition {
                 bestConfig.resolution,
                 bestConfig.starts,
                 bestConfig.iterations,
-                bestConfig.minNodes,
-                bestConfig.randomness
+                 bestConfig.minNodes,
+            bestConfig.randomness
         ), nodes)
     } else {
         with(config.details.leiden){
@@ -69,11 +70,15 @@ fun ClusterDiagramContext.loadLeidenClusters(): ClusterDefinition {
                 resolution,
                 randomStarts,
                 iterations,
+
+
                 minimumNodesPerCluster,
                 randomness
+
             ), nodes)
             modularity()
             config.details.Modularity= modularity()
+            config.details.clustergroesse= clusterNb()
             return f
 
         }
@@ -211,9 +216,35 @@ fun ClusterDiagramContext.modularity():Double {
     return ((1.0.div(m))*s)
 
 }
+fun clusterNb():List<Int>{
+    var clustersSizes = c.values.toList().groupBy { it }.mapValues { it.value.size }.toList().sortedByDescending { (_, value) -> value }
+        .toMap()
+    var gr= clustersSizes.values.toList()
 
 
 
+    return gr
+}
+/*fun ClusterDiagramContext.NED():Double {
+    val nodes = baseEdges.flatMap { it.nodes() }.map { it.nameInCluster() }.distinct()
+
+   val K= c.values.distinct().size
+
+    var clustersSizes = c.values.toList().groupBy { it }.mapValues { it.value.size }.toList().sortedByDescending { (_, value) -> value }
+        .toMap()
+    var ni=0
+    clustersSizes.forEach { (t, u) ->
+        if(u.toDouble()> (1-0.5)*((nodes.size).toDouble().div(K))  &&  u.toDouble()< (1+0.5)*((nodes.size).toDouble().div(K)) )
+        ni+=u
+
+    }
+
+val x = (1.0.div(nodes.size))* ni
+    return (1.0.div(nodes.size))* ni
+}
+
+
+ */
 
 fun score(clusters: List<LeidenCluster>): Double{
     val openClusters = clusters.filterNot { it.encapsulated() }
